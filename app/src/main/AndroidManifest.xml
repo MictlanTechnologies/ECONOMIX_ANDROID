@@ -12,7 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ECONOMIX_ANDROID">
         <activity
-            android:name=".MainActivity"
+            android:name=".Model.usuario.usuario"
+            android:exported="false"
+            android:label="@string/title_activity_usuario" />
+        <activity
+            android:name=".Vista.menu"
+            android:exported="false" />
+        <activity
+            android:name=".ui.login.LoginActivity"
+            android:exported="false"
+            android:label="@string/title_activity_login" />
+        <activity
+            android:name=".Inicio.Inicio"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
