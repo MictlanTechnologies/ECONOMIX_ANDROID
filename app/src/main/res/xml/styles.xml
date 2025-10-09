@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar"/>
+    <!-- Overlay de forma redondeada reutilizable -->
+    <style name="Shape.Rounded16">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+</PreferenceScreen>

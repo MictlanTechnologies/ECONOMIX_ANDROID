@@ -1,4 +1,4 @@
-package com.example.economix_android.Model.ingresos;
+package com.example.economix_android.Model.ahorro;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.economix_android.databinding.FragmentHomeBinding;
+import com.example.economix_android.databinding.FragmentAhorroBinding;
 
-public class HomeFragment extends Fragment {
+public class ahorroFragment extends Fragment {
 
-    private FragmentHomeBinding binding;
+    private FragmentAhorroBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+        ahorroViewModel ahorroViewModel =
+                new ViewModelProvider(this).get(ahorroViewModel.class);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        binding = FragmentAhorroBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textAhorro;
+        ahorroViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

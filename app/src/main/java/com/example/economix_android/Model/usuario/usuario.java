@@ -2,6 +2,7 @@ package com.example.economix_android.Model.usuario;
 
 import android.os.Bundle;
 
+import com.example.economix_android.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;

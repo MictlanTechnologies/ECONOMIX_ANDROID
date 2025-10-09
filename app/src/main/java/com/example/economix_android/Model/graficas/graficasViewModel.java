@@ -1,14 +1,14 @@
-package com.example.economix_android.Model.gastos;
+package com.example.economix_android.Model.graficas;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class GastosViewModel extends ViewModel {
+public class graficasViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public GastosViewModel() {
+    public graficasViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is notifications fragment");
     }

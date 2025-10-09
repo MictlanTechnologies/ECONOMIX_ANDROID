@@ -1,4 +1,4 @@
-package com.example.economix_android.Model.ahorro;
+package com.example.economix_android.Model.gastos;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.economix_android.databinding.FragmentDashboardBinding;
+import com.example.economix_android.databinding.FragmentAhorroBinding;
 
-public class DashboardFragment extends Fragment {
+public class gastosFragment extends Fragment {
 
-    private FragmentDashboardBinding binding;
+    private FragmentAhorroBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        DashboardViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
+        gastosViewModel gastosViewModel =
+                new ViewModelProvider(this).get(gastosViewModel.class);
 
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
+        binding = FragmentAhorroBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textDashboard;
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textAhorro;
+        gastosViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

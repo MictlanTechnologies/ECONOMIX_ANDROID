@@ -1,4 +1,4 @@
-package com.example.economix_android.Model.gastos;
+package com.example.economix_android.Model.ingresos;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.economix_android.databinding.FragmentNotificationsBinding;
+import com.example.economix_android.databinding.FragmentIngresosBinding;
 
-public class GastosFragment extends Fragment {
+public class ingresosFragment extends Fragment {
 
-    private FragmentNotificationsBinding binding;
+    private FragmentIngresosBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        GastosViewModel gastosViewModel =
-                new ViewModelProvider(this).get(GastosViewModel.class);
+        ingresosViewModel ingresosViewModel =
+                new ViewModelProvider(this).get(ingresosViewModel.class);
 
-        binding = FragmentNotificationsBinding.inflate(inflater, container, false);
+        binding = FragmentIngresosBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textNotifications;
-        gastosViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textIngresos;
+        ingresosViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.economix_android.Model.ingresos.HomeFragment"
+        android:name="com.example.economix_android.Model.ingresos.ingresosFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_ahorro" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.example.economix_android.Model.ahorro.DashboardFragment"
+        android:name="com.example.economix_android.Model.ahorro.ahorroFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_ingresos" />
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.example.economix_android.Model.graficas.NotificationsFragment"
+        android:name="com.example.economix_android.Model.graficas.graficasFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_gastos" />
 </navigation>
