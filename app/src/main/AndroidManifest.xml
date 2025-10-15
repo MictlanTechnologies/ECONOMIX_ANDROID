@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ECONOMIX_ANDROID">
         <activity
-            android:name=".Model.usuario.usuario"
+            android:name=".Vista.NavBar"
             android:exported="false"
             android:label="@string/title_activity_usuario" />
         <activity

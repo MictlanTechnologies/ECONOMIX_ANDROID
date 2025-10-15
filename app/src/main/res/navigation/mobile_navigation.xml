@@ -22,8 +22,6 @@
         android:label="@string/title_ahorro"
         tools:layout="@layout/fragment_ahorro" />
 
-
-
     <fragment
         android:id="@+id/navigation_graficas"
         android:name="com.example.economix_android.Model.graficas.graficasFragment"
