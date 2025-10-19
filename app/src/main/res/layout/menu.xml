@@ -5,95 +5,156 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="0dp"
     android:orientation="vertical"
-    android:layout_gravity="center"
-    android:background="@color/black"
+    android:padding="16dp"
+
     tools:context=".Vista.menu">
 
+    <!-- Barra superior: ayuda (izq) y perfil (der) -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-    <Button
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="300dp"
-        android:layout_marginStart="5dp"
-        android:text="❓"/>
-    <Button
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:text="👤"/>
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageButton
+            android:id="@+id/btnAyuda"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_icon_circle_teal"
+            android:src="@drawable/ic_help"
+            android:backgroundTintMode="src_in"
+            android:padding="10dp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <ImageButton
+            android:id="@+id/btnPerfil"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_icon_circle_blue"
+            android:src="@drawable/ic_profile"
+            android:backgroundTintMode="src_in"
+            android:padding="10dp"/>
     </LinearLayout>
 
+    <!-- Título -->
     <TextView
+        android:id="@+id/txtHolaUsuario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="50dp"
-        android:textColor="@color/white"
-        android:text="HOLA USUARIO" />
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="24dp"
+        android:text="HOLA USUARIO"
+        android:textStyle="bold"
+        android:textSize="28sp"
+        android:textColor="@android:color/white"
+        android:layout_gravity="center"/>
 
+    <!-- Fila 1: GASTOS / INGRESOS -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="horizontal"
-        android:layout_margin="30dp">
+        android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/Gastos"
+        <!-- Tile GASTOS -->
+        <LinearLayout
+            android:id="@+id/tileGastos"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginStart="5dp"
-            android:text="Gastos" />
+            android:layout_margin="8dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="#0DBBCB"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
 
-        <Button
-            android:id="@+id/Ingresos"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginStart="5dp"
-            android:text="Ingresos" />
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/ic_gastos" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="GASTOS"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:textColor="@color/white"/>
         </LinearLayout>
 
+        <!-- Tile INGRESOS -->
+        <LinearLayout
+            android:id="@+id/tileIngresos"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_margin="8dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="#91C7DE"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/ic_ingresos" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Fila 2: AHORRO / GRÁFICOS -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="horizontal"
-        android:layout_margin="30dp">
+        android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/Ahorro"
+        <!-- Tile AHORRO -->
+        <LinearLayout
+            android:id="@+id/tileAhorro"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginStart="5dp"
-            android:text="Ahorro" />
+            android:layout_margin="8dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="#91C7DE"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
 
-        <Button
-            android:id="@+id/Graficas"
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/ic_ahorro" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tileGraficas"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginStart="5dp"
-            android:text="Graficas" />
+            android:layout_margin="8dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="#0DBBCB"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/ic_graficas" />
+
+        </LinearLayout>
     </LinearLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="Continuar"
-        app:icon="@drawable/ic_arrow_right_24"
-        app:iconGravity="textEnd"
-        app:iconPadding="12dp"
-        app:shapeAppearanceOverlay="@style/Shape.Rounded16"
-        style="@style/Widget.Material3.Button.Filled"/>
-
 
 </LinearLayout>

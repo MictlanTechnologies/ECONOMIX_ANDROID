@@ -1,22 +1,243 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Model.ingresos.ingresosFragment">
+    android:orientation="vertical"
+    android:background="#0C4443"
+    android:padding="16dp">
 
-    <TextView
-        android:id="@+id/text_ahorro"
+    <!-- Barra superior -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageButton
+            android:id="@+id/btnAyuda"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ayuda"
+            android:contentDescription="Ayuda"
+            android:padding="10dp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <ImageButton
+            android:id="@+id/btnPerfil"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/usuario"
+            android:contentDescription="Perfil"
+            android:padding="100dp"/>
+    </LinearLayout>
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/txtTitulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_marginBottom="12dp"
+        android:text="AHORRO"
+        android:textStyle="bold"
+        android:textSize="28sp"
+        android:textColor="@android:color/white"/>
+
+    <!-- Contenido -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp">
+
+        <!-- OBJETIVO -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:boxBackgroundMode="filled"
+            app:boxBackgroundColor="@android:color/white"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etObjetivo"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="OBJETIVO"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/black"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:boxBackgroundMode="filled"
+            app:boxBackgroundColor="@android:color/white"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDescripcion"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="DESCRIPCION"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/black"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- META -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:boxBackgroundMode="filled"
+            app:boxBackgroundColor="@android:color/white"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etMeta"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="META"
+                android:inputType="numberDecimal"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/black"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:boxBackgroundMode="filled"
+            app:boxBackgroundColor="@android:color/white"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etAhorrado"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="AHORRADO"
+                android:inputType="numberDecimal"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/black"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- AVANCE (NO botón): barra gruesa con texto encima -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progresoAhorro"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:progress="70"
+                app:indeterminate="false"
+                app:trackThickness="56dp"
+                app:trackCornerRadius="28dp"
+                app:trackColor="@android:color/white"
+                app:indicatorColor="#C6FF62"
+                app:indicatorInset="0dp"/>
+
+            <TextView
+                android:id="@+id/labelAvance"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:gravity="center"
+                android:text="AVANCE"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:textColor="@android:color/black"/>
+        </FrameLayout>
+    </LinearLayout>
+
+    <!-- Fila de botones -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingHorizontal="16dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGuardar"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:text="GUARDAR"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeStepGranularity="1sp"
+            app:cornerRadius="24dp"
+            app:backgroundTint="#91c7de"
+            app:insetLeft="0dp" app:insetRight="0dp" app:insetTop="0dp" app:insetBottom="0dp"
+            android:paddingHorizontal="12dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEliminar"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="6dp"
+            android:text="ELIMINAR"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeStepGranularity="1sp"
+            app:cornerRadius="24dp"
+            app:backgroundTint="#0DBBCB"
+            app:insetLeft="0dp" app:insetRight="0dp" app:insetTop="0dp" app:insetBottom="0dp"
+            android:paddingHorizontal="12dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLimpiar"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="6dp"
+            android:text="LIMPIAR"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeStepGranularity="1sp"
+            app:cornerRadius="24dp"
+            app:backgroundTint="#91c7de"
+            app:insetLeft="0dp" app:insetRight="0dp" app:insetTop="0dp" app:insetBottom="0dp"
+            android:paddingHorizontal="12dp"/>
+    </LinearLayout>
+</LinearLayout>

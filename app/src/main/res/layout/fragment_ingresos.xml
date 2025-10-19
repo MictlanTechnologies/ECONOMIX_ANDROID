@@ -1,22 +1,253 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Model.ahorro.ahorroFragment">
+    android:orientation="vertical"
+    android:layout_marginBottom="100dp"
+    android:background="#0C4443"
+    android:padding="16dp">
 
-    <TextView
-        android:id="@+id/text_ingresos"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageButton
+            android:id="@+id/btnAyudaIng"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ayuda"
+            android:contentDescription="Ayuda"
+            android:padding="10dp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <ImageButton
+            android:id="@+id/btnPerfil"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/usuario"
+            android:contentDescription="Perfil"
+            android:padding="10dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/txtTitulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:text="INGRESOS"
+        android:textStyle="bold"
+        android:textSize="28sp"
+        android:textColor="@android:color/white"/>
+
+    <LinearLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:boxBackgroundMode="filled"
+            app:boxBackgroundColor="@android:color/white"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etArticuloIng"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="ARTICULO"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/black"
+                android:inputType="textCapSentences"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:boxBackgroundMode="filled"
+            app:boxBackgroundColor="@android:color/white"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDescripcionIng"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="DESCRIPCION"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/black"
+                android:inputType="textCapSentences"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:boxBackgroundMode="filled"
+            app:boxBackgroundColor="@android:color/white"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etFechaIng"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="FECHA"
+                android:focusable="false"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/black"
+                android:inputType="date"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:boxBackgroundMode="filled"
+            app:boxBackgroundColor="@android:color/white"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPeriodoIng"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="PERIODO"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/black"
+                android:inputType="text"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Ingreso recurrente -->
+        <RadioButton
+            android:id="@+id/rbRecurrenteIng"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="INGRESO RECURRENTE"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:buttonTint="@android:color/white"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingHorizontal="16dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGuardarIng"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:text="GUARDAR"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeStepGranularity="1sp"
+            app:cornerRadius="24dp"
+            app:backgroundTint="#91c7de"
+            app:insetLeft="0dp"
+            app:insetRight="0dp"
+            app:insetTop="0dp"
+            app:insetBottom="0dp"
+            android:paddingHorizontal="12dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEliminarIng"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="6dp"
+            android:text="ELIMINAR"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeStepGranularity="1sp"
+            app:cornerRadius="24dp"
+            app:backgroundTint="#0DBBCB"
+            app:insetLeft="0dp"
+            app:insetRight="0dp"
+            app:insetTop="0dp"
+            app:insetBottom="0dp"
+            android:paddingHorizontal="12dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLimpiarIng"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="6dp"
+            android:text="LIMPIAR"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeStepGranularity="1sp"
+            app:cornerRadius="24dp"
+            app:backgroundTint="#91c7de"
+            app:insetLeft="0dp"
+            app:insetRight="0dp"
+            app:insetTop="0dp"
+            app:insetBottom="0dp"
+            android:paddingHorizontal="12dp"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnVerIng"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_margin="24dp"
+        android:text="VER"
+        android:textAllCaps="true"
+        android:textColor="@android:color/white"
+        app:cornerRadius="16dp"
+        app:backgroundTint="#6FA7A0"/>
+</LinearLayout>
