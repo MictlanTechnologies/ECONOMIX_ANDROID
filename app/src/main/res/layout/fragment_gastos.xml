@@ -180,10 +180,6 @@
             app:autoSizeStepGranularity="1sp"
             app:cornerRadius="24dp"
             app:backgroundTint="#91c7de"
-            app:insetLeft="0dp"
-            app:insetRight="0dp"
-            app:insetTop="0dp"
-            app:insetBottom="0dp"
             android:paddingHorizontal="12dp"/>
 
         <com.google.android.material.button.MaterialButton
@@ -204,10 +200,6 @@
             app:autoSizeStepGranularity="1sp"
             app:cornerRadius="24dp"
             app:backgroundTint="#0DBBCB"
-            app:insetLeft="0dp"
-            app:insetRight="0dp"
-            app:insetTop="0dp"
-            app:insetBottom="0dp"
             android:paddingHorizontal="12dp"/>
 
         <com.google.android.material.button.MaterialButton
@@ -228,10 +220,6 @@
             app:autoSizeStepGranularity="1sp"
             app:cornerRadius="24dp"
             app:backgroundTint="#91c7de"
-            app:insetLeft="0dp"
-            app:insetRight="0dp"
-            app:insetTop="0dp"
-            app:insetBottom="0dp"
             android:paddingHorizontal="12dp"/>
     </LinearLayout>
 

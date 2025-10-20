@@ -152,7 +152,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:progress="70"
-                app:indeterminate="false"
+                android:indeterminate="false"
                 app:trackThickness="56dp"
                 app:trackCornerRadius="28dp"
                 app:trackColor="@android:color/white"
@@ -197,7 +197,6 @@
             app:autoSizeStepGranularity="1sp"
             app:cornerRadius="24dp"
             app:backgroundTint="#91c7de"
-            app:insetLeft="0dp" app:insetRight="0dp" app:insetTop="0dp" app:insetBottom="0dp"
             android:paddingHorizontal="12dp"/>
 
         <com.google.android.material.button.MaterialButton
@@ -217,7 +216,6 @@
             app:autoSizeStepGranularity="1sp"
             app:cornerRadius="24dp"
             app:backgroundTint="#0DBBCB"
-            app:insetLeft="0dp" app:insetRight="0dp" app:insetTop="0dp" app:insetBottom="0dp"
             android:paddingHorizontal="12dp"/>
 
         <com.google.android.material.button.MaterialButton
@@ -237,7 +235,6 @@
             app:autoSizeStepGranularity="1sp"
             app:cornerRadius="24dp"
             app:backgroundTint="#91c7de"
-            app:insetLeft="0dp" app:insetRight="0dp" app:insetTop="0dp" app:insetBottom="0dp"
             android:paddingHorizontal="12dp"/>
     </LinearLayout>
 

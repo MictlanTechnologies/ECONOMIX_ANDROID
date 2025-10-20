@@ -1,6 +1,8 @@
 package com.example.economix_android.Vista;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +14,13 @@ import com.example.economix_android.R;
 
 public class menu extends AppCompatActivity {
 
+    private View tileGastos;
+    private View tileIngresos;
+    private View tileAhorro;
+    private View tileGraficas;
+    private View btnAyuda;
+    private View btnPerfil;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,5 +31,45 @@ public class menu extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        initViews();
+        setupListeners();
+    }
+
+    private void initViews() {
+        tileGastos = findViewById(R.id.tileGastos);
+        tileIngresos = findViewById(R.id.tileIngresos);
+        tileAhorro = findViewById(R.id.tileAhorro);
+        tileGraficas = findViewById(R.id.tileGraficas);
+        btnAyuda = findViewById(R.id.btnAyuda);
+        btnPerfil = findViewById(R.id.btnPerfil);
+    }
+
+    private void setupListeners() {
+        View.OnClickListener openSectionListener = view -> {
+            if (view.getId() == R.id.tileIngresos) {
+                openSection(R.id.navigation_ingresos);
+            } else if (view.getId() == R.id.tileAhorro) {
+                openSection(R.id.navigation_ahorro);
+            } else if (view.getId() == R.id.tileGraficas) {
+                openSection(R.id.navigation_graficas);
+            } else {
+                openSection(R.id.navigation_gastos);
+            }
+        };
+
+        tileGastos.setOnClickListener(openSectionListener);
+        tileIngresos.setOnClickListener(openSectionListener);
+        tileAhorro.setOnClickListener(openSectionListener);
+        tileGraficas.setOnClickListener(openSectionListener);
+
+        btnAyuda.setOnClickListener(v -> openSection(R.id.navigation_graficas));
+        btnPerfil.setOnClickListener(v -> openSection(R.id.navigation_gastos));
+    }
+
+    private void openSection(int destinationId) {
+        Intent intent = new Intent(menu.this, NavBar.class);
+        intent.putExtra(NavBar.EXTRA_DESTINATION_ID, destinationId);
+        startActivity(intent);
     }
 }
