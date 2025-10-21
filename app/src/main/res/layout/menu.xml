@@ -8,10 +8,8 @@
     android:orientation="vertical"
     android:background="#0C4443"
     android:padding="16dp"
-
     tools:context=".Vista.menu">
 
-    <!-- Barra superior: ayuda (izq) y perfil (der) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,7 +20,10 @@
             android:id="@+id/btnAyuda"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ayuda" />
+            android:src="@drawable/ayuda"
+            android:tint="@android:color/white"
+            tools:ignore="UseAppTint"
+            android:background="@drawable/ayuda"/>
 
         <View
             android:layout_width="0dp"
@@ -33,7 +34,10 @@
             android:id="@+id/btnPerfil"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/usuario" />
+            android:src="@drawable/usuario"
+            android:tint="@android:color/white"
+            tools:ignore="UseAppTint"
+            android:background="@drawable/usuario"/>
     </LinearLayout>
 
     <!-- Título -->
@@ -72,6 +76,7 @@
             <ImageView
                 android:layout_width="150dp"
                 android:layout_height="150dp"
+
                 android:src="@drawable/gastosop2texto" />
 
             <TextView

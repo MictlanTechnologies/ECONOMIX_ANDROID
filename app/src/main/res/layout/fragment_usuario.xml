@@ -1,14 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Model.usuario.usuario">
+    android:orientation="vertical"
+    android:background="#0C4443"
+    android:layout_marginBottom="100dp"
+    android:padding="16dp">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-</FrameLayout>
+        <ImageButton
+            android:id="@+id/btnAyuda"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/ayuda"
+            android:tint="@android:color/white"
+            tools:ignore="UseAppTint"
+            android:src="@drawable/ayuda"
+            android:contentDescription="Ayuda"
+            android:padding="10dp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/tvNombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:text="NOMBRE"
+        android:textStyle="bold"
+        android:textSize="28sp"
+        android:textColor="@android:color/white"/>
+
+    <!-- Avatar grande con aro -->
+
+    <!-- Fila de botones: GUARDAR / LIMPIAR / INFORMACIÓN -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/imgAvatar"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_gravity="center"
+            android:src="@drawable/usuariog"
+            android:tint="@android:color/white"
+            tools:ignore="UseAppTint" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/actionRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="12dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="100dp"
+        android:gravity="center">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGuardar"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:text="GUARDAR"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeStepGranularity="1sp"
+            app:cornerRadius="24dp"
+            app:backgroundTint="#91c7de"
+            app:insetLeft="0dp" app:insetRight="0dp" app:insetTop="0dp" app:insetBottom="0dp"
+            android:paddingHorizontal="12dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLimpiar"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="6dp"
+            android:text="LIMPIAR"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeStepGranularity="1sp"
+            app:cornerRadius="24dp"
+            app:backgroundTint="#0DBBCB"
+            app:insetLeft="0dp" app:insetRight="0dp" app:insetTop="0dp" app:insetBottom="0dp"
+            android:paddingHorizontal="12dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnInfo"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="6dp"
+            android:text="INFO."
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeStepGranularity="1sp"
+            app:cornerRadius="24dp"
+            app:backgroundTint="#91c7de"
+            app:insetLeft="0dp" app:insetRight="0dp" app:insetTop="0dp" app:insetBottom="0dp"
+            android:paddingHorizontal="12dp"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+</LinearLayout>
