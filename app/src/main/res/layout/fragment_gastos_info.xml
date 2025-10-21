@@ -1,14 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Model.gastos.gastosInfo">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="#143B39"
+    android:padding="16dp"
+    android:layout_marginBottom="100dp">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <!-- Fila superior: ¿ ? y usuario -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-</FrameLayout>
+        <ImageButton
+            android:id="@+id/btnAyudaGasInf"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ayuda"
+            android:tint="@android:color/white"
+            tools:ignore="UseAppTint"
+            android:background="@drawable/ayuda"/>
+
+        <!-- Espaciador -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/btnPerfil"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/usuario"
+            android:tint="@android:color/white"
+            tools:ignore="UseAppTint"
+            android:background="@drawable/usuario"/>
+    </LinearLayout>
+
+    <!-- Tarjeta: GASTOS RECURRENTES -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardRecurrentes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="0dp"
+        app:cardUseCompatPadding="false"
+        app:cardBackgroundColor="#3E7774">   <!-- teal opaco -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GASTOS RECURRENTES:"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+            <!-- Contenido (placeholder) -->
+            <FrameLayout
+                android:id="@+id/listaRecurrentes"
+                android:layout_width="match_parent"
+                android:layout_height="180dp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Tarjeta: DESCRIPCION | MONTO | FECHA | PERIODO -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardTabla"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="0dp"
+        app:cardUseCompatPadding="false"
+        app:cardBackgroundColor="#3E7774">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DESCRIPCION | MONTO | FECHA | PERIODO"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp" />
+
+            <!-- Contenido (placeholder) -->
+            <FrameLayout
+                android:id="@+id/tablaGastos"
+                android:layout_width="match_parent"
+                android:layout_height="240dp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

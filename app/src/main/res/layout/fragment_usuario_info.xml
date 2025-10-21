@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="#0C4443"
     android:layout_marginBottom="100dp"
@@ -16,7 +17,7 @@
         android:gravity="center_vertical">
 
         <ImageButton
-            android:id="@+id/btnAyuda"
+            android:id="@+id/btnAyudaUsInf"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/ayuda"
@@ -42,85 +43,115 @@
         android:paddingHorizontal="8dp">
 
         <!-- Campos tipo “pill” blancos -->
-        <EditText
-            android:id="@+id/txtNombre"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="NOMBRE"
-            android:inputType="textPersonName"
-            android:textAllCaps="true"
-            android:textColor="@color/econo_text_dark"
-            android:textColorHint="@color/econo_hint"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp"
-            android:background="@drawable/bg_input_pill" />
-
-        <EditText
-            android:id="@+id/txtApellidos"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="APELLIDOS"
-            android:inputType="textPersonName"
-            android:textAllCaps="true"
-            android:textColor="@color/econo_text_dark"
-            android:textColorHint="@color/econo_hint"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp"
-            android:background="@drawable/bg_input_pill" />
+            app:boxBackgroundMode="filled"
+            app:boxBackgroundColor="@android:color/white"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp">
 
-        <EditText
-            android:id="@+id/txtContacto"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etNombre"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="NOMBRE"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/black"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="CONTACTO"
-            android:inputType="textEmailAddress"
-            android:textAllCaps="true"
-            android:textColor="@color/econo_text_dark"
-            android:textColorHint="@color/econo_hint"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp"
-            android:background="@drawable/bg_input_pill" />
+            app:boxBackgroundMode="filled"
+            app:boxBackgroundColor="@android:color/white"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp">
 
-        <EditText
-            android:id="@+id/txtContrasena"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etApellidos"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="APELLIDOS"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/black"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="CONTRASEÑA"
-            android:inputType="textPassword"
-            android:textAllCaps="true"
-            android:textColor="@color/econo_text_dark"
-            android:textColorHint="@color/econo_hint"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp"
-            android:background="@drawable/bg_input_pill" />
+            app:boxBackgroundMode="filled"
+            app:boxBackgroundColor="@android:color/white"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp">
 
-        <EditText
-            android:id="@+id/txtDomicilio"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etContacto"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="CONTACTO"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/black"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="DOMICILIO"
-            android:inputType="textPostalAddress"
-            android:textAllCaps="true"
-            android:textColor="@color/econo_text_dark"
-            android:textColorHint="@color/econo_hint"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp"
-            android:background="@drawable/bg_input_pill" />
+            app:boxBackgroundMode="filled"
+            app:boxBackgroundColor="@android:color/white"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp">
 
-        <!-- Botón Regresar (pastilla) -->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etContraseña"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="CONTRASEÑA"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/black"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:boxBackgroundMode="filled"
+            app:boxBackgroundColor="@android:color/white"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusBottomEnd="24dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDomicilio"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="DOMICILIO"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/black"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
         <Button
             android:id="@+id/btnRegresar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@drawable/bg_button_pill_dark"
+            android:backgroundTint="#4a8d8b"
             android:text="REGRESAR"
             android:textAllCaps="true"
+            android:textSize="20dp"
             android:textColor="@color/white"
             android:paddingHorizontal="24dp"
             android:paddingVertical="10dp" />
@@ -133,6 +164,7 @@
         android:orientation="horizontal"
         android:weightSum="3"
         android:gravity="center"
+        android:layout_marginBottom="50dp"
         android:paddingTop="8dp">
 
         <Button
@@ -141,7 +173,7 @@
             android:layout_height="48dp"
             android:layout_weight="1"
             android:layout_marginEnd="6dp"
-            android:background="@drawable/bg_button_pill_blue"
+            android:backgroundTint="#91c7de"
             android:text="GUARDAR"
             android:textAllCaps="true"
             android:textColor="@color/white" />
@@ -152,7 +184,7 @@
             android:layout_height="48dp"
             android:layout_weight="1"
             android:layout_marginHorizontal="6dp"
-            android:background="@drawable/bg_button_pill_gray"
+            android:backgroundTint="#0DBBCB"
             android:text="ELIMINAR"
             android:textAllCaps="true"
             android:textColor="@color/white" />
@@ -163,7 +195,7 @@
             android:layout_height="48dp"
             android:layout_weight="1"
             android:layout_marginStart="6dp"
-            android:background="@drawable/bg_button_pill_teal"
+            android:backgroundTint="#91c7de"
             android:text="LIMPIAR"
             android:textAllCaps="true"
             android:textColor="@color/white" />
