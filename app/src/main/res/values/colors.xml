@@ -16,4 +16,8 @@
     <color name="tealSurfaceVariant">#1D6F6B</color>
     <color name="goldAccent">#F3D373</color>
     <color name="softWhite">#F5FBFA</color>
+    <color name="economix_bar_1">#4EDBE5</color>
+    <color name="economix_bar_2">#4CCAF6</color>
+    <color name="economix_bar_3">#3B8DF0</color>
+    <color name="economix_bar_4">#2E4FCF</color>
 </resources>

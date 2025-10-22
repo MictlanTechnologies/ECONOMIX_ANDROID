@@ -16,6 +16,13 @@
     <string name="title_graficas">Graficas</string>
     <string name="title_gastos_por_categoria">Gastos por categoría</string>
     <string name="action_back">Volver</string>
+    <string name="desc_pie_chart_ingresos_vs_gastos">Gráfica circular de ingresos versus gastos</string>
+    <string name="desc_bar_chart_gastos">Gráfica de barras de gastos por categoría</string>
+    <string name="desc_bar_chart_ingresos_vs_gastos">Gráfica de barras de ingresos versus gastos</string>
+    <string name="label_element_1">Elemento 1</string>
+    <string name="label_element_2">Elemento 2</string>
+    <string name="label_element_3">Elemento 3</string>
+    <string name="label_element_4">Elemento 4</string>
     <string name="desc_help">Abrir ayuda</string>
     <string name="desc_profile">Ver perfil de usuario</string>
     <string name="desc_pie_chart">Gráfica circular de gastos por categoría</string>
@@ -23,6 +30,7 @@
     <string name="label_tab_ingresos">Ingresos</string>
     <string name="label_tab_ahorro">Ahorro</string>
     <string name="label_tab_graficas">Gráficas</string>
+    <string name="title_ingresos_vs_gastos">Ingresos vs gastos</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="content_description_gastos_chart">Distribución de gastos por categoría</string>
     <string name="gastos_chart_empty">Aún no hay datos de gastos para mostrar</string>
