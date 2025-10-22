@@ -2,4 +2,18 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="economix_background">#062C33</color>
+    <color name="economix_surface_dark">#0B3F48</color>
+    <color name="economix_surface_light">#0E4B56</color>
+    <color name="economix_accent">#4EDBE5</color>
+    <color name="economix_text_primary">#FFFFFFFF</color>
+    <color name="economix_text_secondary">#B5E8ED</color>
+    <color name="tealPrimary">#0E4F4E</color>
+    <color name="tealDark">#042B2C</color>
+    <color name="tealLight">#6FD8D2</color>
+    <color name="tealAccent">#2FB6B0</color>
+    <color name="tealSurface">#135856</color>
+    <color name="tealSurfaceVariant">#1D6F6B</color>
+    <color name="goldAccent">#F3D373</color>
+    <color name="softWhite">#F5FBFA</color>
 </resources>

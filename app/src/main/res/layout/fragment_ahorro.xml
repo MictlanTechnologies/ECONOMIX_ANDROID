@@ -1,249 +1,242 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:background="#0C4443"
+    android:background="@drawable/bg_app_gradient"
     android:layout_marginBottom="100dp"
-    android:padding="16dp">
+    android:padding="20dp">
 
-    <!-- Barra superior -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-
-        <ImageButton
-            android:id="@+id/btnAyuda"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/ayuda"
-            android:src="@drawable/ayuda"
-            android:tint="@android:color/white"
-            tools:ignore="UseAppTint"
-            android:contentDescription="Ayuda"
-            android:padding="10dp"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-        <ImageButton
-            android:id="@+id/btnPerfil"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/usuario"
-            android:background="@drawable/usuario"
-            android:tint="@android:color/white"
-            tools:ignore="UseAppTint"
-            android:contentDescription="Perfil"
-            android:padding="100dp"/>
-    </LinearLayout>
-
-    <!-- Título -->
-    <TextView
-        android:id="@+id/txtTitulo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="12dp"
-        android:text="AHORRO"
-        android:textStyle="bold"
-        android:textSize="28sp"
-        android:textColor="@android:color/white"/>
-
-    <!-- Contenido -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="24dp">
+        android:paddingBottom="32dp">
 
-        <!-- OBJETIVO -->
-        <com.google.android.material.textfield.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:boxBackgroundMode="filled"
-            app:boxBackgroundColor="@android:color/white"
-            app:boxCornerRadiusTopStart="24dp"
-            app:boxCornerRadiusTopEnd="24dp"
-            app:boxCornerRadiusBottomStart="24dp"
-            app:boxCornerRadiusBottomEnd="24dp">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etObjetivo"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:hint="OBJETIVO"
-                android:textColor="@android:color/black"
-                android:textColorHint="@android:color/black"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            <ImageButton
+                android:id="@+id/btnAyuda"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/ayuda"
+                android:tint="@android:color/white"
+                tools:ignore="UseAppTint"
+                android:contentDescription="Ayuda"
+                android:src="@drawable/ayuda" />
 
-        <com.google.android.material.textfield.TextInputLayout
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/btnPerfil"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Perfil"
+                android:src="@drawable/usuario"
+                tools:ignore="UseAppTint"
+                android:tint="@color/white" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtTitulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Plan de ahorro"
+            android:textColor="@color/softWhite"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvAhorroSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Define tu meta, da seguimiento y celebra tus avances"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/ahorroCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:boxBackgroundMode="filled"
-            app:boxBackgroundColor="@android:color/white"
-            app:boxCornerRadiusTopStart="24dp"
-            app:boxCornerRadiusTopEnd="24dp"
-            app:boxCornerRadiusBottomStart="24dp"
-            app:boxCornerRadiusBottomEnd="24dp">
+            android:layout_marginTop="24dp"
+            app:cardBackgroundColor="@color/tealSurface"
+            app:cardCornerRadius="22dp"
+            app:cardElevation="4dp"
+            app:strokeColor="@color/tealLight"
+            app:strokeWidth="1dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etDescripcion"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:hint="DESCRIPCION"
-                android:textColor="@android:color/black"
-                android:textColorHint="@android:color/black"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
 
-        <!-- META -->
-        <com.google.android.material.textfield.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxBackgroundColor="@color/softWhite"
+                    app:boxBackgroundMode="filled"
+                    app:boxCornerRadiusBottomEnd="20dp"
+                    app:boxCornerRadiusBottomStart="20dp"
+                    app:boxCornerRadiusTopEnd="20dp"
+                    app:boxCornerRadiusTopStart="20dp"
+                    app:boxStrokeColor="@color/tealAccent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etObjetivo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Objetivo"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@android:color/darker_gray" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundColor="@color/softWhite"
+                    app:boxBackgroundMode="filled"
+                    app:boxCornerRadiusBottomEnd="20dp"
+                    app:boxCornerRadiusBottomStart="20dp"
+                    app:boxCornerRadiusTopEnd="20dp"
+                    app:boxCornerRadiusTopStart="20dp"
+                    app:boxStrokeColor="@color/tealAccent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etDescripcion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Descripción"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@android:color/darker_gray" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundColor="@color/softWhite"
+                    app:boxBackgroundMode="filled"
+                    app:boxCornerRadiusBottomEnd="20dp"
+                    app:boxCornerRadiusBottomStart="20dp"
+                    app:boxCornerRadiusTopEnd="20dp"
+                    app:boxCornerRadiusTopStart="20dp"
+                    app:boxStrokeColor="@color/tealAccent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etMeta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Meta"
+                        android:inputType="numberDecimal"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@android:color/darker_gray" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundColor="@color/softWhite"
+                    app:boxBackgroundMode="filled"
+                    app:boxCornerRadiusBottomEnd="20dp"
+                    app:boxCornerRadiusBottomStart="20dp"
+                    app:boxCornerRadiusTopEnd="20dp"
+                    app:boxCornerRadiusTopStart="20dp"
+                    app:boxStrokeColor="@color/tealAccent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etAhorrado"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Ahorrado"
+                        android:inputType="numberDecimal"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@android:color/darker_gray" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/labelAvance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Avance"
+                    android:textAllCaps="false"
+                    android:textColor="@color/goldAccent"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/progresoAhorro"
+                    android:layout_width="match_parent"
+                    android:layout_height="14dp"
+                    android:layout_marginTop="12dp"
+                    android:progress="70"
+                    android:indeterminate="false"
+                    app:indicatorColor="@color/goldAccent"
+                    app:trackColor="@color/softWhite"
+                    app:trackCornerRadius="7dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:boxBackgroundMode="filled"
-            app:boxBackgroundColor="@android:color/white"
-            app:boxCornerRadiusTopStart="24dp"
-            app:boxCornerRadiusTopEnd="24dp"
-            app:boxCornerRadiusBottomStart="24dp"
-            app:boxCornerRadiusBottomEnd="24dp">
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="3">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etMeta"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:hint="META"
-                android:inputType="numberDecimal"
-                android:textColor="@android:color/black"
-                android:textColorHint="@android:color/black"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGuardar"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:text="Guardar"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/tealAccent"
+                app:cornerRadius="24dp" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:boxBackgroundMode="filled"
-            app:boxBackgroundColor="@android:color/white"
-            app:boxCornerRadiusTopStart="24dp"
-            app:boxCornerRadiusTopEnd="24dp"
-            app:boxCornerRadiusBottomStart="24dp"
-            app:boxCornerRadiusBottomEnd="24dp">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEliminar"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="6dp"
+                android:layout_weight="1"
+                android:text="Eliminar"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/tealSurfaceVariant"
+                app:cornerRadius="24dp" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etAhorrado"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:hint="AHORRADO"
-                android:inputType="numberDecimal"
-                android:textColor="@android:color/black"
-                android:textColorHint="@android:color/black"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- AVANCE (NO botón): barra gruesa con texto encima -->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
-
-            <com.google.android.material.progressindicator.LinearProgressIndicator
-                android:id="@+id/progresoAhorro"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:progress="70"
-                android:indeterminate="false"
-                app:trackThickness="56dp"
-                app:trackCornerRadius="28dp"
-                app:trackColor="@android:color/white"
-                app:indicatorColor="#C6FF62"
-                app:indicatorInset="0dp"/>
-
-            <TextView
-                android:id="@+id/labelAvance"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:gravity="center"
-                android:text="AVANCE"
-                android:textStyle="bold"
-                android:textAllCaps="true"
-                android:textColor="@android:color/black"/>
-        </FrameLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLimpiar"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:text="Limpiar"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/tealLight"
+                app:cornerRadius="24dp" />
+        </LinearLayout>
     </LinearLayout>
 
-    <!-- Fila de botones -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:paddingHorizontal="16dp"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnGuardar"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="6dp"
-            android:text="GUARDAR"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:singleLine="true"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="12sp"
-            app:autoSizeMaxTextSize="16sp"
-            app:autoSizeStepGranularity="1sp"
-            app:cornerRadius="24dp"
-            app:backgroundTint="#91c7de"
-            android:paddingHorizontal="12dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnEliminar"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:layout_marginHorizontal="6dp"
-            android:text="ELIMINAR"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:singleLine="true"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="12sp"
-            app:autoSizeMaxTextSize="16sp"
-            app:autoSizeStepGranularity="1sp"
-            app:cornerRadius="24dp"
-            app:backgroundTint="#0DBBCB"
-            android:paddingHorizontal="12dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnLimpiar"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:layout_marginStart="6dp"
-            android:text="LIMPIAR"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:singleLine="true"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="12sp"
-            app:autoSizeMaxTextSize="16sp"
-            app:autoSizeStepGranularity="1sp"
-            app:cornerRadius="24dp"
-            app:backgroundTint="#91c7de"
-            android:paddingHorizontal="12dp"/>
-    </LinearLayout>
-
-
-</LinearLayout>
+</androidx.core.widget.NestedScrollView>

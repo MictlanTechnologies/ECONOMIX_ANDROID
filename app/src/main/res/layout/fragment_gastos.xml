@@ -1,247 +1,245 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@drawable/bg_app_gradient"
     android:layout_marginBottom="100dp"
-    android:background="#0C4443"
-    android:padding="16dp">
+    android:padding="20dp">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-
-        <ImageButton
-            android:id="@+id/btnAyudaGas"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:contentDescription="Ayuda"
-            android:padding="10dp"
-            android:src="@drawable/ayuda"
-            android:tint="@android:color/white"
-            tools:ignore="UseAppTint"
-            android:background="@drawable/ayuda"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-        <ImageButton
-            android:id="@+id/btnPerfil"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/usuario"
-            android:background="@drawable/usuario"
-            android:tint="@android:color/white"
-            tools:ignore="UseAppTint"
-            android:contentDescription="Perfil"
-            android:padding="10dp"/>
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/txtTitulo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
-        android:text="GASTOS"
-        android:textStyle="bold"
-        android:textSize="28sp"
-        android:textColor="@android:color/white"/>
-
-    <LinearLayout
-        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="24dp">
+        android:paddingBottom="32dp">
 
-        <com.google.android.material.textfield.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:boxBackgroundMode="filled"
-            app:boxBackgroundColor="@android:color/white"
-            app:boxCornerRadiusTopStart="24dp"
-            app:boxCornerRadiusTopEnd="24dp"
-            app:boxCornerRadiusBottomStart="24dp"
-            app:boxCornerRadiusBottomEnd="24dp">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etArticuloGas"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:hint="ARTICULO"
-                android:textColor="@android:color/black"
-                android:textColorHint="@android:color/black"
-                android:inputType="textCapSentences"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            <ImageButton
+                android:id="@+id/btnAyudaGas"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Ayuda"
+                android:src="@drawable/ayuda"
+                tools:ignore="UseAppTint"
+                android:tint="@color/white" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:boxBackgroundMode="filled"
-            app:boxBackgroundColor="@android:color/white"
-            app:boxCornerRadiusTopStart="24dp"
-            app:boxCornerRadiusTopEnd="24dp"
-            app:boxCornerRadiusBottomStart="24dp"
-            app:boxCornerRadiusBottomEnd="24dp">
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etDescripcionGas"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:hint="DESCRIPCION"
-                android:textColor="@android:color/black"
-                android:textColorHint="@android:color/black"
-                android:inputType="textCapSentences"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            <ImageButton
+                android:id="@+id/btnPerfil"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Perfil"
+                android:src="@drawable/usuario"
+                tools:ignore="UseAppTint"
+                android:tint="@color/white" />
+        </LinearLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:boxBackgroundMode="filled"
-            app:boxBackgroundColor="@android:color/white"
-            app:boxCornerRadiusTopStart="24dp"
-            app:boxCornerRadiusTopEnd="24dp"
-            app:boxCornerRadiusBottomStart="24dp"
-            app:boxCornerRadiusBottomEnd="24dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etFechaGas"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:hint="FECHA"
-                android:focusable="false"
-                android:textColor="@android:color/black"
-                android:textColorHint="@android:color/black"
-                android:inputType="date"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:boxBackgroundMode="filled"
-            app:boxBackgroundColor="@android:color/white"
-            app:boxCornerRadiusTopStart="24dp"
-            app:boxCornerRadiusTopEnd="24dp"
-            app:boxCornerRadiusBottomStart="24dp"
-            app:boxCornerRadiusBottomEnd="24dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPeriodoGas"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:hint="PERIODO"
-                android:textColor="@android:color/black"
-                android:textColorHint="@android:color/black"
-                android:inputType="text"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Ingreso recurrente -->
-        <RadioButton
-            android:id="@+id/rbRecurrenteGas"
+        <TextView
+            android:id="@+id/txtTitulo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="GASTO RECURRENTE"
-            android:textAllCaps="true"
-            android:textColor="@android:color/white"
-            android:buttonTint="@android:color/white"/>
+            android:fontFamily="sans-serif-medium"
+            android:text="Nuevo gasto"
+            android:textColor="@color/softWhite"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvGastoSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Registra tus egresos para mantener el control"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:cardBackgroundColor="@color/tealSurface"
+            app:cardCornerRadius="22dp"
+            app:cardElevation="4dp"
+            app:strokeColor="@color/tealLight"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:boxBackgroundColor="@color/softWhite"
+                    app:boxBackgroundMode="filled"
+                    app:boxCornerRadiusBottomEnd="20dp"
+                    app:boxCornerRadiusBottomStart="20dp"
+                    app:boxCornerRadiusTopEnd="20dp"
+                    app:boxCornerRadiusTopStart="20dp"
+                    app:boxStrokeColor="@color/tealAccent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etArticuloGas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Artículo"
+                        android:inputType="textCapSentences"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@android:color/darker_gray" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundColor="@color/softWhite"
+                    app:boxBackgroundMode="filled"
+                    app:boxCornerRadiusBottomEnd="20dp"
+                    app:boxCornerRadiusBottomStart="20dp"
+                    app:boxCornerRadiusTopEnd="20dp"
+                    app:boxCornerRadiusTopStart="20dp"
+                    app:boxStrokeColor="@color/tealAccent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etDescripcionGas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Descripción"
+                        android:inputType="textCapSentences"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@android:color/darker_gray" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundColor="@color/softWhite"
+                    app:boxBackgroundMode="filled"
+                    app:boxCornerRadiusBottomEnd="20dp"
+                    app:boxCornerRadiusBottomStart="20dp"
+                    app:boxCornerRadiusTopEnd="20dp"
+                    app:boxCornerRadiusTopStart="20dp"
+                    app:boxStrokeColor="@color/tealAccent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etFechaGas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:hint="Fecha"
+                        android:inputType="date"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@android:color/darker_gray" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundColor="@color/softWhite"
+                    app:boxBackgroundMode="filled"
+                    app:boxCornerRadiusBottomEnd="20dp"
+                    app:boxCornerRadiusBottomStart="20dp"
+                    app:boxCornerRadiusTopEnd="20dp"
+                    app:boxCornerRadiusTopStart="20dp"
+                    app:boxStrokeColor="@color/tealAccent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPeriodoGas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Periodo"
+                        android:inputType="text"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@android:color/darker_gray" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <RadioButton
+                    android:id="@+id/rbRecurrenteGas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="Gasto recurrente"
+                    android:textAllCaps="false"
+                    android:textColor="@color/softWhite"
+                    android:textSize="14sp"
+                    android:buttonTint="@color/goldAccent" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGuardarGas"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:text="Guardar"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/tealAccent"
+                app:cornerRadius="24dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEliminarGas"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="6dp"
+                android:layout_weight="1"
+                android:text="Eliminar"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/tealSurfaceVariant"
+                app:cornerRadius="24dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLimpiarGas"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:text="Limpiar"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/tealLight"
+                app:cornerRadius="24dp" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnVerGas"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:text="Ver registros"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/tealSurface"
+            app:cornerRadius="24dp" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:paddingHorizontal="16dp"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnGuardarGas"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="6dp"
-            android:text="GUARDAR"
-            android:textAllCaps="true"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:singleLine="true"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="12sp"
-            app:autoSizeMaxTextSize="16sp"
-            app:autoSizeStepGranularity="1sp"
-            app:cornerRadius="24dp"
-            app:backgroundTint="#91c7de"
-            android:paddingHorizontal="12dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnEliminarGas"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:layout_marginHorizontal="6dp"
-            android:text="ELIMINAR"
-            android:textAllCaps="true"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:singleLine="true"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="12sp"
-            app:autoSizeMaxTextSize="16sp"
-            app:autoSizeStepGranularity="1sp"
-            app:cornerRadius="24dp"
-            app:backgroundTint="#0DBBCB"
-            android:paddingHorizontal="12dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnLimpiarGas"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:layout_marginStart="6dp"
-            android:text="LIMPIAR"
-            android:textAllCaps="true"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:singleLine="true"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="12sp"
-            app:autoSizeMaxTextSize="16sp"
-            app:autoSizeStepGranularity="1sp"
-            app:cornerRadius="24dp"
-            app:backgroundTint="#91c7de"
-            android:paddingHorizontal="12dp"/>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnVerGas"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_margin="24dp"
-        android:text="VER"
-        android:textAllCaps="true"
-        android:textColor="@android:color/white"
-        app:cornerRadius="16dp"
-        app:backgroundTint="#6FA7A0"/>
-</LinearLayout>
+</androidx.core.widget.NestedScrollView>

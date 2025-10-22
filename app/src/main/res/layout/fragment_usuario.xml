@@ -1,143 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#0C4443"
-    android:layout_marginBottom="100dp"
-    android:padding="16dp">
+    android:background="@drawable/bg_app_gradient"
+    android:padding="20dp"
+    android:layout_marginBottom="100dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+    <ImageButton
+        android:id="@+id/btnAyudaUs"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Ayuda"
+        android:padding="4dp"
+        android:src="@drawable/ayuda"
+        android:tint="@color/white"
+        tools:ignore="UseAppTint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/btnAyudaUs"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/ayuda"
-            android:tint="@android:color/white"
-            tools:ignore="UseAppTint"
-            android:src="@drawable/ayuda"
-            android:contentDescription="Ayuda"
-            android:padding="10dp"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-    </LinearLayout>
-
-    <!-- Título -->
     <TextView
         android:id="@+id/tvNombre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:text="NOMBRE"
-        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Nombre"
+        android:textColor="@color/softWhite"
         android:textSize="28sp"
-        android:textColor="@android:color/white"/>
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnAyudaUs" />
 
-    <!-- Avatar grande con aro -->
+    <TextView
+        android:id="@+id/tvSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Gestiona tu perfil"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvNombre" />
 
-    <!-- Fila de botones: GUARDAR / LIMPIAR / INFORMACIÓN -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="260dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:padding="16dp">
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/avatarContainer"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_marginTop="32dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="@color/tealSurface"
+        app:cardCornerRadius="120dp"
+        app:cardElevation="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSubtitle">
 
         <ImageView
             android:id="@+id/imgAvatar"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
-            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Avatar del usuario"
+            android:padding="28dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/usuariog"
-            android:tint="@android:color/white"
-            tools:ignore="UseAppTint" />
-    </FrameLayout>
+            tools:ignore="UseAppTint"
+            android:tint="@color/white" />
+    </com.google.android.material.card.MaterialCardView>
 
     <LinearLayout
         android:id="@+id/actionRow"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="12dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
         android:orientation="horizontal"
-        android:layout_marginTop="100dp"
-        android:gravity="center">
+        android:weightSum="3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/avatarContainer">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGuardar"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_weight="1"
             android:layout_marginEnd="6dp"
-            android:text="GUARDAR"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:singleLine="true"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="12sp"
-            app:autoSizeMaxTextSize="16sp"
-            app:autoSizeStepGranularity="1sp"
-            app:cornerRadius="24dp"
-            app:backgroundTint="#91c7de"
-            app:insetLeft="0dp" app:insetRight="0dp" app:insetTop="0dp" app:insetBottom="0dp"
-            android:paddingHorizontal="12dp"/>
+            android:layout_weight="1"
+            android:text="Guardar"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/tealAccent"
+            app:cornerRadius="24dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLimpiar"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_weight="1"
             android:layout_marginHorizontal="6dp"
-            android:text="LIMPIAR"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:singleLine="true"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="12sp"
-            app:autoSizeMaxTextSize="16sp"
-            app:autoSizeStepGranularity="1sp"
-            app:cornerRadius="24dp"
-            app:backgroundTint="#0DBBCB"
-            app:insetLeft="0dp" app:insetRight="0dp" app:insetTop="0dp" app:insetBottom="0dp"
-            android:paddingHorizontal="12dp"/>
+            android:layout_weight="1"
+            android:text="Limpiar"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/tealSurfaceVariant"
+            app:cornerRadius="24dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnInfo"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_weight="1"
             android:layout_marginStart="6dp"
-            android:text="INFO."
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:singleLine="true"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="12sp"
-            app:autoSizeMaxTextSize="16sp"
-            app:autoSizeStepGranularity="1sp"
-            app:cornerRadius="24dp"
-            app:backgroundTint="#91c7de"
-            app:insetLeft="0dp" app:insetRight="0dp" app:insetTop="0dp" app:insetBottom="0dp"
-            android:paddingHorizontal="12dp"/>
+            android:layout_weight="1"
+            android:text="Info"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/tealLight"
+            app:cornerRadius="24dp" />
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
