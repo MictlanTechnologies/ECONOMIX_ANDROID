@@ -48,13 +48,13 @@ public class menu extends AppCompatActivity {
     private void setupListeners() {
         View.OnClickListener openSectionListener = view -> {
             if (view.getId() == R.id.tileIngresos) {
-                openSection(R.id.navigation_ingresos);
+                openSection(NavBar.DESTINATION_INGRESOS);
             } else if (view.getId() == R.id.tileAhorro) {
-                openSection(R.id.navigation_ahorro);
+                openSection(NavBar.DESTINATION_AHORRO);
             } else if (view.getId() == R.id.tileGraficas) {
-                openSection(R.id.navigation_graficas);
+                openSection(NavBar.DESTINATION_GRAFICAS);
             } else {
-                openSection(R.id.navigation_gastos);
+                openSection(NavBar.DESTINATION_GASTOS);
             }
         };
 
@@ -63,13 +63,12 @@ public class menu extends AppCompatActivity {
         tileAhorro.setOnClickListener(openSectionListener);
         tileGraficas.setOnClickListener(openSectionListener);
 
-        btnAyuda.setOnClickListener(v -> openSection(R.id.navigation_graficas));
-        btnPerfil.setOnClickListener(v -> openSection(R.id.navigation_gastos));
+        btnAyuda.setOnClickListener(v -> openSection(NavBar.DESTINATION_GRAFICAS));
+        btnPerfil.setOnClickListener(v -> openSection(NavBar.DESTINATION_USUARIO));
     }
 
     private void openSection(int destinationId) {
-        Intent intent = new Intent(menu.this, NavBar.class);
-        intent.putExtra(NavBar.EXTRA_DESTINATION_ID, destinationId);
+        Intent intent = NavBar.createIntent(menu.this, destinationId);
         startActivity(intent);
     }
 }

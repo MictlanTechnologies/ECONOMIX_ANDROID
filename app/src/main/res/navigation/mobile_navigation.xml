@@ -4,17 +4,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation">
 
+    <action
+        android:id="@+id/action_global_navigation_usuario"
+        app:destination="@id/navigation_usuario"
+        app:launchSingleTop="true" />
+
     <fragment
         android:id="@+id/navigation_gastos"
         android:name="com.example.economix_android.Model.gastos.gastosFragment"
         android:label="@string/title_gastos"
-        tools:layout="@layout/fragment_gastos" />
+        tools:layout="@layout/fragment_gastos">
+        <action
+            android:id="@+id/action_navigation_gastos_to_gastosInfoFragment"
+            app:destination="@id/gastosInfoFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/gastosInfoFragment"
+        android:name="com.example.economix_android.Model.gastos.gastosInfo"
+        android:label="@string/title_gastos"
+        tools:layout="@layout/fragment_gastos_info" />
 
     <fragment
         android:id="@+id/navigation_ingresos"
         android:name="com.example.economix_android.Model.ingresos.ingresosFragment"
         android:label="@string/title_ingresos"
-        tools:layout="@layout/fragment_ingresos" />
+        tools:layout="@layout/fragment_ingresos">
+        <action
+            android:id="@+id/action_navigation_ingresos_to_ingresosInfoFragment"
+            app:destination="@id/ingresosInfoFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/ingresosInfoFragment"
+        android:name="com.example.economix_android.Model.ingresos.ingresosInfo"
+        android:label="@string/title_ingresos"
+        tools:layout="@layout/fragment_ingresos_info" />
 
     <fragment
         android:id="@+id/navigation_ahorro"
@@ -26,5 +51,78 @@
         android:id="@+id/navigation_graficas"
         android:name="com.example.economix_android.Model.graficas.graficasMenu"
         android:label="@string/title_graficas"
-        tools:layout="@layout/fragment_graficas_menu" />
+        tools:layout="@layout/fragment_graficas_menu">
+        <action
+            android:id="@+id/action_navigation_graficas_to_graficasMenuGastos"
+            app:destination="@id/graficasMenuGastos" />
+        <action
+            android:id="@+id/action_navigation_graficas_to_graficasMenuIngresosVsGastos"
+            app:destination="@id/graficasMenuIngresosVsGastos" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/graficasMenuGastos"
+        android:name="com.example.economix_android.Model.graficas.gastos.graficasMenuGastos"
+        android:label="@string/title_graficas"
+        tools:layout="@layout/fragment_graficas_menu_gastos">
+        <action
+            android:id="@+id/action_graficasMenuGastos_to_graficaBarrasGastos"
+            app:destination="@id/graficaBarrasGastos" />
+        <action
+            android:id="@+id/action_graficasMenuGastos_to_graficaCircularGastos"
+            app:destination="@id/graficaCircularGastos" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/graficaBarrasGastos"
+        android:name="com.example.economix_android.Model.graficas.gastos.graficaBarrasGastos"
+        android:label="@string/title_graficas"
+        tools:layout="@layout/fragment_grafica_barras_gastos" />
+
+    <fragment
+        android:id="@+id/graficaCircularGastos"
+        android:name="com.example.economix_android.Model.graficas.gastos.graficaCircularGastos"
+        android:label="@string/title_graficas"
+        tools:layout="@layout/fragment_grafica_circular_gastos" />
+
+    <fragment
+        android:id="@+id/graficasMenuIngresosVsGastos"
+        android:name="com.example.economix_android.Model.graficas.IngresosVsGastos.graficasMenuIngresosVsGastos"
+        android:label="@string/title_graficas"
+        tools:layout="@layout/fragment_graficas_menu_ingresos_vs_gastos">
+        <action
+            android:id="@+id/action_graficasMenuIngresosVsGastos_to_graficaBarrasIngresosVsGastos"
+            app:destination="@id/graficaBarrasIngresosVsGastos" />
+        <action
+            android:id="@+id/action_graficasMenuIngresosVsGastos_to_graficaCircularIngresosVsGastos"
+            app:destination="@id/graficaCircularIngresosVsGastos" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/graficaBarrasIngresosVsGastos"
+        android:name="com.example.economix_android.Model.graficas.IngresosVsGastos.graficaBarrasIngreosVsGastos"
+        android:label="@string/title_graficas"
+        tools:layout="@layout/fragment_grafica_barras_ingreos_vs_gastos" />
+
+    <fragment
+        android:id="@+id/graficaCircularIngresosVsGastos"
+        android:name="com.example.economix_android.Model.graficas.IngresosVsGastos.graficaCircularIngresosVsGastos"
+        android:label="@string/title_graficas"
+        tools:layout="@layout/fragment_grafica_circular_ingresos_vs_gastos" />
+
+    <fragment
+        android:id="@+id/navigation_usuario"
+        android:name="com.example.economix_android.Model.usuario.usuario"
+        android:label="@string/title_activity_usuario"
+        tools:layout="@layout/fragment_usuario">
+        <action
+            android:id="@+id/action_navigation_usuario_to_usuario_info"
+            app:destination="@id/usuario_info" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/usuario_info"
+        android:name="com.example.economix_android.Model.usuario.usuario_info"
+        android:label="@string/title_activity_usuario"
+        tools:layout="@layout/fragment_usuario_info" />
 </navigation>
