@@ -28,11 +28,11 @@ public class gastosFragment extends Fragment {
 
         binding.btnVerGas.setOnClickListener(v ->
                 NavHostFragment.findNavController(this)
-                        .navigate(R.id.action_navigation_gastos_to_gastosInfoFragment));
+                        .navigate(R.id.navigation_gastos));
 
         binding.btnAyudaGas.setOnClickListener(v ->
                 NavHostFragment.findNavController(this)
-                        .navigate(R.id.action_navigation_gastos_to_gastosInfoFragment));
+                        .navigate(R.id.navigation_gastos));
 
         binding.btnPerfil.setOnClickListener(v ->
                 NavHostFragment.findNavController(this)

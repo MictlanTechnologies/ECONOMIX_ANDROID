@@ -28,11 +28,11 @@ public class ingresosFragment extends Fragment {
 
         binding.btnVerIng.setOnClickListener(v ->
                 NavHostFragment.findNavController(this)
-                        .navigate(R.id.action_navigation_ingresos_to_ingresosInfoFragment));
+                        .navigate(R.id.navigation_ingresos));
 
         binding.btnAyudaIng.setOnClickListener(v ->
                 NavHostFragment.findNavController(this)
-                        .navigate(R.id.action_navigation_ingresos_to_ingresosInfoFragment));
+                        .navigate(R.id.navigation_ingresos));
 
         binding.btnPerfil.setOnClickListener(v ->
                 NavHostFragment.findNavController(this)

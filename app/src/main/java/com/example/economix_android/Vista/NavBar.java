@@ -1,9 +1,11 @@
 package com.example.economix_android.Vista;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.IdRes;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -16,6 +18,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class NavBar extends AppCompatActivity {
 
     public static final String EXTRA_DESTINATION_ID = "com.example.economix_android.Vista.NavBar.DESTINATION_ID";
+
+    public static final int DESTINATION_GASTOS = R.id.navigation_gastos;
+    public static final int DESTINATION_INGRESOS = R.id.navigation_ingresos;
+    public static final int DESTINATION_AHORRO = R.id.navigation_ahorro;
+    public static final int DESTINATION_GRAFICAS = R.id.navigation_graficas;
+    public static final int DESTINATION_USUARIO = R.id.nav_host_fragment_usuario;
 
     private NavbarBinding binding;
 
@@ -46,6 +54,12 @@ public class NavBar extends AppCompatActivity {
                     : R.id.navigation_gastos;
             navView.setSelectedItemId(destinationId);
         }
+    }
+
+    public static Intent createIntent(Context context, @IdRes int destinationId) {
+        Intent intent = new Intent(context, NavBar.class);
+        intent.putExtra(EXTRA_DESTINATION_ID, destinationId);
+        return intent;
     }
 
 }

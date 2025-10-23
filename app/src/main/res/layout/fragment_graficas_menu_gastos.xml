@@ -68,8 +68,7 @@
         android:textSize="22sp"
         android:includeFontPadding="false"
         app:cornerRadius="28dp"
-        app:backgroundTint="#3E7774"
-        app:insetLeft="0dp" app:insetRight="0dp" app:insetTop="0dp" app:insetBottom="0dp"/>
+        app:backgroundTint="#3E7774"/>
 
     <!-- BOTÓN 2: Gráfica circular -->
     <com.google.android.material.button.MaterialButton
@@ -86,8 +85,7 @@
         android:textSize="22sp"
         android:includeFontPadding="false"
         app:cornerRadius="28dp"
-        app:backgroundTint="#3E7774"
-        app:insetLeft="0dp" app:insetRight="0dp" app:insetTop="0dp" app:insetBottom="0dp"/>
+        app:backgroundTint="#3E7774"/>
 
     <!-- Empuja el CTA al fondo -->
     <View
@@ -115,6 +113,5 @@
         app:autoSizeMaxTextSize="18sp"
         app:autoSizeStepGranularity="1sp"
         app:cornerRadius="20dp"
-        app:backgroundTint="#91c7de"
-        app:insetLeft="0dp" app:insetRight="0dp" app:insetTop="0dp" app:insetBottom="0dp"/>
+        app:backgroundTint="#91c7de"/>
 </LinearLayout>

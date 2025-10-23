@@ -30,11 +30,11 @@ public class graficasMenuGastos extends Fragment {
 
         binding.btnGraficaBarras.setOnClickListener(v ->
                 NavHostFragment.findNavController(this)
-                        .navigate(R.id.action_graficasMenuGastos_to_graficaBarrasGastos));
+                        .navigate(R.id.navigation_graficas));
 
         binding.btnGraficaCircular.setOnClickListener(v ->
                 NavHostFragment.findNavController(this)
-                        .navigate(R.id.action_graficasMenuGastos_to_graficaCircularGastos));
+                        .navigate(R.id.navigation_graficas));
 
         binding.btnPerfil.setOnClickListener(v ->
                 NavHostFragment.findNavController(this)
