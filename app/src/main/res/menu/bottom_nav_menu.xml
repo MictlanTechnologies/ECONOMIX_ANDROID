@@ -3,22 +3,22 @@
 
     <item
         android:id="@+id/navigation_gastos"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@drawable/gastosop2"
         android:title="@string/title_gastos" />
 
     <item
         android:id="@+id/navigation_ingresos"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/ingresos"
         android:title="@string/title_ingresos" />
 
     <item
         android:id="@+id/navigation_ahorro"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:icon="@drawable/ahorro_removebg_preview"
         android:title="@string/title_ahorro" />
 
     <item
         android:id="@+id/navigation_graficas"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:icon="@drawable/graficastexto"
         android:title="@string/title_graficas" />
 
 </menu>

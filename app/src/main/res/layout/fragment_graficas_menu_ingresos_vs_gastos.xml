@@ -48,7 +48,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="18dp"
-        android:text="Ingresos vs\nGasto"
+        android:text="Ingresos vs Gastos"
         android:textStyle="bold"
         android:textSize="34sp"
         android:textColor="@android:color/white"/>

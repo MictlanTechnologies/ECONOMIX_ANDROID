@@ -24,7 +24,7 @@
 
     <fragment
         android:id="@+id/navigation_graficas"
-        android:name="com.example.economix_android.Model.graficas.graficasFragment"
+        android:name="com.example.economix_android.Model.graficas.graficasMenu"
         android:label="@string/title_graficas"
-        tools:layout="@layout/fragment_graficas" />
+        tools:layout="@layout/fragment_graficas_menu" />
 </navigation>
