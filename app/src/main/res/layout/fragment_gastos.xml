@@ -1,247 +1,427 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_app_gradient"
-    android:layout_marginBottom="100dp"
     android:padding="20dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ImageButton
+        android:id="@+id/btnAyudaGas"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Ayuda"
+        android:src="@drawable/ayuda"
+        android:tint="@color/white"
+        tools:ignore="UseAppTint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnPerfil"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Perfil"
+        android:src="@drawable/usuario"
+        android:tint="@color/white"
+        tools:ignore="UseAppTint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtTitulo"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="32dp">
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Nuevo gasto"
+        android:textColor="@color/softWhite"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnAyudaGas" />
+
+    <TextView
+        android:id="@+id/tvGastoSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Registra tus egresos para mantener el control"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtTitulo" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollContent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@id/actionRow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvGastoSubtitle">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/btnAyudaGas"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Ayuda"
-                android:src="@drawable/ayuda"
-                tools:ignore="UseAppTint"
-                android:tint="@color/white" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <ImageButton
-                android:id="@+id/btnPerfil"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Perfil"
-                android:src="@drawable/usuario"
-                tools:ignore="UseAppTint"
-                android:tint="@color/white" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/txtTitulo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="sans-serif-medium"
-            android:layout_gravity="center"
-            android:text="Nuevo gasto"
-            android:textColor="@color/softWhite"
-            android:textSize="26sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvGastoSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_gravity="center"
-            android:text="Registra tus egresos para mantener el control"
-            android:textColor="@color/white"
-            android:textSize="14sp" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            app:cardBackgroundColor="@color/tealSurface"
-            app:cardCornerRadius="22dp"
-            app:cardElevation="4dp"
-            app:strokeColor="@color/tealLight"
-            app:strokeWidth="1dp">
-
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:layout_marginTop="0dp"
+                app:cardBackgroundColor="@color/tealSurface"
+                app:cardCornerRadius="22dp"
+                app:cardElevation="4dp"
+                app:strokeColor="@color/tealLight"
+                app:strokeWidth="1dp">
 
-                <com.google.android.material.textfield.TextInputLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:boxBackgroundColor="@color/softWhite"
-                    app:boxBackgroundMode="filled"
-                    app:boxCornerRadiusBottomEnd="20dp"
-                    app:boxCornerRadiusBottomStart="20dp"
-                    app:boxCornerRadiusTopEnd="20dp"
-                    app:boxCornerRadiusTopStart="20dp"
-                    app:boxStrokeColor="@color/tealAccent">
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etArticuloGas"
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Artículo"
-                        android:inputType="textCapSentences"
-                        android:textColor="@android:color/black"
-                        android:textColorHint="@android:color/darker_gray" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        app:boxBackgroundColor="@color/softWhite"
+                        app:boxBackgroundMode="filled"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/tealAccent">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    app:boxBackgroundColor="@color/softWhite"
-                    app:boxBackgroundMode="filled"
-                    app:boxCornerRadiusBottomEnd="20dp"
-                    app:boxCornerRadiusBottomStart="20dp"
-                    app:boxCornerRadiusTopEnd="20dp"
-                    app:boxCornerRadiusTopStart="20dp"
-                    app:boxStrokeColor="@color/tealAccent">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etArticuloGas"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Artículo"
+                            android:inputType="textCapSentences"
+                            android:textColor="@android:color/black"
+                            android:textColorHint="@android:color/darker_gray" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etDescripcionGas"
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Descripción"
-                        android:inputType="textCapSentences"
-                        android:textColor="@android:color/black"
-                        android:textColorHint="@android:color/darker_gray" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_marginTop="16dp"
+                        app:boxBackgroundColor="@color/softWhite"
+                        app:boxBackgroundMode="filled"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/tealAccent">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    app:boxBackgroundColor="@color/softWhite"
-                    app:boxBackgroundMode="filled"
-                    app:boxCornerRadiusBottomEnd="20dp"
-                    app:boxCornerRadiusBottomStart="20dp"
-                    app:boxCornerRadiusTopEnd="20dp"
-                    app:boxCornerRadiusTopStart="20dp"
-                    app:boxStrokeColor="@color/tealAccent">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etDescripcionGas"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Descripción"
+                            android:inputType="textCapSentences"
+                            android:textColor="@android:color/black"
+                            android:textColorHint="@android:color/darker_gray" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etFechaGas"
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false"
-                        android:hint="Fecha"
-                        android:inputType="date"
-                        android:textColor="@android:color/black"
-                        android:textColorHint="@android:color/darker_gray" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_marginTop="16dp"
+                        app:boxBackgroundColor="@color/softWhite"
+                        app:boxBackgroundMode="filled"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/tealAccent">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    app:boxBackgroundColor="@color/softWhite"
-                    app:boxBackgroundMode="filled"
-                    app:boxCornerRadiusBottomEnd="20dp"
-                    app:boxCornerRadiusBottomStart="20dp"
-                    app:boxCornerRadiusTopEnd="20dp"
-                    app:boxCornerRadiusTopStart="20dp"
-                    app:boxStrokeColor="@color/tealAccent">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etFechaGas"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:hint="Fecha"
+                            android:inputType="date"
+                            android:textColor="@android:color/black"
+                            android:textColorHint="@android:color/darker_gray" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPeriodoGas"
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Periodo"
-                        android:inputType="text"
-                        android:textColor="@android:color/black"
-                        android:textColorHint="@android:color/darker_gray" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_marginTop="16dp"
+                        app:boxBackgroundColor="@color/softWhite"
+                        app:boxBackgroundMode="filled"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/tealAccent">
 
-                <RadioButton
-                    android:id="@+id/rbRecurrenteGas"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="Gasto recurrente"
-                    android:textAllCaps="false"
-                    android:textColor="@color/softWhite"
-                    android:textSize="14sp"
-                    android:buttonTint="@color/goldAccent" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etPeriodoGas"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Periodo"
+                            android:inputType="text"
+                            android:textColor="@android:color/black"
+                            android:textColorHint="@android:color/darker_gray" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="3">
+                    <RadioButton
+                        android:id="@+id/rbRecurrenteGas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:buttonTint="@color/goldAccent"
+                        android:text="Gasto recurrente"
+                        android:textAllCaps="false"
+                        android:textColor="@color/softWhite"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnGuardarGas"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="6dp"
-                android:layout_weight="1"
-                android:text="Guardar"
+                android:id="@+id/btnVerGas"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="24dp"
+                android:text="Ver registros"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                app:backgroundTint="@color/tealAccent"
-                app:cornerRadius="24dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnEliminarGas"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginHorizontal="6dp"
-                android:layout_weight="1"
-                android:text="Eliminar"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                app:backgroundTint="@color/tealSurfaceVariant"
-                app:cornerRadius="24dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnLimpiarGas"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="6dp"
-                android:layout_weight="1"
-                android:text="Limpiar"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                app:backgroundTint="@color/tealLight"
+                app:backgroundTint="@color/tealSurface"
                 app:cornerRadius="24dp" />
         </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/actionRow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        app:layout_constraintBottom_toTopOf="@id/bottomBarContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnVerGas"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="24dp"
-            android:text="Ver registros"
+            android:id="@+id/btnGuardarGas"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:text="Guardar"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            app:backgroundTint="@color/tealSurface"
+            app:backgroundTint="@color/tealAccent"
+            app:cornerRadius="24dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEliminarGas"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="6dp"
+            android:layout_weight="1"
+            android:text="Eliminar"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/tealSurfaceVariant"
+            app:cornerRadius="24dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLimpiarGas"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:text="Limpiar"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/tealLight"
             app:cornerRadius="24dp" />
     </LinearLayout>
 
-</androidx.core.widget.NestedScrollView>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/bottomBarContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="4dp"
+        android:layout_marginBottom="12dp"
+        android:clipToPadding="false"
+        android:padding="12dp"
+        app:cardBackgroundColor="@color/tealSurfaceVariant"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:showDividers="none">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/navGastos"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                app:cardBackgroundColor="@color/tealSurface"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/tealAccent"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:minHeight="72dp"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:contentDescription="GASTOS"
+                        android:src="@drawable/gastosop2"
+                        android:tint="@color/white"
+                        tools:ignore="UseAppTint" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:letterSpacing="0.05"
+                        android:text="GASTOS"
+                        android:textColor="@color/white"
+                        android:textSize="9sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/navIngresos"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                app:cardBackgroundColor="@color/tealSurface"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/tealAccent"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:minHeight="72dp"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp">
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:contentDescription="Ingresos"
+                        android:src="@drawable/ingresosconletras"
+                        android:tint="@color/white"
+                        tools:ignore="UseAppTint" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/navAhorro"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                app:cardBackgroundColor="@color/tealSurface"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/tealAccent"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:minHeight="72dp"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp">
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:contentDescription="Ahorro"
+                        android:src="@drawable/ahorrotexto"
+                        android:tint="@color/white"
+                        tools:ignore="UseAppTint" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/navGraficas"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                app:cardBackgroundColor="@color/tealSurface"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/tealAccent"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:minHeight="72dp"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp">
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:contentDescription="Gráficas"
+                        android:src="@drawable/graficastexto"
+                        android:tint="@color/white"
+                        tools:ignore="UseAppTint" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

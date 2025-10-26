@@ -6,7 +6,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:background="#143B39"
-    android:layout_marginBottom="100dp"
     android:padding="16dp">
 
     <!-- Barra superior -->

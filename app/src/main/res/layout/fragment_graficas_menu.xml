@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_app_gradient"
-    android:layout_marginBottom="100dp"
     android:padding="20dp">
 
     <ImageButton

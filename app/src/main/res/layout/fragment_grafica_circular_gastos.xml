@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="#143B39"
     android:paddingBottom="24dp"
-    android:layout_marginBottom="100dp"
     tools:context=".Model.graficas.gastos.graficaCircularGastos">
 
     <com.google.android.material.card.MaterialCardView
