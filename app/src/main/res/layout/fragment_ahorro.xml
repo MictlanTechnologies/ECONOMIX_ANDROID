@@ -257,13 +257,13 @@
         android:id="@+id/bottomBarContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="4dp"
-        android:layout_marginBottom="12dp"
-        android:clipToPadding="false"
-        android:padding="12dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="24dp"
         app:cardBackgroundColor="@color/tealSurfaceVariant"
         app:cardCornerRadius="32dp"
-        app:cardElevation="12dp"
+        app:cardElevation="8dp"
+        app:strokeColor="@color/softWhite"
+        app:strokeWidth="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -272,156 +272,115 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginVertical="10dp"
             android:orientation="horizontal"
-            android:showDividers="none">
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="16dp">
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/navGastos"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                app:cardBackgroundColor="@color/tealSurface"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/tealAccent"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:minHeight="72dp"
-                    android:orientation="vertical"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="8dp">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:contentDescription="GASTOS"
-                        android:src="@drawable/gastosop2"
-                        android:tint="@color/white"
-                        tools:ignore="UseAppTint" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="0dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:letterSpacing="0.05"
-                        android:text="GASTOS"
-                        android:textColor="@color/white"
-                        android:textSize="9sp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/navIngresos"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                app:cardBackgroundColor="@color/tealSurface"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/tealAccent"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:minHeight="72dp"
-                    android:orientation="vertical"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="8dp">
-
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:contentDescription="Ingresos"
-                        android:src="@drawable/ingresosconletras"
-                        android:tint="@color/white"
-                        tools:ignore="UseAppTint" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/navAhorro"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                app:cardBackgroundColor="@color/tealSurface"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/tealAccent"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:minHeight="72dp"
-                    android:orientation="vertical"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="8dp">
-
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:contentDescription="Ahorro"
-                        android:src="@drawable/ahorrotexto"
-                        android:tint="@color/white"
-                        tools:ignore="UseAppTint" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/navGraficas"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                app:cardBackgroundColor="@color/tealSurface"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/tealAccent"
-                app:strokeWidth="1dp">
+                android:gravity="center"
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:minHeight="72dp"
-                    android:orientation="vertical"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="8dp">
+                <ImageButton
+                    android:id="@+id/navGastos"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bottom_nav_icon_background"
+                    android:contentDescription="Gastos"
+                    android:padding="14dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/gastosop2texto"
+                    android:tint="@color/white"
+                    tools:ignore="UseAppTint" />
 
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:contentDescription="Gráficas"
-                        android:src="@drawable/graficastexto"
-                        android:tint="@color/white"
-                        tools:ignore="UseAppTint" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="6dp"
+                android:alpha="0.3"
+                android:background="@color/softWhite" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/navIngresos"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bottom_nav_icon_background"
+                    android:contentDescription="Ingresos"
+                    android:padding="14dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ingresosconletras"
+                    android:tint="@color/white"
+                    tools:ignore="UseAppTint" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="6dp"
+                android:alpha="0.3"
+                android:background="@color/softWhite" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/navAhorro"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bottom_nav_icon_background"
+                    android:contentDescription="Ahorro"
+                    android:padding="14dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ahorrotexto"
+                    android:tint="@color/white"
+                    tools:ignore="UseAppTint" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="6dp"
+                android:alpha="0.3"
+                android:background="@color/softWhite" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/navGraficas"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bottom_nav_icon_background"
+                    android:contentDescription="Gráficas"
+                    android:padding="14dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/graficastexto"
+                    android:tint="@color/white"
+                    tools:ignore="UseAppTint" />
+
+            </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
