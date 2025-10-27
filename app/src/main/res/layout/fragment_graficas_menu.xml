@@ -78,13 +78,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:minHeight="120dp"
+            app:strokeColor="@color/economix_accent"
+            app:strokeWidth="2dp"
             android:padding="24dp"
             android:text="Gastos por categoría"
             android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:textColor="@color/softWhite"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:backgroundTint="@color/tealSurface"
+            app:backgroundTint="@android:color/transparent"
             app:cornerRadius="28dp" />
 
         <com.google.android.material.button.MaterialButton
@@ -95,12 +97,14 @@
             android:layout_marginTop="20dp"
             android:minHeight="120dp"
             android:padding="24dp"
+            app:strokeColor="@color/economix_accent"
+            app:strokeWidth="2dp"
             android:text="Ingresos vs Gastos"
             android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:textColor="@color/softWhite"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:backgroundTint="@color/tealSurface"
+            app:backgroundTint="@android:color/transparent"
             app:cornerRadius="28dp" />
     </LinearLayout>
 

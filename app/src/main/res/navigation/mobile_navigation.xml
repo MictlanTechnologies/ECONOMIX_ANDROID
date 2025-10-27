@@ -2,29 +2,224 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation">
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/menu">
 
     <fragment
         android:id="@+id/navigation_gastos"
         android:name="com.example.economix_android.Model.gastos.gastosFragment"
         android:label="@string/title_gastos"
-        tools:layout="@layout/fragment_gastos" />
+        tools:layout="@layout/fragment_gastos" >
+        <action
+            android:id="@+id/action_navigation_gastos_to_gastosInfo"
+            app:destination="@id/gastosInfo" />
+        <action
+            android:id="@+id/action_navigation_gastos_to_navigation_graficas"
+            app:destination="@id/navigation_graficas" />
+        <action
+            android:id="@+id/action_navigation_gastos_to_navigation_ahorro"
+            app:destination="@id/navigation_ahorro" />
+        <action
+            android:id="@+id/action_navigation_gastos_to_navigation_ingresos"
+            app:destination="@id/navigation_ingresos" />
+        <action
+            android:id="@+id/action_navigation_gastos_to_usuario"
+            app:destination="@id/usuario" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_ingresos"
         android:name="com.example.economix_android.Model.ingresos.ingresosFragment"
         android:label="@string/title_ingresos"
-        tools:layout="@layout/fragment_ingresos" />
+        tools:layout="@layout/fragment_ingresos" >
+        <action
+            android:id="@+id/action_navigation_ingresos_to_ingresosInfo"
+            app:destination="@id/ingresosInfo" />
+        <action
+            android:id="@+id/action_navigation_ingresos_to_navigation_graficas"
+            app:destination="@id/navigation_graficas" />
+        <action
+            android:id="@+id/action_navigation_ingresos_to_navigation_ahorro"
+            app:destination="@id/navigation_ahorro" />
+        <action
+            android:id="@+id/action_navigation_ingresos_to_navigation_gastos"
+            app:destination="@id/navigation_gastos" />
+        <action
+            android:id="@+id/action_navigation_ingresos_to_usuario"
+            app:destination="@id/usuario" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_ahorro"
         android:name="com.example.economix_android.Model.ahorro.ahorroFragment"
         android:label="@string/title_ahorro"
-        tools:layout="@layout/fragment_ahorro" />
+        tools:layout="@layout/fragment_ahorro" >
+        <action
+            android:id="@+id/action_navigation_ahorro_to_navigation_graficas"
+            app:destination="@id/navigation_graficas" />
+        <action
+            android:id="@+id/action_navigation_ahorro_to_navigation_gastos"
+            app:destination="@id/navigation_gastos" />
+        <action
+            android:id="@+id/action_navigation_ahorro_to_usuario"
+            app:destination="@id/usuario" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_graficas"
         android:name="com.example.economix_android.Model.graficas.graficasMenu"
         android:label="@string/title_graficas"
-        tools:layout="@layout/fragment_graficas_menu" />
+        tools:layout="@layout/fragment_graficas_menu" >
+        <action
+            android:id="@+id/action_navigation_graficas_to_menu"
+            app:destination="@id/menu" />
+        <action
+            android:id="@+id/action_navigation_graficas_to_graficasMenuGastos"
+            app:destination="@id/graficasMenuGastos" />
+        <action
+            android:id="@+id/action_navigation_graficas_to_graficasMenuIngresosVsGastos"
+            app:destination="@id/graficasMenuIngresosVsGastos" />
+        <action
+            android:id="@+id/action_navigation_graficas_to_usuario"
+            app:destination="@id/usuario" />
+    </fragment>
+    <fragment
+        android:id="@+id/menu"
+        android:name="com.example.economix_android.menu"
+        android:label="menu" >
+        <action
+            android:id="@+id/action_menu_to_navigation_gastos"
+            app:destination="@id/navigation_gastos" />
+        <action
+            android:id="@+id/action_menu_to_navigation_ahorro"
+            app:destination="@id/navigation_ahorro" />
+        <action
+            android:id="@+id/action_menu_to_navigation_ingresos"
+            app:destination="@id/navigation_ingresos" />
+        <action
+            android:id="@+id/action_menu_to_navigation_graficas"
+            app:destination="@id/navigation_graficas" />
+        <action
+            android:id="@+id/action_menu_to_usuario"
+            app:destination="@id/usuario" />
+    </fragment>
+    <fragment
+        android:id="@+id/gastosInfo"
+        android:name="com.example.economix_android.Model.gastos.gastosInfo"
+        android:label="gastosInfo" >
+        <action
+            android:id="@+id/action_gastosInfo_to_navigation_gastos"
+            app:destination="@id/navigation_gastos" />
+        <action
+            android:id="@+id/action_gastosInfo_to_usuario"
+            app:destination="@id/usuario" />
+    </fragment>
+    <fragment
+        android:id="@+id/ingresosInfo"
+        android:name="com.example.economix_android.Model.ingresos.ingresosInfo"
+        android:label="ingresosInfo" >
+        <action
+            android:id="@+id/action_ingresosInfo_to_navigation_ingresos"
+            app:destination="@id/navigation_ingresos" />
+        <action
+            android:id="@+id/action_ingresosInfo_to_usuario"
+            app:destination="@id/usuario" />
+    </fragment>
+    <fragment
+        android:id="@+id/graficasMenuGastos"
+        android:name="com.example.economix_android.Model.graficas.gastos.graficasMenuGastos"
+        android:label="graficasMenuGastos" >
+        <action
+            android:id="@+id/action_graficasMenuGastos_to_navigation_graficas"
+            app:destination="@id/navigation_graficas" />
+        <action
+            android:id="@+id/action_graficasMenuGastos_to_graficaCircularGastos"
+            app:destination="@id/graficaCircularGastos" />
+        <action
+            android:id="@+id/action_graficasMenuGastos_to_graficaBarrasGastos"
+            app:destination="@id/graficaBarrasGastos" />
+        <action
+            android:id="@+id/action_graficasMenuGastos_to_usuario"
+            app:destination="@id/usuario" />
+    </fragment>
+    <fragment
+        android:id="@+id/graficasMenuIngresosVsGastos"
+        android:name="com.example.economix_android.Model.graficas.IngresosVsGastos.graficasMenuIngresosVsGastos"
+        android:label="graficasMenuIngresosVsGastos" >
+        <action
+            android:id="@+id/action_graficasMenuIngresosVsGastos_to_navigation_graficas"
+            app:destination="@id/navigation_graficas" />
+        <action
+            android:id="@+id/action_graficasMenuIngresosVsGastos_to_graficaCircularIngresosVsGastos"
+            app:destination="@id/graficaCircularIngresosVsGastos" />
+        <action
+            android:id="@+id/action_graficasMenuIngresosVsGastos_to_graficaBarrasIngreosVsGastos"
+            app:destination="@id/graficaBarrasIngreosVsGastos" />
+        <action
+            android:id="@+id/action_graficasMenuIngresosVsGastos_to_usuario"
+            app:destination="@id/usuario" />
+    </fragment>
+    <fragment
+        android:id="@+id/graficaCircularIngresosVsGastos"
+        android:name="com.example.economix_android.Model.graficas.IngresosVsGastos.graficaCircularIngresosVsGastos"
+        android:label="fragment_grafica_barras_gastos"
+        tools:layout="@layout/fragment_grafica_barras_gastos" >
+        <action
+            android:id="@+id/action_graficaCircularIngresosVsGastos_to_graficasMenuIngresosVsGastos"
+            app:destination="@id/graficasMenuIngresosVsGastos" />
+        <action
+            android:id="@+id/action_graficaCircularIngresosVsGastos_to_usuario"
+            app:destination="@id/usuario" />
+    </fragment>
+    <fragment
+        android:id="@+id/graficaBarrasIngreosVsGastos"
+        android:name="com.example.economix_android.Model.graficas.IngresosVsGastos.graficaBarrasIngreosVsGastos"
+        android:label="fragment_grafica_barras_ingreos_vs_gastos"
+        tools:layout="@layout/fragment_grafica_barras_ingreos_vs_gastos" >
+        <action
+            android:id="@+id/action_graficaBarrasIngreosVsGastos_to_graficasMenuIngresosVsGastos"
+            app:destination="@id/graficasMenuIngresosVsGastos" />
+        <action
+            android:id="@+id/action_graficaBarrasIngreosVsGastos_to_usuario"
+            app:destination="@id/usuario" />
+    </fragment>
+    <fragment
+        android:id="@+id/graficaCircularGastos"
+        android:name="com.example.economix_android.Model.graficas.gastos.graficaCircularGastos"
+        android:label="fragment_grafica_circular_gastos"
+        tools:layout="@layout/fragment_grafica_circular_gastos" >
+        <action
+            android:id="@+id/action_graficaCircularGastos_to_graficasMenuGastos"
+            app:destination="@id/graficasMenuGastos" />
+        <action
+            android:id="@+id/action_graficaCircularGastos_to_usuario"
+            app:destination="@id/usuario" />
+    </fragment>
+    <fragment
+        android:id="@+id/graficaBarrasGastos"
+        android:name="com.example.economix_android.Model.graficas.gastos.graficaBarrasGastos"
+        android:label="graficaBarrasGastos" >
+        <action
+            android:id="@+id/action_graficaBarrasGastos_to_graficasMenuGastos"
+            app:destination="@id/graficasMenuGastos" />
+        <action
+            android:id="@+id/action_graficaBarrasGastos_to_usuario"
+            app:destination="@id/usuario" />
+    </fragment>
+    <fragment
+        android:id="@+id/usuario"
+        android:name="com.example.economix_android.Model.usuario.usuario"
+        android:label="usuario" >
+        <action
+            android:id="@+id/action_usuario_to_usuario_info"
+            app:destination="@id/usuario_info" />
+    </fragment>
+    <fragment
+        android:id="@+id/usuario_info"
+        android:name="com.example.economix_android.Model.usuario.usuario_info"
+        android:label="usuario_info" >
+        <action
+            android:id="@+id/action_usuario_info_to_usuario"
+            app:destination="@id/usuario" />
+    </fragment>
 </navigation>
