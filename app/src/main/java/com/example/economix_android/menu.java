@@ -36,6 +36,15 @@ public class menu extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Navigation.findNavController(v).navigate(R.id.navigation_gastos);
+        int viewId = v.getId();
+        if (viewId == R.id.gastoFr) {
+            Navigation.findNavController(v).navigate(R.id.action_menu_to_navigation_gastos);
+        } else if (viewId == R.id.ingresoFr) {
+            Navigation.findNavController(v).navigate(R.id.action_menu_to_navigation_ingresos);
+        } else if (viewId == R.id.ahorroFr) {
+            Navigation.findNavController(v).navigate(R.id.action_menu_to_navigation_ahorro);
+        } else if (viewId == R.id.graficasFr) {
+            Navigation.findNavController(v).navigate(R.id.action_menu_to_navigation_graficas);
+        }
     }
 }
