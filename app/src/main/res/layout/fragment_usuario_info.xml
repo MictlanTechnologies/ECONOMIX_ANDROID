@@ -398,7 +398,7 @@
                     android:contentDescription="Gráficas"
                     android:padding="14dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/graficastexto"
+                    android:src="@drawable/graficastexto1"
                     android:tint="@color/white"
                     tools:ignore="UseAppTint" />
             </LinearLayout>

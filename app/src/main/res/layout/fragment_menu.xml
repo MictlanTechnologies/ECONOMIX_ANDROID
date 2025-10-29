@@ -9,8 +9,6 @@
     android:background="@drawable/bg_app_gradient"
     android:padding="20dp">
 
-    <!-- (QUITADO el FragmentContainerView que tenía la Activity) -->
-
     <ImageButton
         android:id="@+id/btnAyuda"
         android:layout_width="50dp"
@@ -105,11 +103,13 @@
                     android:orientation="vertical"
                     android:padding="24dp">
 
-                    <ImageView
+                    <ImageButton
                         android:layout_width="120dp"
                         android:layout_height="120dp"
+                        android:id="@+id/gastoFr"
+                        android:background="@drawable/bottom_nav_icon_background"
                         android:contentDescription="Acceso a gastos"
-                        android:src="@drawable/gastosop2texto"
+                        android:src="@drawable/gastosop2texto2"
                         android:tint="@color/white"
                         tools:ignore="UseAppTint"/>
                 </LinearLayout>
@@ -136,9 +136,11 @@
                     android:orientation="vertical"
                     android:padding="24dp">
 
-                    <ImageView
+                    <ImageButton
                         android:layout_width="120dp"
                         android:layout_height="120dp"
+                        android:id="@+id/ingresoFr"
+                        android:background="@drawable/bottom_nav_icon_background"
                         android:contentDescription="Acceso a ingresos"
                         android:src="@drawable/ingresosconletras"
                         android:tint="@color/white"
@@ -176,11 +178,13 @@
                     android:orientation="vertical"
                     android:padding="24dp">
 
-                    <ImageView
+                    <ImageButton
                         android:layout_width="120dp"
                         android:layout_height="120dp"
+                        android:id="@+id/ahorroFr"
+                        android:background="@drawable/bottom_nav_icon_background"
                         android:contentDescription="Acceso al ahorro"
-                        android:src="@drawable/ahorrotexto"
+                        android:src="@drawable/ahorrotexto2"
                         android:tint="@color/white"
                         tools:ignore="UseAppTint"/>
                 </LinearLayout>
@@ -207,11 +211,13 @@
                     android:orientation="vertical"
                     android:padding="24dp">
 
-                    <ImageView
+                    <ImageButton
                         android:layout_width="120dp"
                         android:layout_height="120dp"
+                        android:id="@+id/graficasFr"
+                        android:background="@drawable/bottom_nav_icon_background"
                         android:contentDescription="Acceso a las gráficas"
-                        android:src="@drawable/graficastexto"
+                        android:src="@drawable/graficastexto2"
                         android:tint="@color/white"
                         tools:ignore="UseAppTint"/>
                 </LinearLayout>

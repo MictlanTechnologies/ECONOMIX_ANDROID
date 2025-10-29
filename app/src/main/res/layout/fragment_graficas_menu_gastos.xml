@@ -95,7 +95,7 @@
                         android:layout_height="64dp"
                         android:layout_gravity="center_horizontal"
                         android:contentDescription="Ilustración gráfica"
-                        android:background="@drawable/graficastexto"
+                        android:background="@drawable/graficastexto1"
                         android:backgroundTint="@color/economix_accent"
                         tools:ignore="UseAppTint" />
 
@@ -129,7 +129,7 @@
                         android:textStyle="bold"
                         app:backgroundTint="@color/tealSurfaceVariant"
                         app:cornerRadius="20dp"
-                        app:icon="@drawable/gastosop1"
+                        app:icon="@drawable/graficastexto1"
                         app:iconGravity="textStart"
                         app:iconPadding="16dp"
                         app:iconSize="32dp" />
@@ -157,7 +157,7 @@
                         android:layout_height="64dp"
                         android:layout_gravity="center_horizontal"
                         android:contentDescription="Ilustración gráfica"
-                        android:src="@drawable/GraficaCircular"
+                        android:src="@drawable/graficacircular"
                         android:tint="@color/goldAccent"
                         tools:ignore="UseAppTint" />
 
@@ -191,7 +191,7 @@
                         android:textStyle="bold"
                         app:backgroundTint="@color/tealSurfaceVariant"
                         app:cornerRadius="20dp"
-                        app:icon="@drawable/gastosop2"
+                        app:icon="@drawable/graficacircular"
                         app:iconGravity="textStart"
                         app:iconPadding="16dp"
                         app:iconSize="32dp" />

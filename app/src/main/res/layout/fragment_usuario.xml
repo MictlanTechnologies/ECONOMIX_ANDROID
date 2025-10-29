@@ -91,23 +91,23 @@
             android:id="@+id/btnGuardar"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_marginEnd="6dp"
             android:layout_weight="1"
+            android:layout_marginEnd="6dp"
             android:text="GUARDAR"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:includeFontPadding="false"
             android:singleLine="true"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:paddingHorizontal="0dp"
+            android:paddingVertical="0dp"
             app:autoSizeTextType="uniform"
             app:autoSizeMinTextSize="12sp"
             app:autoSizeMaxTextSize="16sp"
             app:autoSizeStepGranularity="1sp"
             app:backgroundTint="@color/tealAccent"
-            app:cornerRadius="24dp"
-            app:insetLeft="0dp"
-            app:insetRight="0dp"
-            app:insetTop="0dp"
-            app:insetBottom="0dp" />
+            app:cornerRadius="24dp"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLimpiar"
@@ -120,16 +120,17 @@
             android:textColor="@color/white"
             android:includeFontPadding="false"
             android:singleLine="true"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:paddingHorizontal="0dp"
+            android:paddingVertical="0dp"
             app:autoSizeTextType="uniform"
             app:autoSizeMinTextSize="12sp"
             app:autoSizeMaxTextSize="16sp"
             app:autoSizeStepGranularity="1sp"
             app:backgroundTint="@color/tealSurfaceVariant"
-            app:cornerRadius="24dp"
-            app:insetLeft="0dp"
-            app:insetRight="0dp"
-            app:insetTop="0dp"
-            app:insetBottom="0dp" />
+            app:cornerRadius="24dp" />
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnInfo"
@@ -142,16 +143,17 @@
             android:textColor="@color/white"
             android:includeFontPadding="false"
             android:singleLine="true"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:paddingHorizontal="0dp"
+            android:paddingVertical="0dp"
             app:autoSizeTextType="uniform"
             app:autoSizeMinTextSize="12sp"
             app:autoSizeMaxTextSize="16sp"
             app:autoSizeStepGranularity="1sp"
             app:backgroundTint="@color/tealLight"
-            app:cornerRadius="24dp"
-            app:insetLeft="0dp"
-            app:insetRight="0dp"
-            app:insetTop="0dp"
-            app:insetBottom="0dp" />
+            app:cornerRadius="24dp" />
+
     </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView
@@ -273,7 +275,7 @@
                     android:contentDescription="Gráficas"
                     android:padding="14dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/graficastexto"
+                    android:src="@drawable/graficastexto1"
                     android:tint="@color/white"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
