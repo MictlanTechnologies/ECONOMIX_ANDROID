@@ -1,5 +1,6 @@
 package com.example.economix_android.auth;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.economix_android.databinding.FragmentInicioSesionBinding;
+import com.example.economix_android.Vista.menu;
 
 public class inicio_sesionFragment extends Fragment {
 
@@ -28,6 +30,11 @@ public class inicio_sesionFragment extends Fragment {
         binding.btnBack.setOnClickListener(v -> requireActivity()
                 .getOnBackPressedDispatcher()
                 .onBackPressed());
+        binding.btnSignIn.setOnClickListener(v -> {
+            Intent menuIntent = new Intent(requireContext(), menu.class);
+            startActivity(menuIntent);
+            requireActivity().finish();
+        });
     }
 
     @Override

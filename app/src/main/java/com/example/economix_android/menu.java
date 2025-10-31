@@ -27,11 +27,13 @@ public class menu extends Fragment implements View.OnClickListener {
         ImageButton ingresosButton = view.findViewById(R.id.ingresoFr);
         ImageButton ahorroButton = view.findViewById(R.id.ahorroFr);
         ImageButton graficasButton = view.findViewById(R.id.graficasFr);
+        ImageButton perfilButton = view.findViewById(R.id.btnPerfil);
 
         gastosButton.setOnClickListener(this);
         ingresosButton.setOnClickListener(this);
         ahorroButton.setOnClickListener(this);
         graficasButton.setOnClickListener(this);
+        perfilButton.setOnClickListener(this);
     }
 
     @Override
@@ -45,6 +47,8 @@ public class menu extends Fragment implements View.OnClickListener {
             Navigation.findNavController(v).navigate(R.id.action_menu_to_navigation_ahorro);
         } else if (viewId == R.id.graficasFr) {
             Navigation.findNavController(v).navigate(R.id.action_menu_to_navigation_graficas);
+        } else if (viewId == R.id.btnPerfil) {
+            Navigation.findNavController(v).navigate(R.id.action_menu_to_usuario);
         }
     }
 }

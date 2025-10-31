@@ -103,6 +103,9 @@
         <action
             android:id="@+id/action_menu_to_usuario"
             app:destination="@id/usuario" />
+        <action
+            android:id="@+id/action_menu_to_usuario2"
+            app:destination="@id/usuario" />
     </fragment>
     <fragment
         android:id="@+id/gastosInfo"

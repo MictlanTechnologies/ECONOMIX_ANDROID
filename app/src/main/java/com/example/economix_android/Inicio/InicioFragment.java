@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.economix_android.R;
@@ -27,12 +28,11 @@ public class InicioFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        final NavController navController = Navigation.findNavController(view);
         binding.inicioSesion.setOnClickListener(v ->
-                Navigation.findNavController(v)
-                        .navigate(R.id.action_inicioFragment_to_inicioSesionFragment));
+                navController.navigate(R.id.action_inicioFragment_to_inicioSesionFragment));
         binding.registrarse.setOnClickListener(v ->
-                Navigation.findNavController(v)
-                        .navigate(R.id.action_inicioFragment_to_registroFragment));
+                navController.navigate(R.id.action_inicioFragment_to_registroFragment));
     }
 
     @Override
