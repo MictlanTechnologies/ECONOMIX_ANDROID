@@ -133,7 +133,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Descripción"
-                            android:inputType="textCapSentences"
+                            android:digits="0123456789.,"
+                            android:inputType="numberDecimal"
                             android:textColor="@android:color/black"
                             android:textColorHint="@android:color/darker_gray" />
                     </com.google.android.material.textfield.TextInputLayout>

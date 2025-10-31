@@ -15,14 +15,20 @@
     <string name="title_ahorro">Ahorro</string>
     <string name="title_graficas">Graficas</string>
     <string name="title_gastos_por_categoria">Gastos por categoría</string>
+    <string name="title_gastos_por_periodo">Gastos por periodo</string>
     <string name="action_back">Volver</string>
     <string name="desc_pie_chart_ingresos_vs_gastos">Gráfica circular de ingresos versus gastos</string>
-    <string name="desc_bar_chart_gastos">Gráfica de barras de gastos por categoría</string>
+    <string name="desc_bar_chart_gastos">Gráfica de barras de gastos por periodo</string>
     <string name="desc_bar_chart_ingresos_vs_gastos">Gráfica de barras de ingresos versus gastos</string>
-    <string name="label_element_1">Elemento 1</string>
-    <string name="label_element_2">Elemento 2</string>
-    <string name="label_element_3">Elemento 3</string>
-    <string name="label_element_4">Elemento 4</string>
+    <string name="label_element_1">Ingresos</string>
+    <string name="label_element_2">Gastos</string>
+    <string name="label_element_3" translatable="false"></string>
+    <string name="label_element_4" translatable="false"></string>
+    <string name="label_ingresos">Ingresos</string>
+    <string name="label_gastos">Gastos</string>
+    <string name="label_periodo_sin_definir">Sin periodo</string>
+    <string name="label_categoria_sin_definir">Sin categoría</string>
+    <string name="chart_empty_ingresos_vs_gastos">Aún no hay ingresos ni gastos para graficar.</string>
     <string name="desc_help">Abrir ayuda</string>
     <string name="desc_profile">Ver perfil de usuario</string>
     <string name="desc_pie_chart">Gráfica circular de gastos por categoría</string>
@@ -38,12 +44,14 @@
     <string name="titulo_ayuda_ingresos">Registro de ingresos</string>
     <string name="mensaje_ayuda_ingresos">Completa los campos para guardar un nuevo ingreso. Marca la casilla si se repite cada periodo.</string>
     <string name="error_campos_obligatorios_ingreso">Completa artículo, fecha y periodo para guardar.</string>
+    <string name="error_monto_ingreso_invalido">Ingresa un monto numérico válido en la descripción.</string>
     <string name="mensaje_ingreso_guardado">Ingreso guardado correctamente.</string>
     <string name="mensaje_ingreso_eliminado">Se eliminó el último ingreso guardado.</string>
     <string name="error_sin_ingresos">No hay ingresos registrados todavía.</string>
     <string name="titulo_ayuda_gastos">Registro de gastos</string>
     <string name="mensaje_ayuda_gastos">Completa la información del gasto y marca la casilla si es recurrente para verlo en la lista correspondiente.</string>
     <string name="error_campos_obligatorios_gasto">Completa artículo, fecha y periodo para guardar.</string>
+    <string name="error_monto_gasto_invalido">Ingresa un monto numérico válido en la descripción.</string>
     <string name="mensaje_gasto_guardado">Gasto guardado correctamente.</string>
     <string name="mensaje_gasto_eliminado">Se eliminó el último gasto guardado.</string>
     <string name="error_sin_gastos">No hay gastos registrados todavía.</string>

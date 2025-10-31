@@ -66,7 +66,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:gravity="center"
-        android:text="@string/title_ingresos_vs_gastos"
+        android:text="@string/title_gastos_por_periodo"
         android:textAllCaps="true"
         android:textColor="@color/economix_text_primary"
         android:textSize="24sp"
@@ -84,21 +84,20 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="24dp"
         app:cardBackgroundColor="@color/economix_surface_dark"
-        app:cardCornerRadius="180dp"
+        app:cardCornerRadius="32dp"
         app:cardElevation="0dp"
         app:layout_constraintBottom_toTopOf="@id/button_back"
-        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintDimensionRatio="4:5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_title">
 
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/pie_chart_ingresos_vs_gastos"
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/bar_chart_gastos"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="24dp"
-            android:contentDescription="@string/desc_pie_chart_ingresos_vs_gastos"
-            android:padding="8dp" />
+            android:contentDescription="@string/desc_bar_chart_gastos" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.button.MaterialButton

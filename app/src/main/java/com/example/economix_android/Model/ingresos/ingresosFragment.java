@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
+import com.example.economix_android.Model.data.RegistroFinanciero;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -94,7 +94,14 @@ public class ingresosFragment extends Fragment {
             return;
         }
 
-        Ingreso ingreso = new Ingreso(articulo, descripcion, fecha, periodo, recurrente);
+        if (!RegistroFinanciero.esMontoValido(descripcion)) {
+            Toast.makeText(requireContext(), R.string.error_monto_ingreso_invalido, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String montoNormalizado = RegistroFinanciero.normalizarMonto(descripcion);
+
+        Ingreso ingreso = new Ingreso(articulo, montoNormalizado, fecha, periodo, recurrente);
         DataRepository.addIngreso(ingreso);
         Toast.makeText(requireContext(), R.string.mensaje_ingreso_guardado, Toast.LENGTH_SHORT).show();
         limpiarCampos();
