@@ -10,6 +10,7 @@ public final class DataRepository {
     private static final List<Ingreso> ingresosRecurrentes = new ArrayList<>();
     private static final List<Gasto> gastos = new ArrayList<>();
     private static final List<Gasto> gastosRecurrentes = new ArrayList<>();
+    private static final List<UserAccount> usuarios = new ArrayList<>();
 
     private DataRepository() {
         // No instances
@@ -65,5 +66,40 @@ public final class DataRepository {
 
     public static List<Gasto> getGastosRecurrentes() {
         return Collections.unmodifiableList(gastosRecurrentes);
+    }
+    public static boolean addUsuario(UserAccount usuario) {
+        if (usuario == null) {
+            return false;
+        }
+        if (existeCorreo(usuario.getEmail())) {
+            return false;
+        }
+        usuarios.add(usuario);
+        return true;
+    }
+
+    public static boolean existeCorreo(String correo) {
+        String normalizado = normalizarCorreo(correo);
+        for (UserAccount usuario : usuarios) {
+            if (normalizado.equals(normalizarCorreo(usuario.getEmail()))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean validarCredenciales(String correo, String contrasena) {
+        String normalizado = normalizarCorreo(correo);
+        for (UserAccount usuario : usuarios) {
+            if (normalizado.equals(normalizarCorreo(usuario.getEmail()))
+                    && contrasena.equals(usuario.getPassword())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String normalizarCorreo(String correo) {
+        return correo == null ? "" : correo.trim().toLowerCase();
     }
 }

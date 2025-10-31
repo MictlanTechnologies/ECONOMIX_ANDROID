@@ -12,6 +12,7 @@ import androidx.navigation.Navigation;
 
 import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentGraficaCircularIngresosVsGastosBinding;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class graficaCircularIngresosVsGastos extends Fragment {
 
@@ -30,8 +31,17 @@ public class graficaCircularIngresosVsGastos extends Fragment {
 
         binding.btnPerfil.setOnClickListener(v ->
                 Navigation.findNavController(v).navigate(R.id.usuario));
+        binding.btnAyudaIngInf.setOnClickListener(v -> mostrarAyuda());
         binding.buttonBack.setOnClickListener(v ->
                 Navigation.findNavController(v).navigate(R.id.graficasMenuIngresosVsGastos));
+    }
+
+    private void mostrarAyuda() {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.titulo_ayuda_grafica_circular_ingresos_vs_gastos)
+                .setMessage(R.string.mensaje_ayuda_grafica_circular_ingresos_vs_gastos)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 
     @Override

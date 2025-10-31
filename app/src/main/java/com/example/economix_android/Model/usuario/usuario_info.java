@@ -12,6 +12,7 @@ import androidx.navigation.Navigation;
 
 import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentUsuarioInfoBinding;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class usuario_info extends Fragment {
 
@@ -31,6 +32,15 @@ public class usuario_info extends Fragment {
         binding.btnRegresar.setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.usuario));
+        binding.btnAyudaUsInf.setOnClickListener(v -> mostrarAyuda());
+    }
+
+    private void mostrarAyuda() {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.titulo_ayuda_usuario_info)
+                .setMessage(R.string.mensaje_ayuda_usuario_info)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 
     @Override

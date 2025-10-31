@@ -1,5 +1,6 @@
 package com.example.economix_android.Model.usuario;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,9 @@ import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 
 import com.example.economix_android.R;
+import com.example.economix_android.activity_inicio;
 import com.example.economix_android.databinding.FragmentUsuarioBinding;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class usuario extends Fragment {
 
@@ -33,6 +36,8 @@ public class usuario extends Fragment {
         binding.btnInfo.setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.usuario_info));
+        binding.btnAyudaUs.setOnClickListener(v -> mostrarAyuda());
+        binding.btnGuardar.setOnClickListener(v -> cerrarSesion());
 
         View.OnClickListener bottomNavListener = v -> {
             int viewId = v.getId();
@@ -59,6 +64,21 @@ public class usuario extends Fragment {
         if (currentDestination == null || currentDestination.getId() != destinationId) {
             navController.navigate(destinationId);
         }
+    }
+
+    private void mostrarAyuda() {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.titulo_ayuda_usuario)
+                .setMessage(R.string.mensaje_ayuda_usuario)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
+    }
+
+    private void cerrarSesion() {
+        Intent intent = new Intent(requireContext(), activity_inicio.class);
+        intent.putExtra(activity_inicio.EXTRA_MOSTRAR_LOGIN, true);
+        startActivity(intent);
+        requireActivity().finish();
     }
 
     @Override
