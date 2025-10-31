@@ -2,9 +2,11 @@ package com.example.economix_android.Model.ingresos;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,8 +17,11 @@ import androidx.navigation.Navigation;
 
 import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentIngresosBinding;
+import com.example.economix_android.Model.data.DataRepository;
+import com.example.economix_android.Model.data.Ingreso;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,6 +47,11 @@ public class ingresosFragment extends Fragment {
                 Navigation.findNavController(v)
                         .navigate(R.id.action_navigation_ingresos_to_ingresosInfo));
         binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
+        binding.btnAyudaIng.setOnClickListener(v -> mostrarAyuda());
+
+        binding.btnGuardarIng.setOnClickListener(v -> guardarIngreso());
+        binding.btnEliminarIng.setOnClickListener(v -> eliminarIngreso());
+        binding.btnLimpiarIng.setOnClickListener(v -> limpiarCampos());
 
         View.OnClickListener bottomNavListener = v -> {
             int viewId = v.getId();
@@ -62,6 +72,50 @@ public class ingresosFragment extends Fragment {
         binding.navGraficas.setOnClickListener(bottomNavListener);
 
         setupDatePicker(binding.etFechaIng);
+    }
+
+    private void mostrarAyuda() {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.titulo_ayuda_ingresos)
+                .setMessage(R.string.mensaje_ayuda_ingresos)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
+    }
+
+    private void guardarIngreso() {
+        String articulo = obtenerTexto(binding.etArticuloIng);
+        String descripcion = obtenerTexto(binding.etDescripcionIng);
+        String fecha = obtenerTexto(binding.etFechaIng);
+        String periodo = obtenerTexto(binding.etPeriodoIng);
+        boolean recurrente = binding.rbRecurrenteIng.isChecked();
+
+        if (TextUtils.isEmpty(articulo) || TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)) {
+            Toast.makeText(requireContext(), R.string.error_campos_obligatorios_ingreso, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Ingreso ingreso = new Ingreso(articulo, descripcion, fecha, periodo, recurrente);
+        DataRepository.addIngreso(ingreso);
+        Toast.makeText(requireContext(), R.string.mensaje_ingreso_guardado, Toast.LENGTH_SHORT).show();
+        limpiarCampos();
+    }
+
+    private void eliminarIngreso() {
+        boolean eliminado = DataRepository.removeLastIngreso();
+        int mensaje = eliminado ? R.string.mensaje_ingreso_eliminado : R.string.error_sin_ingresos;
+        Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show();
+    }
+
+    private void limpiarCampos() {
+        binding.etArticuloIng.setText("");
+        binding.etDescripcionIng.setText("");
+        binding.etFechaIng.setText("");
+        binding.etPeriodoIng.setText("");
+        binding.rbRecurrenteIng.setChecked(false);
+    }
+
+    private String obtenerTexto(TextInputEditText editText) {
+        return editText.getText() != null ? editText.getText().toString().trim() : "";
     }
 
     private void navigateSafely(View view, int destinationId) {
