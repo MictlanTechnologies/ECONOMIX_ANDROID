@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/inicio_navigation"
+    app:startDestination="@id/inicioFragment">
+
+    <fragment
+        android:id="@+id/inicioFragment"
+        android:name="com.example.economix_android.Inicio.InicioFragment"
+        android:label="Inicio"
+        tools:layout="@layout/inicio">
+        <action
+            android:id="@+id/action_inicioFragment_to_inicioSesionFragment"
+            app:destination="@id/inicio_sesionFragment" />
+        <action
+            android:id="@+id/action_inicioFragment_to_registroFragment"
+            app:destination="@id/registroFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/inicio_sesionFragment"
+        android:name="com.example.economix_android.auth.inicio_sesionFragment"
+        android:label="Inicio sesión"
+        tools:layout="@layout/fragment_inicio_sesion" />
+
+    <fragment
+        android:id="@+id/registroFragment"
+        android:name="com.example.economix_android.auth.registroFragment"
+        android:label="Registro"
+        tools:layout="@layout/fragment_registro" />
+
+</navigation>

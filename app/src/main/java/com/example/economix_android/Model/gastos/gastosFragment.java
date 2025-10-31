@@ -1,5 +1,6 @@
 package com.example.economix_android.Model.gastos;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +16,17 @@ import androidx.navigation.Navigation;
 import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentGastosBinding;
 
+import com.google.android.material.textfield.TextInputEditText;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 public class gastosFragment extends Fragment {
 
     private FragmentGastosBinding binding;
+    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -51,6 +60,8 @@ public class gastosFragment extends Fragment {
         binding.navIngresos.setOnClickListener(bottomNavListener);
         binding.navAhorro.setOnClickListener(bottomNavListener);
         binding.navGraficas.setOnClickListener(bottomNavListener);
+
+        setupDatePicker(binding.etFechaGas);
     }
 
     private void navigateSafely(View view, int destinationId) {
@@ -59,6 +70,45 @@ public class gastosFragment extends Fragment {
         if (currentDestination == null || currentDestination.getId() != destinationId) {
             navController.navigate(destinationId);
         }
+    }
+
+    private void setupDatePicker(TextInputEditText editText) {
+        editText.setShowSoftInputOnFocus(false);
+        editText.setOnClickListener(v -> showDatePicker(editText));
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                showDatePicker(editText);
+            }
+        });
+    }
+
+    private void showDatePicker(TextInputEditText editText) {
+        Calendar calendar = Calendar.getInstance();
+        String currentText = editText.getText() != null ? editText.getText().toString() : "";
+
+        if (!currentText.isEmpty()) {
+            try {
+                java.util.Date parsedDate = dateFormatter.parse(currentText);
+                if (parsedDate != null) {
+                    calendar.setTime(parsedDate);
+                }
+            } catch (ParseException ignored) {
+            }
+        }
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                requireContext(),
+                (view, year, month, dayOfMonth) -> {
+                    Calendar selectedDate = Calendar.getInstance();
+                    selectedDate.set(year, month, dayOfMonth);
+                    editText.setText(dateFormatter.format(selectedDate.getTime()));
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+
+        editText.clearFocus();
+        datePickerDialog.show();
     }
 
     @Override
