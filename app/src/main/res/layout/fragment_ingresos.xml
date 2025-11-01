@@ -132,7 +132,7 @@
                             android:id="@+id/etDescripcionIng"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Descripción"
+                            android:hint="Monto"
                             android:digits="0123456789.,"
                             android:inputType="numberDecimal"
                             android:textColor="@android:color/black"
@@ -177,7 +177,7 @@
                             android:id="@+id/etPeriodoIng"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Periodo"
+                            android:hint="Categoría"
                             android:inputType="text"
                             android:textColor="@android:color/black"
                             android:textColorHint="@android:color/darker_gray" />

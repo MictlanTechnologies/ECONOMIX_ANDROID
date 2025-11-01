@@ -15,7 +15,7 @@
     <string name="title_ahorro">Ahorro</string>
     <string name="title_graficas">Graficas</string>
     <string name="title_gastos_por_categoria">Gastos por categoría</string>
-    <string name="title_gastos_por_periodo">Gastos por periodo</string>
+    <string name="title_gastos_por_periodo">Gastos por categoría</string>
     <string name="action_back">Volver</string>
     <string name="desc_pie_chart_ingresos_vs_gastos">Gráfica circular de ingresos versus gastos</string>
     <string name="desc_bar_chart_gastos">Gráfica de barras de gastos por periodo</string>
