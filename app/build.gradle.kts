@@ -28,14 +28,10 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
     buildFeatures {
         viewBinding = true
-    }
-    packagingOptions {
-        resources {
-            excludes += "META-INF/DEPENDENCIES"
-        }
     }
 }
 
@@ -54,16 +50,14 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
     implementation("com.google.android.material:material:1.5.0")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
-    testCompileOnly("org.projectlombok:lombok:1.18.30")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
 
-    // Spring Boot + JPA support for the embedded REST examples
-    implementation("org.springframework.boot:spring-boot-starter-web:2.7.18")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.7.18")
-    implementation("jakarta.persistence:jakarta.persistence-api:2.2.3")
-    implementation("mysql:mysql-connector-java:8.0.33")
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 }
