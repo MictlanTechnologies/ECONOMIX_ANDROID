@@ -1,8 +1,8 @@
 package com.example.economix_android.sql.service.impl;
 
-import com.example.demo.model.Estado;
-import com.example.demo.repository.EstadoRepository;
-import com.example.demo.service.EstadoService;
+import com.example.economix_android.sql.model.Estado;
+import com.example.economix_android.sql.repository.EstadoRepository;
+import com.example.economix_android.sql.service.EstadoService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

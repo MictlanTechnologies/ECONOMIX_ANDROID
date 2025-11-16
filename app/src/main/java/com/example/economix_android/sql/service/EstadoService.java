@@ -1,6 +1,6 @@
 package com.example.economix_android.sql.service;
 
-import com.example.demo.model.Estado;
+import com.example.economix_android.sql.model.Estado;
 
 import java.util.List;
 
