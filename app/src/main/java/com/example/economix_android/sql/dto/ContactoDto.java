@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EstadoDto {
-    private Integer id;
-    private String estado;
+public class ContactoDto {
+    private Integer idContactos;
+    private String numCelular;
+    private String correoAlterno;
+    private Integer idPersona;
 }

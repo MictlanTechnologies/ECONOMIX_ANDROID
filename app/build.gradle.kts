@@ -60,4 +60,5 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web:2.7.18")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.7.18")
     implementation("jakarta.persistence:jakarta.persistence-api:2.2.3")
+    implementation("mysql:mysql-connector-java:8.0.33")
 }

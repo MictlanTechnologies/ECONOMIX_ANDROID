@@ -10,68 +10,62 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequestMapping("/Gerdoc/api")
 @RestController
+@RequestMapping("/economix/api/estados")
 @AllArgsConstructor
 public class EstadoController {
     private final EstadoService estadoService;
 
-    @RequestMapping("/estado")
+    @GetMapping
     public ResponseEntity<List<EstadoDto>> lista() {
         List<Estado> estados = estadoService.getAll();
         if (estados == null || estados.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity
-                .ok(
-                        estados
-                                .stream()
-                                .map(u -> EstadoDto.builder()
-                                        .estado(u.getEstado())
-                                        .build())
-                                .collect(Collectors.toList()));
+        return ResponseEntity.ok(estados.stream().map(this::toDto).collect(Collectors.toList()));
     }
 
-    @RequestMapping("/estado/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<EstadoDto> getById(@PathVariable Integer id) {
         Estado u = estadoService.getById(id);
         if (u == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(EstadoDto.builder()
-                .estado(u.getEstado())
-                .build());
+        return ResponseEntity.ok(toDto(u));
     }
 
-    @PostMapping("/estado")
+    @PostMapping
     public ResponseEntity<EstadoDto> save(@RequestBody EstadoDto estadoDto) {
-        Estado u = Estado
-                .builder()
-                .estado(estadoDto.getEstado())
-                .build();
-        estadoService.save(u);
-        return ResponseEntity.ok(EstadoDto.builder()
-                .estado(u.getEstado())
-                .build());
+        Estado saved = estadoService.save(toEntity(estadoDto));
+        return ResponseEntity.ok(toDto(saved));
     }
 
-    @DeleteMapping("/estado/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         estadoService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/estado/{id}")
-    public ResponseEntity<Estado> update(@PathVariable Integer id, @RequestBody EstadoDto estadoDto) {
-        Estado aux = estadoService.update(id, Estado
-                .builder()
-                .estado(estadoDto.getEstado())
-                .build());
+    @PutMapping("/{id}")
+    public ResponseEntity<EstadoDto> update(@PathVariable Integer id, @RequestBody EstadoDto estadoDto) {
+        Estado aux = estadoService.update(id, toEntity(estadoDto));
         if (aux == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(Estado.builder()
-                .estado(aux.getEstado())
-                .build());
+        return ResponseEntity.ok(toDto(aux));
+    }
+
+    private EstadoDto toDto(Estado estado) {
+        return EstadoDto.builder()
+                .id(estado.getId())
+                .estado(estado.getEstado())
+                .build();
+    }
+
+    private Estado toEntity(EstadoDto dto) {
+        return Estado.builder()
+                .id(dto.getId())
+                .estado(dto.getEstado())
+                .build();
     }
 }

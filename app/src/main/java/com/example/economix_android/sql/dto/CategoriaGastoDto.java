@@ -9,7 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EstadoDto {
-    private Integer id;
-    private String estado;
+public class CategoriaGastoDto {
+    private Integer idCategoria;
+    private Integer idUsuario;
+    private String nombreCategoria;
+    private String descripcion;
+    private String color;
 }
