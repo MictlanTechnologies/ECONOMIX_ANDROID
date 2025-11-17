@@ -1,8 +1,8 @@
 package com.example.economix_android.Model.data;
 
 public class Ingreso extends RegistroFinanciero {
-    public Ingreso(String articulo, String descripcion, String fecha, String periodo, boolean recurrente) {
-        super(articulo, descripcion, fecha, periodo, recurrente);
+    public Ingreso(Integer id, String articulo, String descripcion, String fecha, String periodo, boolean recurrente) {
+        super(id, articulo, descripcion, fecha, periodo, recurrente);
     }
 
     @Override

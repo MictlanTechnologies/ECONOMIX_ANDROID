@@ -101,16 +101,63 @@ public class gastosFragment extends Fragment {
 
         String montoNormalizado = RegistroFinanciero.normalizarMonto(descripcion);
 
-        Gasto gasto = new Gasto(articulo, montoNormalizado, fecha, periodo, recurrente);
-        DataRepository.addGasto(gasto);
-        Toast.makeText(requireContext(), R.string.mensaje_gasto_guardado, Toast.LENGTH_SHORT).show();
-        limpiarCampos();
+        Gasto gasto = new Gasto(null, articulo, montoNormalizado, fecha, periodo, recurrente);
+        setGastoButtonsEnabled(false);
+        DataRepository.addGasto(gasto, new DataRepository.RepositoryCallback<Gasto>() {
+            @Override
+            public void onSuccess(Gasto result) {
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(requireContext(), R.string.mensaje_gasto_guardado, Toast.LENGTH_SHORT).show();
+                limpiarCampos();
+                setGastoButtonsEnabled(true);
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(requireContext(),
+                        message != null ? message : getString(R.string.mensaje_error_operacion),
+                        Toast.LENGTH_SHORT).show();
+                setGastoButtonsEnabled(true);
+            }
+        });
     }
 
     private void eliminarGasto() {
-        boolean eliminado = DataRepository.removeLastGasto();
-        int mensaje = eliminado ? R.string.mensaje_gasto_eliminado : R.string.error_sin_gastos;
-        Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show();
+        setGastoButtonsEnabled(false);
+        DataRepository.removeLastGasto(new DataRepository.RepositoryCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean eliminado) {
+                if (!isAdded()) {
+                    return;
+                }
+                int mensaje = Boolean.TRUE.equals(eliminado)
+                        ? R.string.mensaje_gasto_eliminado
+                        : R.string.error_sin_gastos;
+                Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show();
+                setGastoButtonsEnabled(true);
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(requireContext(),
+                        message != null ? message : getString(R.string.mensaje_error_operacion),
+                        Toast.LENGTH_SHORT).show();
+                setGastoButtonsEnabled(true);
+            }
+        });
+    }
+
+    private void setGastoButtonsEnabled(boolean enabled) {
+        binding.btnGuardarGas.setEnabled(enabled);
+        binding.btnEliminarGas.setEnabled(enabled);
     }
 
     private void limpiarCampos() {

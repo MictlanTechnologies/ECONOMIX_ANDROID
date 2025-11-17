@@ -11,14 +11,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.economix_android.Model.data.DataRepository;
-import com.example.economix_android.Model.data.UserAccount;
 import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentRegistroBinding;
+import com.example.economix_android.network.dto.UsuarioDto;
+import com.example.economix_android.network.repository.UsuarioRepository;
+
+import java.time.LocalDateTime;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class registroFragment extends Fragment {
 
     private FragmentRegistroBinding binding;
+    private final UsuarioRepository usuarioRepository = new UsuarioRepository();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -54,9 +61,6 @@ public class registroFragment extends Fragment {
         if (TextUtils.isEmpty(correo)) {
             binding.tilEmail.setError(getString(R.string.error_correo_obligatorio));
             hayError = true;
-        } else if (DataRepository.existeCorreo(correo)) {
-            binding.tilEmail.setError(getString(R.string.error_correo_registrado));
-            hayError = true;
         }
 
         if (TextUtils.isEmpty(contrasena)) {
@@ -76,13 +80,47 @@ public class registroFragment extends Fragment {
             return;
         }
 
-        boolean agregado = DataRepository.addUsuario(new UserAccount(nombre, correo.trim(), contrasena));
-        if (agregado) {
-            Toast.makeText(requireContext(), getString(R.string.mensaje_registro_exitoso), Toast.LENGTH_SHORT).show();
-            requireActivity().getOnBackPressedDispatcher().onBackPressed();
-        } else {
-            Toast.makeText(requireContext(), getString(R.string.error_correo_registrado), Toast.LENGTH_SHORT).show();
-        }
+        binding.btnSignUp.setEnabled(false);
+
+        UsuarioDto nuevoUsuario = UsuarioDto.builder()
+                .perfilUsuario(nombre.trim())
+                .correo(correo.trim())
+                .contrasenaUsuario(contrasena)
+                .fechaRegistro(LocalDateTime.now())
+                .estado("ACTIVO")
+                .build();
+
+        usuarioRepository.crearUsuario(nuevoUsuario, new Callback<UsuarioDto>() {
+            @Override
+            public void onResponse(Call<UsuarioDto> call, Response<UsuarioDto> response) {
+                if (binding != null) {
+                    binding.btnSignUp.setEnabled(true);
+                }
+                if (!isAdded()) {
+                    return;
+                }
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(requireContext(), getString(R.string.mensaje_registro_exitoso), Toast.LENGTH_SHORT).show();
+                    requireActivity().getOnBackPressedDispatcher().onBackPressed();
+                } else if (response.code() == 409) {
+                    binding.tilEmail.setError(getString(R.string.error_correo_registrado));
+                    Toast.makeText(requireContext(), getString(R.string.error_correo_registrado), Toast.LENGTH_SHORT).show();
+                } else {
+                    mostrarMensajeError(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UsuarioDto> call, Throwable t) {
+                if (binding != null) {
+                    binding.btnSignUp.setEnabled(true);
+                }
+                if (!isAdded()) {
+                    return;
+                }
+                mostrarMensajeError(null);
+            }
+        });
     }
 
     private void limpiarErrores() {
@@ -94,6 +132,11 @@ public class registroFragment extends Fragment {
 
     private String obtenerTexto(com.google.android.material.textfield.TextInputEditText editText) {
         return editText.getText() != null ? editText.getText().toString().trim() : "";
+    }
+
+    private void mostrarMensajeError(String message) {
+        String texto = message != null ? message : getString(R.string.mensaje_error_servidor);
+        Toast.makeText(requireContext(), texto, Toast.LENGTH_SHORT).show();
     }
 
     @Override

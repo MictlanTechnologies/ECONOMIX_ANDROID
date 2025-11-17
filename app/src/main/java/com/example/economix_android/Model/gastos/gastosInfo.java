@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,9 +17,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentGastosInfoBinding;
 import com.example.economix_android.Model.data.DataRepository;
+import com.example.economix_android.Model.data.Gasto;
 import com.example.economix_android.Model.data.RegistroAdapter;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import java.util.List;
 
 public class gastosInfo extends Fragment {
 
@@ -79,6 +83,27 @@ public class gastosInfo extends Fragment {
     }
 
     private void actualizarDatos() {
+        DataRepository.refreshGastos(new DataRepository.RepositoryCallback<List<Gasto>>() {
+            @Override
+            public void onSuccess(List<Gasto> result) {
+                if (!isAdded()) {
+                    return;
+                }
+                actualizarListasLocales();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) {
+                    return;
+                }
+                mostrarMensaje(message);
+                actualizarListasLocales();
+            }
+        });
+    }
+
+    private void actualizarListasLocales() {
         gastosAdapter.updateData(DataRepository.getGastos());
         recurrentesAdapter.updateData(DataRepository.getGastosRecurrentes());
 
@@ -92,6 +117,11 @@ public class gastosInfo extends Fragment {
                 .setMessage(R.string.mensaje_ayuda_gastos_info)
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
+    }
+
+    private void mostrarMensaje(String message) {
+        String texto = message != null ? message : getString(R.string.mensaje_error_servidor);
+        Toast.makeText(requireContext(), texto, Toast.LENGTH_SHORT).show();
     }
 
     private void navigateSafely(View view, int destinationId) {

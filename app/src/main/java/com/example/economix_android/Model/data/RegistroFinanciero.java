@@ -7,18 +7,24 @@ import java.util.regex.Pattern;
 public abstract class RegistroFinanciero {
     private static final Pattern MONTO_PATTERN = Pattern.compile("^\\d+(?:[\\.,]\\d+)?$");
 
+    private final Integer id;
     private final String articulo;
     private final String descripcion;
     private final String fecha;
     private final String periodo;
     private final boolean recurrente;
 
-    protected RegistroFinanciero(String articulo, String descripcion, String fecha, String periodo, boolean recurrente) {
+    protected RegistroFinanciero(Integer id, String articulo, String descripcion, String fecha, String periodo, boolean recurrente) {
+        this.id = id;
         this.articulo = articulo;
         this.descripcion = descripcion;
         this.fecha = fecha;
         this.periodo = periodo;
         this.recurrente = recurrente;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getArticulo() {

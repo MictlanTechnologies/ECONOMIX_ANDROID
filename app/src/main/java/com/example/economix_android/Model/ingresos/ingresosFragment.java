@@ -101,16 +101,63 @@ public class ingresosFragment extends Fragment {
 
         String montoNormalizado = RegistroFinanciero.normalizarMonto(descripcion);
 
-        Ingreso ingreso = new Ingreso(articulo, montoNormalizado, fecha, periodo, recurrente);
-        DataRepository.addIngreso(ingreso);
-        Toast.makeText(requireContext(), R.string.mensaje_ingreso_guardado, Toast.LENGTH_SHORT).show();
-        limpiarCampos();
+        Ingreso ingreso = new Ingreso(null, articulo, montoNormalizado, fecha, periodo, recurrente);
+        setIngresoButtonsEnabled(false);
+        DataRepository.addIngreso(ingreso, new DataRepository.RepositoryCallback<Ingreso>() {
+            @Override
+            public void onSuccess(Ingreso result) {
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(requireContext(), R.string.mensaje_ingreso_guardado, Toast.LENGTH_SHORT).show();
+                limpiarCampos();
+                setIngresoButtonsEnabled(true);
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(requireContext(),
+                        message != null ? message : getString(R.string.mensaje_error_operacion),
+                        Toast.LENGTH_SHORT).show();
+                setIngresoButtonsEnabled(true);
+            }
+        });
     }
 
     private void eliminarIngreso() {
-        boolean eliminado = DataRepository.removeLastIngreso();
-        int mensaje = eliminado ? R.string.mensaje_ingreso_eliminado : R.string.error_sin_ingresos;
-        Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show();
+        setIngresoButtonsEnabled(false);
+        DataRepository.removeLastIngreso(new DataRepository.RepositoryCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean eliminado) {
+                if (!isAdded()) {
+                    return;
+                }
+                int mensaje = Boolean.TRUE.equals(eliminado)
+                        ? R.string.mensaje_ingreso_eliminado
+                        : R.string.error_sin_ingresos;
+                Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show();
+                setIngresoButtonsEnabled(true);
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(requireContext(),
+                        message != null ? message : getString(R.string.mensaje_error_operacion),
+                        Toast.LENGTH_SHORT).show();
+                setIngresoButtonsEnabled(true);
+            }
+        });
+    }
+
+    private void setIngresoButtonsEnabled(boolean enabled) {
+        binding.btnGuardarIng.setEnabled(enabled);
+        binding.btnEliminarIng.setEnabled(enabled);
     }
 
     private void limpiarCampos() {

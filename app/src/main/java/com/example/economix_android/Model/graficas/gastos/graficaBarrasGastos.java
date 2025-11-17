@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.example.economix_android.Model.data.DataRepository;
+import com.example.economix_android.Model.data.Gasto;
 import com.example.economix_android.Model.data.RegistroFinanciero;
 import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentGraficaBarrasGastosBinding;
@@ -55,13 +57,34 @@ public class graficaBarrasGastos extends Fragment {
                 Navigation.findNavController(v).navigate(R.id.graficasMenuGastos));
 
         configureChartAppearance();
-        updateChartData();
+        refreshData();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        updateChartData();
+        refreshData();
+    }
+
+    private void refreshData() {
+        DataRepository.refreshGastos(new DataRepository.RepositoryCallback<List<Gasto>>() {
+            @Override
+            public void onSuccess(List<Gasto> result) {
+                if (!isAdded()) {
+                    return;
+                }
+                updateChartData();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) {
+                    return;
+                }
+                mostrarMensajeError(message);
+                updateChartData();
+            }
+        });
     }
 
     private void configureChartAppearance() {
@@ -161,6 +184,11 @@ public class graficaBarrasGastos extends Fragment {
                 .setMessage(R.string.mensaje_ayuda_grafica_barras_gastos)
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
+    }
+
+    private void mostrarMensajeError(String message) {
+        String texto = message != null ? message : getString(R.string.mensaje_error_servidor);
+        Toast.makeText(requireContext(), texto, Toast.LENGTH_SHORT).show();
     }
 
     @Override

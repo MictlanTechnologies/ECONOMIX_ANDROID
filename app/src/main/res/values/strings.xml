@@ -55,6 +55,8 @@
     <string name="mensaje_gasto_guardado">Gasto guardado correctamente.</string>
     <string name="mensaje_gasto_eliminado">Se eliminó el último gasto guardado.</string>
     <string name="error_sin_gastos">No hay gastos registrados todavía.</string>
+    <string name="mensaje_error_servidor">No se pudo contactar con el servidor. Inténtalo nuevamente.</string>
+    <string name="mensaje_error_operacion">Ocurrió un problema al procesar la operación. Intenta más tarde.</string>
     <string name="titulo_ayuda_ingresos_info">Resumen de ingresos</string>
     <string name="mensaje_ayuda_ingresos_info">Consulta aquí todos tus ingresos registrados y los que marcaste como recurrentes.</string>
     <string name="titulo_ayuda_gastos_info">Resumen de gastos</string>

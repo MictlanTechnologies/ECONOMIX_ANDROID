@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,9 +17,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentIngresosInfoBinding;
 import com.example.economix_android.Model.data.DataRepository;
+import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.Model.data.RegistroAdapter;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import java.util.List;
 
 public class ingresosInfo extends Fragment {
 
@@ -79,6 +83,27 @@ public class ingresosInfo extends Fragment {
     }
 
     private void actualizarDatos() {
+        DataRepository.refreshIngresos(new DataRepository.RepositoryCallback<List<Ingreso>>() {
+            @Override
+            public void onSuccess(List<Ingreso> result) {
+                if (!isAdded()) {
+                    return;
+                }
+                actualizarListasLocales();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) {
+                    return;
+                }
+                mostrarMensaje(message);
+                actualizarListasLocales();
+            }
+        });
+    }
+
+    private void actualizarListasLocales() {
         ingresosAdapter.updateData(DataRepository.getIngresos());
         recurrentesAdapter.updateData(DataRepository.getIngresosRecurrentes());
 
@@ -92,6 +117,11 @@ public class ingresosInfo extends Fragment {
                 .setMessage(R.string.mensaje_ayuda_ingresos_info)
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
+    }
+
+    private void mostrarMensaje(String message) {
+        String texto = message != null ? message : getString(R.string.mensaje_error_servidor);
+        Toast.makeText(requireContext(), texto, Toast.LENGTH_SHORT).show();
     }
 
     private void navigateSafely(View view, int destinationId) {
