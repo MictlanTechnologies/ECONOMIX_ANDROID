@@ -17,6 +17,18 @@ import com.example.economix_android.network.api.RolApi;
 import com.example.economix_android.network.api.SesionApi;
 import com.example.economix_android.network.api.UsuarioApi;
 import com.example.economix_android.network.api.UsuarioRolApi;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+
+import java.lang.reflect.Type;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -25,7 +37,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public final class ApiClient {
 
-    private static final String BASE_URL = "http://192.168.1.147:8080";
+    // IMPORTANTE: la URL base debe terminar con "/" para Retrofit
+    private static final String BASE_URL = "http://192.168.1.147:8080/";
 
     private static final Retrofit retrofit;
 
@@ -37,13 +50,36 @@ public final class ApiClient {
                 .addInterceptor(logging)
                 .build();
 
+        // Configuración de Gson con adaptadores para LocalDate y LocalDateTime
+        Gson gson = new GsonBuilder()
+                // LocalDate: se serializa/deserializa como "yyyy-MM-dd"
+                .registerTypeAdapter(LocalDate.class, (JsonSerializer<LocalDate>) (src, typeOfSrc, context) ->
+                        new JsonPrimitive(src.toString()))
+                .registerTypeAdapter(LocalDate.class, (JsonDeserializer<LocalDate>) (json, typeOfT, context) -> {
+                    try {
+                        return LocalDate.parse(json.getAsString());
+                    } catch (Exception e) {
+                        throw new JsonParseException(e);
+                    }
+                })
+                // LocalDateTime: se serializa/deserializa como "yyyy-MM-dd'T'HH:mm:ss"
+                .registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (src, typeOfSrc, context) ->
+                        new JsonPrimitive(src.toString()))
+                .registerTypeAdapter(LocalDateTime.class, (JsonDeserializer<LocalDateTime>) (json, typeOfT, context) -> {
+                    try {
+                        return LocalDateTime.parse(json.getAsString());
+                    } catch (Exception e) {
+                        throw new JsonParseException(e);
+                    }
+                })
+                .create();
+
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
     }
-
     private ApiClient() {
     }
 
