@@ -8,6 +8,6 @@ public interface MovimientoAhorroService {
     List<MovimientoAhorro> getAll();
     MovimientoAhorro getById(Integer id);
     MovimientoAhorro save(MovimientoAhorro movimientoAhorro);
-    void delete(Integer id);
+    boolean delete(Integer id);
     MovimientoAhorro update(Integer id, MovimientoAhorro movimientoAhorro);
 }

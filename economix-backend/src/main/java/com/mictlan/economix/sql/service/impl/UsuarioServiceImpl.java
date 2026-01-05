@@ -26,8 +26,18 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    public Usuario getByCorreo(String correo) {
+        return usuarioRepository.findByCorreoIgnoreCase(correo).orElse(null);
+    }
+
+    @Override
     public Usuario save(Usuario usuario) {
         return usuarioRepository.save(usuario);
+    }
+
+    @Override
+    public boolean existsByCorreo(String correo) {
+        return usuarioRepository.existsByCorreoIgnoreCase(correo);
     }
 
     @Override

@@ -37,12 +37,18 @@ public class AhorroController {
 
     @PostMapping
     public ResponseEntity<AhorroDto> save(@RequestBody AhorroDto ahorroDto) {
+        if (!isValid(ahorroDto)) {
+            return ResponseEntity.badRequest().build();
+        }
         Ahorro ahorro = ahorroService.save(toEntity(ahorroDto));
         return ResponseEntity.ok(toDto(ahorro));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<AhorroDto> update(@PathVariable Integer id, @RequestBody AhorroDto ahorroDto) {
+        if (!isValid(ahorroDto)) {
+            return ResponseEntity.badRequest().build();
+        }
         Ahorro updated = ahorroService.update(id, toEntity(ahorroDto));
         if (updated == null) {
             return ResponseEntity.notFound().build();
@@ -78,5 +84,19 @@ public class AhorroController {
                 .montoAhorrado(dto.getMontoAhorrado())
                 .fechaLimite(dto.getFechaLimite())
                 .build();
+    }
+
+    private boolean isValid(AhorroDto dto) {
+        if (dto == null || dto.getMeta() == null || dto.getMeta().signum() <= 0) {
+            return false;
+        }
+        if (dto.getMontoAhorrado() != null && dto.getMontoAhorrado().signum() < 0) {
+            return false;
+        }
+        if (dto.getMontoAhorrado() != null && dto.getMeta() != null
+                && dto.getMontoAhorrado().compareTo(dto.getMeta()) > 0) {
+            return false;
+        }
+        return dto.getNombreObjetivo() != null && !dto.getNombreObjetivo().isBlank();
     }
 }

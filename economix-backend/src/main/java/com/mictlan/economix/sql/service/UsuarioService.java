@@ -7,7 +7,9 @@ import java.util.List;
 public interface UsuarioService {
     List<Usuario> getAll();
     Usuario getById(Integer id);
+    Usuario getByCorreo(String correo);
     Usuario save(Usuario usuario);
+    boolean existsByCorreo(String correo);
     void delete(Integer id);
     Usuario update(Integer id, Usuario usuario);
 }

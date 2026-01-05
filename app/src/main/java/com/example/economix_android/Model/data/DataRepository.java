@@ -1,7 +1,9 @@
 package com.example.economix_android.Model.data;
 
+import com.example.economix_android.network.dto.AhorroDto;
 import com.example.economix_android.network.dto.GastoDto;
 import com.example.economix_android.network.dto.IngresoDto;
+import com.example.economix_android.network.repository.AhorroRepository;
 import com.example.economix_android.network.repository.GastoRepository;
 import com.example.economix_android.network.repository.IngresoRepository;
 
@@ -30,9 +32,11 @@ public final class DataRepository {
     private static final List<Ingreso> ingresosRecurrentes = new ArrayList<>();
     private static final List<Gasto> gastos = new ArrayList<>();
     private static final List<Gasto> gastosRecurrentes = new ArrayList<>();
+    private static final List<Ahorro> ahorros = new ArrayList<>();
 
     private static final IngresoRepository ingresoRepository = new IngresoRepository();
     private static final GastoRepository gastoRepository = new GastoRepository();
+    private static final AhorroRepository ahorroRepository = new AhorroRepository();
 
     private static final int DEFAULT_USER_ID = 1;
     private static final int DEFAULT_FUENTE_ID = 1;
@@ -60,6 +64,10 @@ public final class DataRepository {
 
     public static List<Gasto> getGastosRecurrentes() {
         return Collections.unmodifiableList(gastosRecurrentes);
+    }
+
+    public static List<Ahorro> getAhorros() {
+        return Collections.unmodifiableList(ahorros);
     }
 
     public static void refreshIngresos(RepositoryCallback<List<Ingreso>> callback) {
@@ -178,6 +186,62 @@ public final class DataRepository {
         });
     }
 
+    public static void addAhorro(Ahorro ahorro, RepositoryCallback<Ahorro> callback) {
+        if (ahorro == null) {
+            notifyError(callback, "El ahorro es inválido.");
+            return;
+        }
+
+        ahorroRepository.guardarAhorro(toDto(ahorro), new Callback<AhorroDto>() {
+            @Override
+            public void onResponse(Call<AhorroDto> call, Response<AhorroDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Ahorro creado = fromDto(response.body());
+                    if (creado != null) {
+                        ahorros.add(creado);
+                    }
+                    notifySuccess(callback, creado);
+                } else {
+                    notifyError(callback, "No se pudo guardar el ahorro. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AhorroDto> call, Throwable t) {
+                notifyError(callback, "Error al conectar con el servidor de ahorro.");
+            }
+        });
+    }
+
+    public static void refreshAhorros(RepositoryCallback<List<Ahorro>> callback) {
+        ahorroRepository.obtenerAhorros(new Callback<List<AhorroDto>>() {
+            @Override
+            public void onResponse(Call<List<AhorroDto>> call, Response<List<AhorroDto>> response) {
+                if (response.isSuccessful()) {
+                    List<AhorroDto> body = response.body();
+                    List<Ahorro> nuevos = new ArrayList<>();
+                    if (body != null) {
+                        for (AhorroDto dto : body) {
+                            Ahorro ahorro = fromDto(dto);
+                            if (ahorro != null) {
+                                nuevos.add(ahorro);
+                            }
+                        }
+                    }
+                    replaceAhorros(nuevos);
+                    notifySuccess(callback, getAhorros());
+                } else {
+                    notifyError(callback, "No se pudo obtener los ahorros. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<AhorroDto>> call, Throwable t) {
+                notifyError(callback, "No se pudo conectar con el servidor de ahorros.");
+            }
+        });
+    }
+
     public static void removeLastIngreso(RepositoryCallback<Boolean> callback) {
         if (ingresos.isEmpty()) {
             notifySuccess(callback, false);
@@ -234,6 +298,34 @@ public final class DataRepository {
         });
     }
 
+    public static void removeLastAhorro(RepositoryCallback<Boolean> callback) {
+        if (ahorros.isEmpty()) {
+            notifySuccess(callback, false);
+            return;
+        }
+        Ahorro ultimo = ahorros.get(ahorros.size() - 1);
+        if (ultimo.getId() == null) {
+            notifyError(callback, "El ahorro no tiene identificador remoto.");
+            return;
+        }
+        ahorroRepository.eliminarAhorro(ultimo.getId(), new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    eliminarAhorroPorId(ultimo.getId());
+                    notifySuccess(callback, true);
+                } else {
+                    notifyError(callback, "No se pudo eliminar el ahorro. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                notifyError(callback, "Error al eliminar el ahorro en el servidor.");
+            }
+        });
+    }
+
     private static void replaceIngresos(List<Ingreso> nuevos) {
         ingresos.clear();
         ingresos.addAll(nuevos);
@@ -256,6 +348,11 @@ public final class DataRepository {
         }
     }
 
+    private static void replaceAhorros(List<Ahorro> nuevos) {
+        ahorros.clear();
+        ahorros.addAll(nuevos);
+    }
+
     private static void eliminarIngresoPorId(Integer id) {
         ingresos.removeIf(ingreso -> Objects.equals(ingreso.getId(), id));
         ingresosRecurrentes.removeIf(ingreso -> Objects.equals(ingreso.getId(), id));
@@ -264,6 +361,10 @@ public final class DataRepository {
     private static void eliminarGastoPorId(Integer id) {
         gastos.removeIf(gasto -> Objects.equals(gasto.getId(), id));
         gastosRecurrentes.removeIf(gasto -> Objects.equals(gasto.getId(), id));
+    }
+
+    private static void eliminarAhorroPorId(Integer id) {
+        ahorros.removeIf(ahorro -> Objects.equals(ahorro.getId(), id));
     }
 
     private static Ingreso fromDto(IngresoDto dto) {
@@ -290,6 +391,20 @@ public final class DataRepository {
         return new Gasto(dto.getIdGastos(), articulo, monto, fecha, periodo, recurrente);
     }
 
+    private static Ahorro fromDto(AhorroDto dto) {
+        if (dto == null) {
+            return null;
+        }
+        return new Ahorro(
+                dto.getIdAhorro(),
+                dto.getNombreObjetivo(),
+                dto.getDescripcionObjetivo(),
+                montoToString(dto.getMeta()),
+                montoToString(dto.getMontoAhorrado()),
+                formatDate(dto.getFechaLimite())
+        );
+    }
+
     private static IngresoDto toDto(Ingreso ingreso) {
         return IngresoDto.builder()
                 .idIngresos(ingreso.getId())
@@ -313,6 +428,18 @@ public final class DataRepository {
                 .montoGasto(parseMonto(gasto.getDescripcion()))
                 .fechaGastos(parseDate(gasto.getFecha()))
                 .periodoGastos(gasto.getPeriodo())
+                .build();
+    }
+
+    private static AhorroDto toDto(Ahorro ahorro) {
+        return AhorroDto.builder()
+                .idAhorro(ahorro.getId())
+                .idUsuario(DEFAULT_USER_ID)
+                .nombreObjetivo(ahorro.getObjetivo())
+                .descripcionObjetivo(ahorro.getDescripcion())
+                .meta(parseMonto(ahorro.getMeta()))
+                .montoAhorrado(parseMonto(ahorro.getAhorrado()))
+                .fechaLimite(parseDate(ahorro.getFechaLimite()))
                 .build();
     }
 

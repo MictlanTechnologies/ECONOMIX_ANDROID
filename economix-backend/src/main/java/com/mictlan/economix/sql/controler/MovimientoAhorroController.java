@@ -37,12 +37,21 @@ public class MovimientoAhorroController {
 
     @PostMapping
     public ResponseEntity<MovimientoAhorroDto> save(@RequestBody MovimientoAhorroDto dto) {
+        if (!isValid(dto)) {
+            return ResponseEntity.badRequest().build();
+        }
         MovimientoAhorro movimiento = movimientoAhorroService.save(toEntity(dto));
+        if (movimiento == null) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(toDto(movimiento));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<MovimientoAhorroDto> update(@PathVariable Integer id, @RequestBody MovimientoAhorroDto dto) {
+        if (!isValid(dto)) {
+            return ResponseEntity.badRequest().build();
+        }
         MovimientoAhorro updated = movimientoAhorroService.update(id, toEntity(dto));
         if (updated == null) {
             return ResponseEntity.notFound().build();
@@ -52,8 +61,8 @@ public class MovimientoAhorroController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        movimientoAhorroService.delete(id);
-        return ResponseEntity.noContent().build();
+        boolean deleted = movimientoAhorroService.delete(id);
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
     private MovimientoAhorroDto toDto(MovimientoAhorro movimiento) {
@@ -78,5 +87,16 @@ public class MovimientoAhorroController {
                 .fechaMovimiento(dto.getFechaMovimiento())
                 .nota(dto.getNota())
                 .build();
+    }
+
+    private boolean isValid(MovimientoAhorroDto dto) {
+        if (dto == null || dto.getIdAhorro() == null || dto.getIdUsuario() == null) {
+            return false;
+        }
+        if (dto.getMonto() == null || dto.getMonto().signum() <= 0) {
+            return false;
+        }
+        String tipo = dto.getTipoMovimiento();
+        return "APORTE".equalsIgnoreCase(tipo) || "RETIRO".equalsIgnoreCase(tipo);
     }
 }

@@ -1,7 +1,6 @@
 package com.example.economix_android.auth;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +11,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.economix_android.R;
-import com.example.economix_android.databinding.FragmentRegistroBinding;
 import com.example.economix_android.network.dto.UsuarioDto;
 import com.example.economix_android.network.repository.UsuarioRepository;
+import com.example.economix_android.auth.AuthValidator;
+import com.example.economix_android.databinding.FragmentRegistroBinding;
 
 import java.time.LocalDateTime;
 
@@ -53,25 +53,21 @@ public class registroFragment extends Fragment {
 
         boolean hayError = false;
 
-        if (TextUtils.isEmpty(nombre)) {
+        if (nombre.isEmpty()) {
             binding.tilName.setError(getString(R.string.error_nombre_obligatorio));
             hayError = true;
         }
 
-        if (TextUtils.isEmpty(correo)) {
-            binding.tilEmail.setError(getString(R.string.error_correo_obligatorio));
-            hayError = true;
-        }
+        boolean correoValido = AuthValidator.validarCorreo(correo, binding.tilEmail, requireContext());
+        hayError = hayError || !correoValido;
 
-        if (TextUtils.isEmpty(contrasena)) {
-            binding.tilPassword.setError(getString(R.string.error_contrasena_obligatoria));
-            hayError = true;
-        }
+        boolean contrasenaValida = AuthValidator.validarPassword(contrasena, binding.tilPassword, requireContext());
+        hayError = hayError || !contrasenaValida;
 
-        if (TextUtils.isEmpty(confirmar)) {
+        if (confirmar.isEmpty()) {
             binding.tilConfirmPassword.setError(getString(R.string.error_confirmar_contrasena));
             hayError = true;
-        } else if (!TextUtils.isEmpty(contrasena) && !contrasena.equals(confirmar)) {
+        } else if (!contrasena.isEmpty() && !contrasena.equals(confirmar)) {
             binding.tilConfirmPassword.setError(getString(R.string.error_contrasenas_no_coinciden));
             hayError = true;
         }

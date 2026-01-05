@@ -19,4 +19,12 @@ public class UsuarioRepository {
     public void crearUsuario(UsuarioDto dto, Callback<UsuarioDto> callback) {
         usuarioApi.create(dto).enqueue(callback);
     }
+
+    public void iniciarSesion(String correo, String contrasena, Callback<UsuarioDto> callback) {
+        UsuarioDto credentials = UsuarioDto.builder()
+                .correo(correo)
+                .contrasenaUsuario(contrasena)
+                .build();
+        usuarioApi.login(credentials).enqueue(callback);
+    }
 }
