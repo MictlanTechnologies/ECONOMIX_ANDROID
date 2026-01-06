@@ -1,5 +1,6 @@
 package com.example.economix_android.network.api;
 
+import com.example.economix_android.network.dto.LoginRequest;
 import com.example.economix_android.network.dto.UsuarioDto;
 import java.util.List;
 import retrofit2.Call;
@@ -19,6 +20,9 @@ public interface UsuarioApi {
 
     @POST("/economix/api/usuarios")
     Call<UsuarioDto> create(@Body UsuarioDto dto);
+
+    @POST("/economix/api/usuarios/login")
+    Call<UsuarioDto> login(@Body LoginRequest request);
 
     @PUT("/economix/api/usuarios/{id}")
     Call<UsuarioDto> update(@Path("id") Integer id, @Body UsuarioDto dto);

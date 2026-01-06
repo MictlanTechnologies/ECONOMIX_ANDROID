@@ -1,5 +1,8 @@
 package com.example.economix_android.Model.data;
 
+import android.content.Context;
+
+import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.network.dto.GastoDto;
 import com.example.economix_android.network.dto.IngresoDto;
 import com.example.economix_android.network.repository.GastoRepository;
@@ -33,11 +36,6 @@ public final class DataRepository {
 
     private static final IngresoRepository ingresoRepository = new IngresoRepository();
     private static final GastoRepository gastoRepository = new GastoRepository();
-
-    private static final int DEFAULT_USER_ID = 1;
-    private static final int DEFAULT_FUENTE_ID = 1;
-    private static final int DEFAULT_CATEGORIA_ID = 1;
-    private static final int DEFAULT_PRESUPUESTO_ID = 1;
 
     private static final DateTimeFormatter UI_DATE_FORMAT =
             DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
@@ -120,12 +118,17 @@ public final class DataRepository {
         });
     }
 
-    public static void addIngreso(Ingreso ingreso, RepositoryCallback<Ingreso> callback) {
+    public static void addIngreso(Context context, Ingreso ingreso, RepositoryCallback<Ingreso> callback) {
         if (ingreso == null) {
             notifyError(callback, "El ingreso es inválido.");
             return;
         }
-        ingresoRepository.guardarIngreso(toDto(ingreso), new Callback<IngresoDto>() {
+        IngresoDto dto = toDto(ingreso, context);
+        if (dto == null) {
+            notifyError(callback, "Debes iniciar sesión antes de crear ingresos.");
+            return;
+        }
+        ingresoRepository.guardarIngreso(dto, new Callback<IngresoDto>() {
             @Override
             public void onResponse(Call<IngresoDto> call, Response<IngresoDto> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -149,12 +152,17 @@ public final class DataRepository {
         });
     }
 
-    public static void addGasto(Gasto gasto, RepositoryCallback<Gasto> callback) {
+    public static void addGasto(Context context, Gasto gasto, RepositoryCallback<Gasto> callback) {
         if (gasto == null) {
             notifyError(callback, "El gasto es inválido.");
             return;
         }
-        gastoRepository.guardarGasto(toDto(gasto), new Callback<GastoDto>() {
+        GastoDto dto = toDto(gasto, context);
+        if (dto == null) {
+            notifyError(callback, "Debes iniciar sesión antes de crear gastos.");
+            return;
+        }
+        gastoRepository.guardarGasto(dto, new Callback<GastoDto>() {
             @Override
             public void onResponse(Call<GastoDto> call, Response<GastoDto> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -290,11 +298,14 @@ public final class DataRepository {
         return new Gasto(dto.getIdGastos(), articulo, monto, fecha, periodo, recurrente);
     }
 
-    private static IngresoDto toDto(Ingreso ingreso) {
+    private static IngresoDto toDto(Ingreso ingreso, Context context) {
+        Integer userId = SessionManager.getUserId(context);
+        if (userId == null) {
+            return null;
+        }
         return IngresoDto.builder()
                 .idIngresos(ingreso.getId())
-                .idUsuario(DEFAULT_USER_ID)
-                .idFuente(DEFAULT_FUENTE_ID)
+                .idUsuario(userId)
                 .montoIngreso(parseMonto(ingreso.getDescripcion()))
                 .periodicidadIngreso(ingreso.getPeriodo())
                 .fechaIngresos(parseDate(ingreso.getFecha()))
@@ -302,12 +313,14 @@ public final class DataRepository {
                 .build();
     }
 
-    private static GastoDto toDto(Gasto gasto) {
+    private static GastoDto toDto(Gasto gasto, Context context) {
+        Integer userId = SessionManager.getUserId(context);
+        if (userId == null) {
+            return null;
+        }
         return GastoDto.builder()
                 .idGastos(gasto.getId())
-                .idUsuario(DEFAULT_USER_ID)
-                .idCategoria(DEFAULT_CATEGORIA_ID)
-                .idPresupuesto(DEFAULT_PRESUPUESTO_ID)
+                .idUsuario(userId)
                 .descripcionGasto(gasto.getArticulo())
                 .articuloGasto(gasto.getArticulo())
                 .montoGasto(parseMonto(gasto.getDescripcion()))

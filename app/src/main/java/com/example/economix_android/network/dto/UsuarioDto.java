@@ -1,11 +1,11 @@
 package com.example.economix_android.network.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -14,8 +14,6 @@ import java.time.LocalDateTime;
 public class UsuarioDto {
     private Integer idUsuario;
     private String perfilUsuario;
-    private String correo;
+    @SerializedName(value = "contrasenaUsuario", alternate = {"contraseñaUsuario"})
     private String contrasenaUsuario;
-    private LocalDateTime fechaRegistro;
-    private String estado;
 }

@@ -93,6 +93,7 @@
                     android:padding="20dp">
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilMontoAhorro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:boxBackgroundColor="@color/softWhite"
@@ -104,58 +105,17 @@
                         app:boxStrokeColor="@color/tealAccent">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etObjetivo"
+                            android:id="@+id/etMontoAhorro"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Objetivo"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        app:boxBackgroundColor="@color/softWhite"
-                        app:boxBackgroundMode="filled"
-                        app:boxCornerRadiusBottomEnd="20dp"
-                        app:boxCornerRadiusBottomStart="20dp"
-                        app:boxCornerRadiusTopEnd="20dp"
-                        app:boxCornerRadiusTopStart="20dp"
-                        app:boxStrokeColor="@color/tealAccent">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etDescripcion"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Descripción"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        app:boxBackgroundColor="@color/softWhite"
-                        app:boxBackgroundMode="filled"
-                        app:boxCornerRadiusBottomEnd="20dp"
-                        app:boxCornerRadiusBottomStart="20dp"
-                        app:boxCornerRadiusTopEnd="20dp"
-                        app:boxCornerRadiusTopStart="20dp"
-                        app:boxStrokeColor="@color/tealAccent">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etMeta"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Meta"
+                            android:hint="Monto de ahorro"
                             android:inputType="numberDecimal"
                             android:textColor="@android:color/black"
                             android:textColorHint="@android:color/darker_gray" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilPeriodoAhorro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
@@ -168,39 +128,67 @@
                         app:boxStrokeColor="@color/tealAccent">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etAhorrado"
+                            android:id="@+id/etPeriodoAhorro"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Ahorrado"
-                            android:inputType="numberDecimal"
+                            android:hint="Periodo de ahorro"
+                            android:inputType="text"
                             android:textColor="@android:color/black"
                             android:textColorHint="@android:color/darker_gray" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <TextView
-                        android:id="@+id/labelAvance"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="Avance"
-                        android:textAllCaps="false"
-                        android:textColor="@color/goldAccent"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.progressindicator.LinearProgressIndicator
-                        android:id="@+id/progresoAhorro"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilIngresoId"
                         android:layout_width="match_parent"
-                        android:layout_height="14dp"
-                        android:layout_marginTop="12dp"
-                        android:indeterminate="false"
-                        android:progress="70"
-                        app:indicatorColor="@color/goldAccent"
-                        app:trackColor="@color/softWhite"
-                        app:trackCornerRadius="7dp" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        app:boxBackgroundColor="@color/softWhite"
+                        app:boxBackgroundMode="filled"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/tealAccent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etIngresoId"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="ID de ingreso (opcional)"
+                            android:inputType="number"
+                            android:textColor="@android:color/black"
+                            android:textColorHint="@android:color/darker_gray" />
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/tvHistorialAhorro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="Historial de ahorro"
+                android:textColor="@color/softWhite"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvAhorrosVacio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Aún no registras ahorros."
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listaAhorros"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

@@ -15,6 +15,7 @@ import androidx.navigation.Navigation;
 
 import com.example.economix_android.R;
 import com.example.economix_android.activity_inicio;
+import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.databinding.FragmentUsuarioBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -32,6 +33,9 @@ public class usuario extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        String perfil = SessionManager.getPerfil(requireContext());
+        binding.tvNombre.setText(perfil != null ? perfil : getString(R.string.app_name));
 
         binding.btnInfo.setOnClickListener(v ->
                 Navigation.findNavController(v)
@@ -75,6 +79,7 @@ public class usuario extends Fragment {
     }
 
     private void cerrarSesion() {
+        SessionManager.clearSession(requireContext());
         Intent intent = new Intent(requireContext(), activity_inicio.class);
         intent.putExtra(activity_inicio.EXTRA_MOSTRAR_LOGIN, true);
         startActivity(intent);

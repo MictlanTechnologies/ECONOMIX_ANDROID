@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoriaGastoDto {
-    private Integer idCategoria;
-    private Integer idUsuario;
-    private String nombreCategoria;
-    private String descripcion;
-    private String color;
+public class LoginRequest {
+    private String perfilUsuario;
+    private String contrasenaUsuario;
 }

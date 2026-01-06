@@ -15,7 +15,6 @@ import java.time.LocalDate;
 public class IngresoDto {
     private Integer idIngresos;
     private Integer idUsuario;
-    private Integer idFuente;
     private BigDecimal montoIngreso;
     private String periodicidadIngreso;
     private LocalDate fechaIngresos;

@@ -103,7 +103,7 @@ public class ingresosFragment extends Fragment {
 
         Ingreso ingreso = new Ingreso(null, articulo, montoNormalizado, fecha, periodo, recurrente);
         setIngresoButtonsEnabled(false);
-        DataRepository.addIngreso(ingreso, new DataRepository.RepositoryCallback<Ingreso>() {
+        DataRepository.addIngreso(requireContext(), ingreso, new DataRepository.RepositoryCallback<Ingreso>() {
             @Override
             public void onSuccess(Ingreso result) {
                 if (!isAdded()) {

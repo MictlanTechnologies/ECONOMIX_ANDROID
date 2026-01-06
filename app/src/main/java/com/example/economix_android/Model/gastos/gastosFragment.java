@@ -103,7 +103,7 @@ public class gastosFragment extends Fragment {
 
         Gasto gasto = new Gasto(null, articulo, montoNormalizado, fecha, periodo, recurrente);
         setGastoButtonsEnabled(false);
-        DataRepository.addGasto(gasto, new DataRepository.RepositoryCallback<Gasto>() {
+        DataRepository.addGasto(requireContext(), gasto, new DataRepository.RepositoryCallback<Gasto>() {
             @Override
             public void onSuccess(Gasto result) {
                 if (!isAdded()) {

@@ -16,8 +16,6 @@ import com.example.economix_android.databinding.FragmentRegistroBinding;
 import com.example.economix_android.network.dto.UsuarioDto;
 import com.example.economix_android.network.repository.UsuarioRepository;
 
-import java.time.LocalDateTime;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,20 +44,14 @@ public class registroFragment extends Fragment {
     private void registrarUsuario() {
         limpiarErrores();
 
-        String nombre = obtenerTexto(binding.etName);
-        String correo = obtenerTexto(binding.etEmail);
+        String perfil = obtenerTexto(binding.etPerfil);
         String contrasena = obtenerTexto(binding.etPassword);
         String confirmar = obtenerTexto(binding.etConfirmPassword);
 
         boolean hayError = false;
 
-        if (TextUtils.isEmpty(nombre)) {
-            binding.tilName.setError(getString(R.string.error_nombre_obligatorio));
-            hayError = true;
-        }
-
-        if (TextUtils.isEmpty(correo)) {
-            binding.tilEmail.setError(getString(R.string.error_correo_obligatorio));
+        if (TextUtils.isEmpty(perfil)) {
+            binding.tilPerfil.setError(getString(R.string.error_perfil_obligatorio));
             hayError = true;
         }
 
@@ -83,11 +75,8 @@ public class registroFragment extends Fragment {
         binding.btnSignUp.setEnabled(false);
 
         UsuarioDto nuevoUsuario = UsuarioDto.builder()
-                .perfilUsuario(nombre.trim())
-                .correo(correo.trim())
+                .perfilUsuario(perfil.trim())
                 .contrasenaUsuario(contrasena)
-                .fechaRegistro(LocalDateTime.now())
-                .estado("ACTIVO")
                 .build();
 
         usuarioRepository.crearUsuario(nuevoUsuario, new Callback<UsuarioDto>() {
@@ -103,8 +92,8 @@ public class registroFragment extends Fragment {
                     Toast.makeText(requireContext(), getString(R.string.mensaje_registro_exitoso), Toast.LENGTH_SHORT).show();
                     requireActivity().getOnBackPressedDispatcher().onBackPressed();
                 } else if (response.code() == 409) {
-                    binding.tilEmail.setError(getString(R.string.error_correo_registrado));
-                    Toast.makeText(requireContext(), getString(R.string.error_correo_registrado), Toast.LENGTH_SHORT).show();
+                    binding.tilPerfil.setError(getString(R.string.error_perfil_registrado));
+                    Toast.makeText(requireContext(), getString(R.string.error_perfil_registrado), Toast.LENGTH_SHORT).show();
                 } else {
                     mostrarMensajeError(null);
                 }
@@ -124,8 +113,7 @@ public class registroFragment extends Fragment {
     }
 
     private void limpiarErrores() {
-        binding.tilName.setError(null);
-        binding.tilEmail.setError(null);
+        binding.tilPerfil.setError(null);
         binding.tilPassword.setError(null);
         binding.tilConfirmPassword.setError(null);
     }

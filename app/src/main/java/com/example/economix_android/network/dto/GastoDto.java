@@ -1,5 +1,7 @@
 package com.example.economix_android.network.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,9 +17,9 @@ import java.time.LocalDate;
 public class GastoDto {
     private Integer idGastos;
     private Integer idUsuario;
-    private Integer idCategoria;
-    private Integer idPresupuesto;
+    @SerializedName(value = "descripcionGasto", alternate = {"descripciónGasto"})
     private String descripcionGasto;
+    @SerializedName(value = "articuloGasto", alternate = {"artículoGasto"})
     private String articuloGasto;
     private BigDecimal montoGasto;
     private LocalDate fechaGastos;
