@@ -14,9 +14,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,6 +35,8 @@ public final class DataRepository {
     private static final List<Ingreso> ingresosRecurrentes = new ArrayList<>();
     private static final List<Gasto> gastos = new ArrayList<>();
     private static final List<Gasto> gastosRecurrentes = new ArrayList<>();
+    private static final Set<Integer> ingresosRecurrentesIds = new HashSet<>();
+    private static final Set<Integer> gastosRecurrentesIds = new HashSet<>();
 
     private static final IngresoRepository ingresoRepository = new IngresoRepository();
     private static final GastoRepository gastoRepository = new GastoRepository();
@@ -132,9 +136,12 @@ public final class DataRepository {
             @Override
             public void onResponse(Call<IngresoDto> call, Response<IngresoDto> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    boolean recurrente = ingreso.isRecurrente();
                     Ingreso creado = fromDto(response.body());
                     if (creado != null) {
+                        creado = marcarIngresoRecurrente(creado, recurrente);
                         ingresos.add(creado);
+                        actualizarIngresoRecurrenteIds(creado, recurrente);
                         if (creado.isRecurrente()) {
                             ingresosRecurrentes.add(creado);
                         }
@@ -166,9 +173,12 @@ public final class DataRepository {
             @Override
             public void onResponse(Call<GastoDto> call, Response<GastoDto> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    boolean recurrente = gasto.isRecurrente();
                     Gasto creado = fromDto(response.body());
                     if (creado != null) {
+                        creado = marcarGastoRecurrente(creado, recurrente);
                         gastos.add(creado);
+                        actualizarGastoRecurrenteIds(creado, recurrente);
                         if (creado.isRecurrente()) {
                             gastosRecurrentes.add(creado);
                         }
@@ -200,6 +210,7 @@ public final class DataRepository {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
+                    actualizarIngresoRecurrenteIds(ultimo, false);
                     eliminarIngresoPorId(ultimo.getId());
                     notifySuccess(callback, true);
                 } else {
@@ -228,6 +239,7 @@ public final class DataRepository {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
+                    actualizarGastoRecurrenteIds(ultimo, false);
                     eliminarGastoPorId(ultimo.getId());
                     notifySuccess(callback, true);
                 } else {
@@ -341,7 +353,7 @@ public final class DataRepository {
         String monto = montoToString(dto.getMontoIngreso());
         String fecha = formatDate(dto.getFechaIngresos());
         String periodo = dto.getPeriodicidadIngreso();
-        boolean recurrente = esRecurrente(periodo);
+        boolean recurrente = dto.getIdIngresos() != null && ingresosRecurrentesIds.contains(dto.getIdIngresos());
         return new Ingreso(dto.getIdIngresos(), articulo, monto, fecha, periodo, recurrente);
     }
 
@@ -353,7 +365,7 @@ public final class DataRepository {
         String monto = montoToString(dto.getMontoGasto());
         String fecha = formatDate(dto.getFechaGastos());
         String periodo = dto.getPeriodoGastos();
-        boolean recurrente = esRecurrente(periodo);
+        boolean recurrente = dto.getIdGastos() != null && gastosRecurrentesIds.contains(dto.getIdGastos());
         return new Gasto(dto.getIdGastos(), articulo, monto, fecha, periodo, recurrente);
     }
 
@@ -388,8 +400,42 @@ public final class DataRepository {
                 .build();
     }
 
-    private static boolean esRecurrente(String periodo) {
-        return periodo != null && !periodo.trim().isEmpty();
+    private static Ingreso marcarIngresoRecurrente(Ingreso ingreso, boolean recurrente) {
+        if (ingreso == null) {
+            return null;
+        }
+        return new Ingreso(ingreso.getId(), ingreso.getArticulo(), ingreso.getDescripcion(),
+                ingreso.getFecha(), ingreso.getPeriodo(), recurrente);
+    }
+
+    private static Gasto marcarGastoRecurrente(Gasto gasto, boolean recurrente) {
+        if (gasto == null) {
+            return null;
+        }
+        return new Gasto(gasto.getId(), gasto.getArticulo(), gasto.getDescripcion(),
+                gasto.getFecha(), gasto.getPeriodo(), recurrente);
+    }
+
+    private static void actualizarIngresoRecurrenteIds(Ingreso ingreso, boolean recurrente) {
+        if (ingreso == null || ingreso.getId() == null) {
+            return;
+        }
+        if (recurrente) {
+            ingresosRecurrentesIds.add(ingreso.getId());
+        } else {
+            ingresosRecurrentesIds.remove(ingreso.getId());
+        }
+    }
+
+    private static void actualizarGastoRecurrenteIds(Gasto gasto, boolean recurrente) {
+        if (gasto == null || gasto.getId() == null) {
+            return;
+        }
+        if (recurrente) {
+            gastosRecurrentesIds.add(gasto.getId());
+        } else {
+            gastosRecurrentesIds.remove(gasto.getId());
+        }
     }
 
     private static String formatDate(LocalDate date) {
