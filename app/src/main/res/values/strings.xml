@@ -49,7 +49,7 @@
     <string name="mensaje_ingreso_eliminado">Se eliminó el último ingreso guardado.</string>
     <string name="error_sin_ingresos">No hay ingresos registrados todavía.</string>
     <string name="titulo_ayuda_gastos">Registro de gastos</string>
-    <string name="mensaje_ayuda_gastos">Completa la información del gasto y marca la casilla si es recurrente para verlo en la lista correspondiente.</string>
+    <string name="mensaje_ayuda_gastos">Completa la información del gasto, selecciona un ingreso y marca la casilla si es recurrente para verlo en la lista correspondiente.</string>
     <string name="error_campos_obligatorios_gasto">Completa artículo, fecha y periodo para guardar.</string>
     <string name="error_monto_gasto_invalido">Ingresa un monto numérico válido en la descripción.</string>
     <string name="mensaje_gasto_guardado">Gasto guardado correctamente.</string>
@@ -104,9 +104,9 @@
     <string name="error_monto_ahorro_obligatorio">Ingresa un monto de ahorro válido.</string>
     <string name="error_periodo_ahorro_obligatorio">Ingresa el periodo del ahorro.</string>
     <string name="error_ingreso_id">Ingresa un ID de ingreso válido.</string>
-    <string name="label_meta_ahorro">Meta de ahorro</string>
+    <string name="label_meta_ahorro">Nombre del ahorro</string>
     <string name="label_precio_objetivo">Precio objetivo</string>
-    <string name="label_avance_ahorro">Avance: $0 de $0</string>
+    <string name="label_avance_ahorro">Avance: $0 de $0 (0%)</string>
     <string name="label_selecciona_ingreso">Selecciona un ingreso</string>
     <string name="label_disponible_ingreso">Disponible: $0</string>
     <string name="label_monto_aporte">Monto a aportar</string>
@@ -115,8 +115,9 @@
     <string name="error_ingreso_obligatorio">Selecciona un ingreso válido.</string>
     <string name="error_aporte_obligatorio">Ingresa un monto a aportar válido.</string>
     <string name="error_aporte_excede_ingreso">El aporte no puede superar el ingreso disponible.</string>
+    <string name="error_gasto_excede_ingreso">El gasto no puede superar el ingreso disponible.</string>
     <string name="label_ingreso_item">Ingreso: %1$s - $%2$s</string>
-    <string name="label_progreso_ahorro">Avance: $%1$s de $%2$s</string>
+    <string name="label_progreso_ahorro">Avance: $%1$s de $%2$s (%3$d%%)</string>
     <string name="label_disponible_valor">Disponible: $%1$s</string>
     <string name="error_sin_ahorros">No hay ahorros registrados.</string>
     <string name="label_monto_ahorro_item">Monto: %1$s</string>

@@ -409,7 +409,7 @@ public class ahorroFragment extends Fragment {
             binding.etPrecioMeta.setText(precio);
             metaPrecio = parseMontoSeguro(precio);
         }
-        actualizarTextoProgreso(BigDecimal.ZERO, metaPrecio);
+        actualizarTextoProgreso(BigDecimal.ZERO, metaPrecio, 0);
     }
 
     private void guardarMeta(String meta, BigDecimal precio) {
@@ -470,7 +470,6 @@ public class ahorroFragment extends Fragment {
         if (objetivo.compareTo(BigDecimal.ZERO) <= 0) {
             objetivo = parseMontoSeguro(obtenerTexto(binding.etPrecioMeta));
         }
-        actualizarTextoProgreso(total, objetivo);
         int progress = 0;
         if (objetivo.compareTo(BigDecimal.ZERO) > 0) {
             progress = total.multiply(BigDecimal.valueOf(100))
@@ -478,13 +477,14 @@ public class ahorroFragment extends Fragment {
                     .intValue();
             progress = Math.min(progress, 100);
         }
+        actualizarTextoProgreso(total, objetivo, progress);
         binding.progresoAhorro.setProgress(progress);
     }
 
-    private void actualizarTextoProgreso(BigDecimal total, BigDecimal objetivo) {
+    private void actualizarTextoProgreso(BigDecimal total, BigDecimal objetivo, int porcentaje) {
         String totalTexto = total.stripTrailingZeros().toPlainString();
         String objetivoTexto = objetivo.stripTrailingZeros().toPlainString();
-        binding.tvProgresoAhorro.setText(getString(R.string.label_progreso_ahorro, totalTexto, objetivoTexto));
+        binding.tvProgresoAhorro.setText(getString(R.string.label_progreso_ahorro, totalTexto, objetivoTexto, porcentaje));
     }
 
     private void navigateSafely(View view, int destinationId) {

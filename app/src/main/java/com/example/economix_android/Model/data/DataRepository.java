@@ -14,9 +14,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -37,6 +39,7 @@ public final class DataRepository {
     private static final List<Gasto> gastosRecurrentes = new ArrayList<>();
     private static final Set<Integer> ingresosRecurrentesIds = new HashSet<>();
     private static final Set<Integer> gastosRecurrentesIds = new HashSet<>();
+    private static final Map<Integer, BigDecimal> ingresosOriginales = new HashMap<>();
 
     private static final IngresoRepository ingresoRepository = new IngresoRepository();
     private static final GastoRepository gastoRepository = new GastoRepository();
@@ -50,6 +53,26 @@ public final class DataRepository {
 
     public static List<Ingreso> getIngresos() {
         return Collections.unmodifiableList(ingresos);
+    }
+
+    public static List<Ingreso> getIngresosHistorial() {
+        List<Ingreso> historial = new ArrayList<>();
+        for (Ingreso ingreso : ingresos) {
+            String monto = ingreso.getDescripcion();
+            if (ingreso.getId() != null) {
+                BigDecimal original = ingresosOriginales.get(ingreso.getId());
+                if (original != null) {
+                    monto = original.stripTrailingZeros().toPlainString();
+                }
+            }
+            historial.add(new Ingreso(ingreso.getId(),
+                    ingreso.getArticulo(),
+                    monto,
+                    ingreso.getFecha(),
+                    ingreso.getPeriodo(),
+                    ingreso.isRecurrente()));
+        }
+        return Collections.unmodifiableList(historial);
     }
 
     public static List<Ingreso> getIngresosRecurrentes() {
@@ -80,6 +103,7 @@ public final class DataRepository {
                         }
                     }
                     replaceIngresos(nuevos);
+                    registrarIngresosOriginales(nuevos);
                     notifySuccess(callback, getIngresos());
                 } else {
                     notifyError(callback, "No se pudo obtener los ingresos. Código: " + response.code());
@@ -145,6 +169,7 @@ public final class DataRepository {
                         if (creado.isRecurrente()) {
                             ingresosRecurrentes.add(creado);
                         }
+                        registrarIngresoOriginal(creado);
                     }
                     notifySuccess(callback, creado);
                 } else {
@@ -306,6 +331,7 @@ public final class DataRepository {
                 ingresosRecurrentes.add(ingreso);
             }
         }
+        pruneIngresosOriginales(nuevos);
     }
 
     private static void replaceGastos(List<Gasto> nuevos) {
@@ -322,6 +348,7 @@ public final class DataRepository {
     private static void eliminarIngresoPorId(Integer id) {
         ingresos.removeIf(ingreso -> Objects.equals(ingreso.getId(), id));
         ingresosRecurrentes.removeIf(ingreso -> Objects.equals(ingreso.getId(), id));
+        ingresosOriginales.remove(id);
     }
 
     private static void reemplazarIngreso(Ingreso actualizado) {
@@ -425,6 +452,33 @@ public final class DataRepository {
         } else {
             ingresosRecurrentesIds.remove(ingreso.getId());
         }
+    }
+
+    private static void registrarIngresosOriginales(List<Ingreso> nuevos) {
+        for (Ingreso ingreso : nuevos) {
+            registrarIngresoOriginal(ingreso);
+        }
+    }
+
+    private static void registrarIngresoOriginal(Ingreso ingreso) {
+        if (ingreso == null || ingreso.getId() == null) {
+            return;
+        }
+        BigDecimal monto = parseMonto(ingreso.getDescripcion());
+        BigDecimal previo = ingresosOriginales.get(ingreso.getId());
+        if (previo == null || monto.compareTo(previo) > 0) {
+            ingresosOriginales.put(ingreso.getId(), monto);
+        }
+    }
+
+    private static void pruneIngresosOriginales(List<Ingreso> nuevos) {
+        Set<Integer> ids = new HashSet<>();
+        for (Ingreso ingreso : nuevos) {
+            if (ingreso.getId() != null) {
+                ids.add(ingreso.getId());
+            }
+        }
+        ingresosOriginales.keySet().retainAll(ids);
     }
 
     private static void actualizarGastoRecurrenteIds(Gasto gasto, boolean recurrente) {

@@ -128,7 +128,7 @@ public class graficaCircularIngresosVsGastos extends Fragment {
 
         PieChart chart = binding.pieChartIngresosVsGastos;
 
-        float ingresos = sumarMontos(DataRepository.getIngresos());
+        float ingresos = sumarMontos(DataRepository.getIngresosHistorial());
         float gastos = sumarMontos(DataRepository.getGastos());
 
         if (ingresos <= 0f && gastos <= 0f) {

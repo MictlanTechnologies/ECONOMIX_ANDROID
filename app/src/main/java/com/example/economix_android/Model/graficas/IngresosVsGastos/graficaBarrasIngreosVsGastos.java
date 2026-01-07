@@ -146,7 +146,7 @@ public class graficaBarrasIngreosVsGastos extends Fragment {
 
         BarChart chart = binding.barChartIngresosVsGastos;
 
-        Map<String, Float> ingresosPorPeriodo = agruparPorPeriodo(DataRepository.getIngresos());
+        Map<String, Float> ingresosPorPeriodo = agruparPorPeriodo(DataRepository.getIngresosHistorial());
         Map<String, Float> gastosPorPeriodo = agruparPorPeriodo(DataRepository.getGastos());
 
         LinkedHashSet<String> periodos = new LinkedHashSet<>();
