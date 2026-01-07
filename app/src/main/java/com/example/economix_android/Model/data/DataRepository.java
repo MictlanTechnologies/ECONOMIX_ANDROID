@@ -242,6 +242,49 @@ public final class DataRepository {
         });
     }
 
+    public static void updateIngresoMonto(Context context, Ingreso ingreso, BigDecimal nuevoMonto,
+                                          RepositoryCallback<Ingreso> callback) {
+        if (ingreso == null || ingreso.getId() == null) {
+            notifyError(callback, "El ingreso no es válido para actualizar.");
+            return;
+        }
+        if (nuevoMonto == null) {
+            notifyError(callback, "El monto actualizado es inválido.");
+            return;
+        }
+        String montoNormalizado = nuevoMonto.stripTrailingZeros().toPlainString();
+        Ingreso actualizado = new Ingreso(ingreso.getId(),
+                ingreso.getArticulo(),
+                montoNormalizado,
+                ingreso.getFecha(),
+                ingreso.getPeriodo(),
+                ingreso.isRecurrente());
+        IngresoDto dto = toDto(actualizado, context);
+        if (dto == null) {
+            notifyError(callback, "Debes iniciar sesión antes de actualizar ingresos.");
+            return;
+        }
+        ingresoRepository.actualizarIngreso(ingreso.getId(), dto, new Callback<IngresoDto>() {
+            @Override
+            public void onResponse(Call<IngresoDto> call, Response<IngresoDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Ingreso actualizadoRemoto = fromDto(response.body());
+                    if (actualizadoRemoto != null) {
+                        reemplazarIngreso(actualizadoRemoto);
+                    }
+                    notifySuccess(callback, actualizadoRemoto);
+                } else {
+                    notifyError(callback, "No se pudo actualizar el ingreso. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<IngresoDto> call, Throwable t) {
+                notifyError(callback, "Error al actualizar el ingreso en el servidor.");
+            }
+        });
+    }
+
     private static void replaceIngresos(List<Ingreso> nuevos) {
         ingresos.clear();
         ingresos.addAll(nuevos);
@@ -267,6 +310,22 @@ public final class DataRepository {
     private static void eliminarIngresoPorId(Integer id) {
         ingresos.removeIf(ingreso -> Objects.equals(ingreso.getId(), id));
         ingresosRecurrentes.removeIf(ingreso -> Objects.equals(ingreso.getId(), id));
+    }
+
+    private static void reemplazarIngreso(Ingreso actualizado) {
+        if (actualizado == null) {
+            return;
+        }
+        for (int i = 0; i < ingresos.size(); i++) {
+            if (Objects.equals(ingresos.get(i).getId(), actualizado.getId())) {
+                ingresos.set(i, actualizado);
+                break;
+            }
+        }
+        ingresosRecurrentes.removeIf(ingreso -> Objects.equals(ingreso.getId(), actualizado.getId()));
+        if (actualizado.isRecurrente()) {
+            ingresosRecurrentes.add(actualizado);
+        }
     }
 
     private static void eliminarGastoPorId(Integer id) {

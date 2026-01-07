@@ -93,7 +93,7 @@
                     android:padding="20dp">
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/tilMontoAhorro"
+                        android:id="@+id/tilMetaAhorro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:boxBackgroundColor="@color/softWhite"
@@ -105,40 +105,17 @@
                         app:boxStrokeColor="@color/tealAccent">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etMontoAhorro"
+                            android:id="@+id/etMetaAhorro"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Monto de ahorro"
-                            android:inputType="numberDecimal"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/tilPeriodoAhorro"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        app:boxBackgroundColor="@color/softWhite"
-                        app:boxBackgroundMode="filled"
-                        app:boxCornerRadiusBottomEnd="20dp"
-                        app:boxCornerRadiusBottomStart="20dp"
-                        app:boxCornerRadiusTopEnd="20dp"
-                        app:boxCornerRadiusTopStart="20dp"
-                        app:boxStrokeColor="@color/tealAccent">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etPeriodoAhorro"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Periodo de ahorro"
+                            android:hint="@string/label_meta_ahorro"
                             android:inputType="text"
                             android:textColor="@android:color/black"
                             android:textColorHint="@android:color/darker_gray" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/tilIngresoId"
+                        android:id="@+id/tilPrecioMeta"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
@@ -151,11 +128,84 @@
                         app:boxStrokeColor="@color/tealAccent">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etIngresoId"
+                            android:id="@+id/etPrecioMeta"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="ID de ingreso (opcional)"
-                            android:inputType="number"
+                            android:hint="@string/label_precio_objetivo"
+                            android:inputType="numberDecimal"
+                            android:textColor="@android:color/black"
+                            android:textColorHint="@android:color/darker_gray" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/tvProgresoAhorro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/label_avance_ahorro"
+                        android:textColor="@color/white"
+                        android:textSize="14sp" />
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progresoAhorro"
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:layout_marginTop="8dp"
+                        android:indeterminate="false"
+                        app:trackColor="@color/tealSurfaceVariant"
+                        app:indicatorColor="@color/tealAccent" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilIngresoSeleccion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        app:boxBackgroundColor="@color/softWhite"
+                        app:boxBackgroundMode="filled"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/tealAccent">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/etIngresoSeleccion"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/label_selecciona_ingreso"
+                            android:inputType="none"
+                            android:textColor="@android:color/black"
+                            android:textColorHint="@android:color/darker_gray" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/tvIngresoDisponible"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/label_disponible_ingreso"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilAporteAhorro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        app:boxBackgroundColor="@color/softWhite"
+                        app:boxBackgroundMode="filled"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/tealAccent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etAporteAhorro"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/label_monto_aporte"
+                            android:inputType="numberDecimal"
                             android:textColor="@android:color/black"
                             android:textColorHint="@android:color/darker_gray" />
                     </com.google.android.material.textfield.TextInputLayout>
