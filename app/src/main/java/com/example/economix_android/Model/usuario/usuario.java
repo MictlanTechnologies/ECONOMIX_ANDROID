@@ -1,11 +1,15 @@
 package com.example.economix_android.Model.usuario;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -21,7 +25,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class usuario extends Fragment {
 
+    private static final String PREFS_USUARIO = "usuario_prefs";
+    private static final String KEY_FOTO_URI = "foto_perfil_uri";
+
     private FragmentUsuarioBinding binding;
+    private ActivityResultLauncher<String[]> seleccionFotoLauncher;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -36,6 +44,11 @@ public class usuario extends Fragment {
 
         String perfil = SessionManager.getPerfil(requireContext());
         binding.tvNombre.setText(perfil != null ? perfil : getString(R.string.app_name));
+
+        cargarFotoPerfil();
+
+        binding.avatarContainer.setOnClickListener(v -> seleccionarFotoPerfil());
+        binding.imgAvatar.setOnClickListener(v -> seleccionarFotoPerfil());
 
         binding.btnInfo.setOnClickListener(v ->
                 Navigation.findNavController(v)
@@ -60,6 +73,42 @@ public class usuario extends Fragment {
         binding.navIngresos.setOnClickListener(bottomNavListener);
         binding.navAhorro.setOnClickListener(bottomNavListener);
         binding.navGraficas.setOnClickListener(bottomNavListener);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        seleccionFotoLauncher = registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
+            if (uri == null) {
+                return;
+            }
+            requireContext().getContentResolver().takePersistableUriPermission(
+                    uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            guardarFotoPerfil(uri);
+            binding.imgAvatar.setImageURI(uri);
+        });
+    }
+
+    private void seleccionarFotoPerfil() {
+        if (seleccionFotoLauncher != null) {
+            seleccionFotoLauncher.launch(new String[]{"image/*"});
+        }
+    }
+
+    private void cargarFotoPerfil() {
+        SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_USUARIO, android.content.Context.MODE_PRIVATE);
+        String uriString = prefs.getString(KEY_FOTO_URI, null);
+        if (uriString != null && !uriString.isEmpty()) {
+            binding.imgAvatar.setImageURI(Uri.parse(uriString));
+        }
+    }
+
+    private void guardarFotoPerfil(Uri uri) {
+        if (uri == null) {
+            return;
+        }
+        SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_USUARIO, android.content.Context.MODE_PRIVATE);
+        prefs.edit().putString(KEY_FOTO_URI, uri.toString()).apply();
     }
 
     private void navigateSafely(View view, int destinationId) {

@@ -233,11 +233,18 @@ public class gastosFragment extends Fragment {
         ingresosAdapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_dropdown_item_1line, new ArrayList<>());
         ingresoView.setAdapter(ingresosAdapter);
+        ingresoView.setThreshold(0);
         ingresoView.setOnItemClickListener((parent, view, position, id) -> {
             if (position >= 0 && position < ingresosDisponibles.size()) {
                 ingresoSeleccionado = ingresosDisponibles.get(position);
                 binding.tilIngresoSeleccionGasto.setError(null);
                 actualizarIngresoDisponible();
+            }
+        });
+        ingresoView.setOnClickListener(v -> ingresoView.showDropDown());
+        ingresoView.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                ingresoView.showDropDown();
             }
         });
     }
