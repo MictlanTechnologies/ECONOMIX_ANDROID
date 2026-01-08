@@ -1,5 +1,6 @@
 package com.example.economix_android.Model.ahorro;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -29,11 +30,15 @@ import com.example.economix_android.network.dto.AhorroDto;
 import com.example.economix_android.network.repository.AhorroRepository;
 import com.example.economix_android.util.ProfileImageUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -57,6 +62,7 @@ public class ahorroFragment extends Fragment {
     private Ingreso ingresoSeleccionado;
     private BigDecimal metaPrecio = BigDecimal.ZERO;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault());
+    private final SimpleDateFormat uiDateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -95,6 +101,7 @@ public class ahorroFragment extends Fragment {
 
         configurarLista();
         configurarIngresos();
+        setupDatePicker(binding.etFechaAhorro);
         cargarMetaGuardada();
         cargarIngresos();
         cargarAhorros();
@@ -225,6 +232,7 @@ public class ahorroFragment extends Fragment {
         limpiarErrores();
         String meta = obtenerTexto(binding.etMetaAhorro);
         String precioTexto = obtenerTexto(binding.etPrecioMeta);
+        String fechaTexto = obtenerTexto(binding.etFechaAhorro);
         String aporteTexto = obtenerTexto(binding.etAporteAhorro);
 
         boolean hayError = false;
@@ -241,6 +249,12 @@ public class ahorroFragment extends Fragment {
 
         if (ingresoSeleccionado == null) {
             binding.tilIngresoSeleccion.setError(getString(R.string.error_ingreso_obligatorio));
+            hayError = true;
+        }
+
+        LocalDate fechaAhorro = parseFechaAhorro(fechaTexto);
+        if (fechaAhorro == null) {
+            binding.tilFechaAhorro.setError(getString(R.string.error_fecha_ahorro));
             hayError = true;
         }
 
@@ -275,7 +289,7 @@ public class ahorroFragment extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
-                crearAhorro(meta, aporte, result, montoOriginal);
+                crearAhorro(meta, aporte, fechaAhorro, result, montoOriginal);
             }
 
             @Override
@@ -289,11 +303,13 @@ public class ahorroFragment extends Fragment {
         });
     }
 
-    private void crearAhorro(String meta, BigDecimal aporte, Ingreso ingresoActualizado, BigDecimal montoOriginal) {
+    private void crearAhorro(String meta, BigDecimal aporte, LocalDate fechaAhorro,
+                             Ingreso ingresoActualizado, BigDecimal montoOriginal) {
         AhorroDto dto = AhorroDto.builder()
                 .montoAhorro(aporte)
                 .periodoTAhorro(meta)
                 .idIngresos(ingresoActualizado != null ? ingresoActualizado.getId() : null)
+                .fechaAhorro(fechaAhorro)
                 .build();
 
         ahorroRepository.crearAhorro(dto, new Callback<AhorroDto>() {
@@ -384,17 +400,80 @@ public class ahorroFragment extends Fragment {
     }
 
     private void limpiarCampos() {
+        SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_AHORRO, Context.MODE_PRIVATE);
+        prefs.edit()
+                .remove(KEY_META_NOMBRE)
+                .remove(KEY_META_PRECIO)
+                .apply();
+        binding.etMetaAhorro.setText("");
+        binding.etPrecioMeta.setText("");
+        binding.etFechaAhorro.setText("");
         binding.etAporteAhorro.setText("");
         binding.etIngresoSeleccion.setText("");
         ingresoSeleccionado = null;
+        metaPrecio = BigDecimal.ZERO;
         actualizarIngresoDisponible();
+        actualizarTextoProgreso(BigDecimal.ZERO, BigDecimal.ZERO, 0);
+        limpiarErrores();
     }
 
     private void limpiarErrores() {
         binding.tilMetaAhorro.setError(null);
         binding.tilPrecioMeta.setError(null);
         binding.tilIngresoSeleccion.setError(null);
+        binding.tilFechaAhorro.setError(null);
         binding.tilAporteAhorro.setError(null);
+    }
+
+    private LocalDate parseFechaAhorro(String fechaTexto) {
+        if (TextUtils.isEmpty(fechaTexto)) {
+            return null;
+        }
+        try {
+            return LocalDate.parse(fechaTexto, DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault()));
+        } catch (DateTimeParseException ignored) {
+            return null;
+        }
+    }
+
+    private void setupDatePicker(TextInputEditText editText) {
+        editText.setShowSoftInputOnFocus(false);
+        editText.setOnClickListener(v -> showDatePicker(editText));
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                showDatePicker(editText);
+            }
+        });
+    }
+
+    private void showDatePicker(TextInputEditText editText) {
+        Calendar calendar = Calendar.getInstance();
+        String currentText = editText.getText() != null ? editText.getText().toString() : "";
+
+        if (!currentText.isEmpty()) {
+            try {
+                java.util.Date parsedDate = uiDateFormatter.parse(currentText);
+                if (parsedDate != null) {
+                    calendar.setTime(parsedDate);
+                }
+            } catch (ParseException ignored) {
+            }
+        }
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                requireContext(),
+                (view, year, month, dayOfMonth) -> {
+                    Calendar selectedDate = Calendar.getInstance();
+                    selectedDate.set(year, month, dayOfMonth);
+                    editText.setText(uiDateFormatter.format(selectedDate.getTime()));
+                    binding.tilFechaAhorro.setError(null);
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+
+        editText.clearFocus();
+        datePickerDialog.show();
     }
 
     private void setButtonsEnabled(boolean enabled) {

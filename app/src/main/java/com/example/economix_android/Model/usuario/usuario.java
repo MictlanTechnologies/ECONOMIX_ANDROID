@@ -81,7 +81,7 @@ public class usuario extends Fragment {
             requireContext().getContentResolver().takePersistableUriPermission(
                     uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
             SessionManager.saveProfilePhoto(requireContext(), uri);
-            binding.imgAvatar.setImageURI(uri);
+            ProfileImageUtils.applyProfileImage(requireContext(), binding.imgAvatar, R.drawable.usuariog);
         });
     }
 

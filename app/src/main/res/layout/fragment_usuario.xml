@@ -66,8 +66,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="Avatar del usuario"
-            android:padding="28dp"
-            android:scaleType="fitCenter"
+            android:padding="12dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/usuariog"
             android:tint="@color/white"
             tools:ignore="UseAppTint" />

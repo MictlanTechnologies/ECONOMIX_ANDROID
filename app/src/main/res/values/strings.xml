@@ -107,12 +107,14 @@
     <string name="error_gasto_id">Ingresa un ID de gasto válido.</string>
     <string name="label_meta_ahorro">Nombre del ahorro</string>
     <string name="label_precio_objetivo">Precio objetivo</string>
+    <string name="label_fecha_ahorro">Fecha</string>
     <string name="label_avance_ahorro">Avance: $0 de $0 (0%)</string>
     <string name="label_selecciona_ingreso">Selecciona un ingreso</string>
     <string name="label_disponible_ingreso">Disponible: $0</string>
     <string name="label_monto_aporte">Monto a aportar</string>
     <string name="error_meta_obligatoria">Ingresa una meta de ahorro.</string>
     <string name="error_precio_objetivo_obligatorio">Ingresa un precio objetivo válido.</string>
+    <string name="error_fecha_ahorro">Selecciona una fecha válida.</string>
     <string name="error_ingreso_obligatorio">Selecciona un ingreso válido.</string>
     <string name="error_aporte_obligatorio">Ingresa un monto a aportar válido.</string>
     <string name="error_aporte_excede_ingreso">El aporte no puede superar el ingreso disponible.</string>
