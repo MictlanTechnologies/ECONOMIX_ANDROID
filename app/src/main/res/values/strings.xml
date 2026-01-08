@@ -104,6 +104,7 @@
     <string name="error_monto_ahorro_obligatorio">Ingresa un monto de ahorro válido.</string>
     <string name="error_periodo_ahorro_obligatorio">Ingresa el periodo del ahorro.</string>
     <string name="error_ingreso_id">Ingresa un ID de ingreso válido.</string>
+    <string name="error_gasto_id">Ingresa un ID de gasto válido.</string>
     <string name="label_meta_ahorro">Nombre del ahorro</string>
     <string name="label_precio_objetivo">Precio objetivo</string>
     <string name="label_avance_ahorro">Avance: $0 de $0 (0%)</string>
@@ -117,8 +118,19 @@
     <string name="error_aporte_excede_ingreso">El aporte no puede superar el ingreso disponible.</string>
     <string name="error_gasto_excede_ingreso">El gasto no puede superar el ingreso disponible.</string>
     <string name="label_ingreso_item">Ingreso: %1$s - $%2$s</string>
+    <string name="label_hola">Hola</string>
+    <string name="label_hola_usuario">Hola, %1$s</string>
+    <string name="label_guardar">Guardar</string>
+    <string name="label_actualizar">Actualizar</string>
+    <string name="label_eliminar">Eliminar</string>
     <string name="label_progreso_ahorro">Avance: $%1$s de $%2$s (%3$d%%)</string>
     <string name="label_disponible_valor">Disponible: $%1$s</string>
+    <string name="mensaje_ingreso_actualizado">Ingreso actualizado correctamente.</string>
+    <string name="mensaje_gasto_actualizado">Gasto actualizado correctamente.</string>
+    <string name="mensaje_ingreso_eliminado_seleccionado">Se eliminó el ingreso seleccionado.</string>
+    <string name="mensaje_gasto_eliminado_seleccionado">Se eliminó el gasto seleccionado.</string>
+    <string name="titulo_confirmar_eliminacion">Confirmar eliminación</string>
+    <string name="mensaje_confirmar_eliminacion">¿Seguro que quieres eliminar este registro?</string>
     <string name="error_sin_ahorros">No hay ahorros registrados.</string>
     <string name="label_monto_ahorro_item">Monto: %1$s</string>
     <string name="label_periodo_ahorro_item">Meta: %1$s</string>

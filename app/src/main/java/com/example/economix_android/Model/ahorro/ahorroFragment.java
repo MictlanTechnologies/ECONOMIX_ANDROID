@@ -27,6 +27,7 @@ import com.example.economix_android.Model.data.RegistroFinanciero;
 import com.example.economix_android.databinding.FragmentAhorroBinding;
 import com.example.economix_android.network.dto.AhorroDto;
 import com.example.economix_android.network.repository.AhorroRepository;
+import com.example.economix_android.util.ProfileImageUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.math.BigDecimal;
@@ -68,6 +69,7 @@ public class ahorroFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
+        ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyuda.setOnClickListener(v -> mostrarAyuda());
         binding.btnGuardar.setOnClickListener(v -> guardarAhorro());
         binding.btnEliminar.setOnClickListener(v -> eliminarUltimoAhorro());

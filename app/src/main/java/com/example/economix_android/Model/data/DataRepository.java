@@ -55,6 +55,18 @@ public final class DataRepository {
         return Collections.unmodifiableList(ingresos);
     }
 
+    public static Ingreso getIngresoById(Integer id) {
+        if (id == null) {
+            return null;
+        }
+        for (Ingreso ingreso : ingresos) {
+            if (Objects.equals(ingreso.getId(), id)) {
+                return ingreso;
+            }
+        }
+        return null;
+    }
+
     public static List<Ingreso> getIngresosHistorial() {
         List<Ingreso> historial = new ArrayList<>();
         for (Ingreso ingreso : ingresos) {
@@ -250,6 +262,30 @@ public final class DataRepository {
         });
     }
 
+    public static void removeIngresoById(Integer id, RepositoryCallback<Boolean> callback) {
+        if (id == null) {
+            notifyError(callback, "El ingreso no tiene identificador remoto.");
+            return;
+        }
+        ingresoRepository.eliminarIngreso(id, new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    actualizarIngresoRecurrenteIds(getIngresoById(id), false);
+                    eliminarIngresoPorId(id);
+                    notifySuccess(callback, true);
+                } else {
+                    notifyError(callback, "No se pudo eliminar el ingreso. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                notifyError(callback, "Error al eliminar el ingreso en el servidor.");
+            }
+        });
+    }
+
     public static void removeLastGasto(RepositoryCallback<Boolean> callback) {
         if (gastos.isEmpty()) {
             notifySuccess(callback, false);
@@ -275,6 +311,97 @@ public final class DataRepository {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 notifyError(callback, "Error al eliminar el gasto en el servidor.");
+            }
+        });
+    }
+
+    public static void removeGastoById(Integer id, RepositoryCallback<Boolean> callback) {
+        if (id == null) {
+            notifyError(callback, "El gasto no tiene identificador remoto.");
+            return;
+        }
+        gastoRepository.eliminarGasto(id, new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    actualizarGastoRecurrenteIds(getGastoById(id), false);
+                    eliminarGastoPorId(id);
+                    notifySuccess(callback, true);
+                } else {
+                    notifyError(callback, "No se pudo eliminar el gasto. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                notifyError(callback, "Error al eliminar el gasto en el servidor.");
+            }
+        });
+    }
+
+    public static void updateIngreso(Context context, Ingreso ingreso, RepositoryCallback<Ingreso> callback) {
+        if (ingreso == null || ingreso.getId() == null) {
+            notifyError(callback, "El ingreso no es válido para actualizar.");
+            return;
+        }
+        IngresoDto dto = toDto(ingreso, context);
+        if (dto == null) {
+            notifyError(callback, "Debes iniciar sesión antes de actualizar ingresos.");
+            return;
+        }
+        ingresoRepository.actualizarIngreso(ingreso.getId(), dto, new Callback<IngresoDto>() {
+            @Override
+            public void onResponse(Call<IngresoDto> call, Response<IngresoDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Ingreso actualizado = fromDto(response.body());
+                    if (actualizado != null) {
+                        actualizado = marcarIngresoRecurrente(actualizado, ingreso.isRecurrente());
+                        actualizarIngresoRecurrenteIds(actualizado, ingreso.isRecurrente());
+                        reemplazarIngreso(actualizado);
+                        registrarIngresoOriginal(actualizado);
+                    }
+                    notifySuccess(callback, actualizado);
+                } else {
+                    notifyError(callback, "No se pudo actualizar el ingreso. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<IngresoDto> call, Throwable t) {
+                notifyError(callback, "Error al actualizar el ingreso en el servidor.");
+            }
+        });
+    }
+
+    public static void updateGasto(Context context, Gasto gasto, RepositoryCallback<Gasto> callback) {
+        if (gasto == null || gasto.getId() == null) {
+            notifyError(callback, "El gasto no es válido para actualizar.");
+            return;
+        }
+        GastoDto dto = toDto(gasto, context);
+        if (dto == null) {
+            notifyError(callback, "Debes iniciar sesión antes de actualizar gastos.");
+            return;
+        }
+        gastoRepository.actualizarGasto(gasto.getId(), dto, new Callback<GastoDto>() {
+            @Override
+            public void onResponse(Call<GastoDto> call, Response<GastoDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Gasto actualizado = fromDto(response.body());
+                    if (actualizado != null) {
+                        actualizado = marcarGastoRecurrente(actualizado, gasto.isRecurrente());
+                        actualizarGastoRecurrenteIds(actualizado, gasto.isRecurrente());
+                        reemplazarGasto(actualizado);
+                    }
+                    notifySuccess(callback, actualizado);
+                } else {
+                    notifyError(callback, "No se pudo actualizar el gasto. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GastoDto> call, Throwable t) {
+                notifyError(callback, "Error al actualizar el gasto en el servidor.");
             }
         });
     }
@@ -367,9 +494,37 @@ public final class DataRepository {
         }
     }
 
+    private static void reemplazarGasto(Gasto actualizado) {
+        if (actualizado == null) {
+            return;
+        }
+        for (int i = 0; i < gastos.size(); i++) {
+            if (Objects.equals(gastos.get(i).getId(), actualizado.getId())) {
+                gastos.set(i, actualizado);
+                break;
+            }
+        }
+        gastosRecurrentes.removeIf(gasto -> Objects.equals(gasto.getId(), actualizado.getId()));
+        if (actualizado.isRecurrente()) {
+            gastosRecurrentes.add(actualizado);
+        }
+    }
+
     private static void eliminarGastoPorId(Integer id) {
         gastos.removeIf(gasto -> Objects.equals(gasto.getId(), id));
         gastosRecurrentes.removeIf(gasto -> Objects.equals(gasto.getId(), id));
+    }
+
+    private static Gasto getGastoById(Integer id) {
+        if (id == null) {
+            return null;
+        }
+        for (Gasto gasto : gastos) {
+            if (Objects.equals(gasto.getId(), id)) {
+                return gasto;
+            }
+        }
+        return null;
     }
 
     private static Ingreso fromDto(IngresoDto dto) {

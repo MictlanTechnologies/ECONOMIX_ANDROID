@@ -19,6 +19,7 @@ import com.example.economix_android.databinding.FragmentGastosInfoBinding;
 import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.Model.data.Gasto;
 import com.example.economix_android.Model.data.RegistroAdapter;
+import com.example.economix_android.util.ProfileImageUtils;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -42,6 +43,7 @@ public class gastosInfo extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
+        ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaGasInf.setOnClickListener(v -> mostrarAyuda());
 
         View.OnClickListener bottomNavListener = v -> {
@@ -74,6 +76,13 @@ public class gastosInfo extends Fragment {
     private void configurarListas() {
         gastosAdapter = new RegistroAdapter();
         recurrentesAdapter = new RegistroAdapter();
+        RegistroAdapter.OnRegistroDoubleClickListener listener = registro -> {
+            if (registro instanceof Gasto) {
+                abrirEdicionGasto((Gasto) registro);
+            }
+        };
+        gastosAdapter.setOnRegistroDoubleClickListener(listener);
+        recurrentesAdapter.setOnRegistroDoubleClickListener(listener);
 
         binding.tablaGastos.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.tablaGastos.setAdapter(gastosAdapter);
@@ -111,6 +120,21 @@ public class gastosInfo extends Fragment {
         binding.tvRecurrentesVacio.setVisibility(recurrentesAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
+    private void abrirEdicionGasto(Gasto gasto) {
+        if (gasto == null || gasto.getId() == null) {
+            mostrarMensaje(getString(R.string.error_gasto_id));
+            return;
+        }
+        Bundle args = new Bundle();
+        args.putInt(gastosFragment.ARG_GASTO_ID, gasto.getId());
+        args.putString(gastosFragment.ARG_GASTO_ARTICULO, gasto.getArticulo());
+        args.putString(gastosFragment.ARG_GASTO_MONTO, gasto.getDescripcion());
+        args.putString(gastosFragment.ARG_GASTO_FECHA, gasto.getFecha());
+        args.putString(gastosFragment.ARG_GASTO_PERIODO, gasto.getPeriodo());
+        args.putBoolean(gastosFragment.ARG_GASTO_RECURRENTE, gasto.isRecurrente());
+        navigateSafely(binding.getRoot(), R.id.action_gastosInfo_to_navigation_gastos, args);
+    }
+
     private void mostrarAyuda() {
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.titulo_ayuda_gastos_info)
@@ -125,10 +149,14 @@ public class gastosInfo extends Fragment {
     }
 
     private void navigateSafely(View view, int destinationId) {
+        navigateSafely(view, destinationId, null);
+    }
+
+    private void navigateSafely(View view, int destinationId, Bundle args) {
         NavController navController = Navigation.findNavController(view);
         NavDestination currentDestination = navController.getCurrentDestination();
         if (currentDestination == null || currentDestination.getId() != destinationId) {
-            navController.navigate(destinationId);
+            navController.navigate(destinationId, args);
         }
     }
 

@@ -1,8 +1,6 @@
 package com.example.economix_android.Model.usuario;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +19,10 @@ import com.example.economix_android.R;
 import com.example.economix_android.activity_inicio;
 import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.databinding.FragmentUsuarioBinding;
+import com.example.economix_android.util.ProfileImageUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class usuario extends Fragment {
-
-    private static final String PREFS_USUARIO = "usuario_prefs";
-    private static final String KEY_FOTO_URI = "foto_perfil_uri";
 
     private FragmentUsuarioBinding binding;
     private ActivityResultLauncher<String[]> seleccionFotoLauncher;
@@ -45,7 +41,7 @@ public class usuario extends Fragment {
         String perfil = SessionManager.getPerfil(requireContext());
         binding.tvNombre.setText(perfil != null ? perfil : getString(R.string.app_name));
 
-        cargarFotoPerfil();
+        ProfileImageUtils.applyProfileImage(requireContext(), binding.imgAvatar, R.drawable.usuariog);
 
         binding.avatarContainer.setOnClickListener(v -> seleccionarFotoPerfil());
         binding.imgAvatar.setOnClickListener(v -> seleccionarFotoPerfil());
@@ -84,7 +80,7 @@ public class usuario extends Fragment {
             }
             requireContext().getContentResolver().takePersistableUriPermission(
                     uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            guardarFotoPerfil(uri);
+            SessionManager.saveProfilePhoto(requireContext(), uri);
             binding.imgAvatar.setImageURI(uri);
         });
     }
@@ -93,22 +89,6 @@ public class usuario extends Fragment {
         if (seleccionFotoLauncher != null) {
             seleccionFotoLauncher.launch(new String[]{"image/*"});
         }
-    }
-
-    private void cargarFotoPerfil() {
-        SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_USUARIO, android.content.Context.MODE_PRIVATE);
-        String uriString = prefs.getString(KEY_FOTO_URI, null);
-        if (uriString != null && !uriString.isEmpty()) {
-            binding.imgAvatar.setImageURI(Uri.parse(uriString));
-        }
-    }
-
-    private void guardarFotoPerfil(Uri uri) {
-        if (uri == null) {
-            return;
-        }
-        SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_USUARIO, android.content.Context.MODE_PRIVATE);
-        prefs.edit().putString(KEY_FOTO_URI, uri.toString()).apply();
     }
 
     private void navigateSafely(View view, int destinationId) {

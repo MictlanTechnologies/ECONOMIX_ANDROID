@@ -14,6 +14,7 @@ import androidx.navigation.Navigation;
 
 import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentGraficasMenuIngresosVsGastosBinding;
+import com.example.economix_android.util.ProfileImageUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class graficasMenuIngresosVsGastos extends Fragment {
@@ -32,6 +33,7 @@ public class graficasMenuIngresosVsGastos extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
+        ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyuda.setOnClickListener(v -> mostrarAyuda());
         binding.btnGraficaCircular.setOnClickListener(v ->
                 Navigation.findNavController(v)

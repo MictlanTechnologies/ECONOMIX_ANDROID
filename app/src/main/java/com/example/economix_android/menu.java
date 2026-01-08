@@ -5,12 +5,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.example.economix_android.auth.SessionManager;
+import com.example.economix_android.util.ProfileImageUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class menu extends Fragment implements View.OnClickListener {
@@ -31,6 +34,12 @@ public class menu extends Fragment implements View.OnClickListener {
         ImageButton ahorroButton = view.findViewById(R.id.ahorroFr);
         ImageButton graficasButton = view.findViewById(R.id.graficasFr);
         ImageButton perfilButton = view.findViewById(R.id.btnPerfil);
+        TextView saludoUsuario = view.findViewById(R.id.txtHolaUsuario);
+
+        ProfileImageUtils.applyProfileImage(requireContext(), perfilButton);
+        String perfil = SessionManager.getPerfil(requireContext());
+        String saludo = perfil != null ? getString(R.string.label_hola_usuario, perfil) : getString(R.string.label_hola);
+        saludoUsuario.setText(saludo);
 
         ayudaButton.setOnClickListener(v -> mostrarAyuda());
         gastosButton.setOnClickListener(this);

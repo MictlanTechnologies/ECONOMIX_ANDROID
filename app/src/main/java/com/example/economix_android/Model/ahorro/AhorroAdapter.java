@@ -8,6 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.economix_android.Model.data.DataRepository;
+import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.R;
 
 import java.util.ArrayList;
@@ -67,10 +69,13 @@ public class AhorroAdapter extends RecyclerView.Adapter<AhorroAdapter.AhorroView
             tvMonto.setText(itemView.getContext().getString(R.string.label_monto_ahorro_item, item.getMonto()));
             tvPeriodo.setText(itemView.getContext().getString(R.string.label_periodo_ahorro_item, item.getPeriodo()));
             tvFecha.setText(itemView.getContext().getString(R.string.label_fecha_ahorro_item, item.getFecha()));
-            String ingresoTexto = item.getIngresoId() != null
-                    ? itemView.getContext().getString(R.string.label_ingreso_relacionado, item.getIngresoId())
-                    : itemView.getContext().getString(R.string.label_ingreso_relacionado,
-                    itemView.getContext().getString(R.string.label_no_ingreso));
+            Ingreso ingresoRelacionado = item.getIngresoId() != null
+                    ? DataRepository.getIngresoById(item.getIngresoId())
+                    : null;
+            String ingresoNombre = ingresoRelacionado != null
+                    ? ingresoRelacionado.getArticulo()
+                    : itemView.getContext().getString(R.string.label_no_ingreso);
+            String ingresoTexto = itemView.getContext().getString(R.string.label_ingreso_relacionado, ingresoNombre);
             tvIngreso.setText(ingresoTexto);
         }
     }

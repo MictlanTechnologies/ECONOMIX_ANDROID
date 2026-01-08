@@ -19,6 +19,7 @@ import com.example.economix_android.databinding.FragmentIngresosInfoBinding;
 import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.Model.data.RegistroAdapter;
+import com.example.economix_android.util.ProfileImageUtils;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -42,6 +43,7 @@ public class ingresosInfo extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
+        ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaIngInf.setOnClickListener(v -> mostrarAyuda());
 
         View.OnClickListener bottomNavListener = v -> {
@@ -74,6 +76,13 @@ public class ingresosInfo extends Fragment {
     private void configurarListas() {
         ingresosAdapter = new RegistroAdapter();
         recurrentesAdapter = new RegistroAdapter();
+        RegistroAdapter.OnRegistroDoubleClickListener listener = registro -> {
+            if (registro instanceof Ingreso) {
+                abrirEdicionIngreso((Ingreso) registro);
+            }
+        };
+        ingresosAdapter.setOnRegistroDoubleClickListener(listener);
+        recurrentesAdapter.setOnRegistroDoubleClickListener(listener);
 
         binding.tablaGastos.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.tablaGastos.setAdapter(ingresosAdapter);
@@ -111,6 +120,21 @@ public class ingresosInfo extends Fragment {
         binding.tvRecurrentesVacio.setVisibility(recurrentesAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
+    private void abrirEdicionIngreso(Ingreso ingreso) {
+        if (ingreso == null || ingreso.getId() == null) {
+            mostrarMensaje(getString(R.string.error_ingreso_id));
+            return;
+        }
+        Bundle args = new Bundle();
+        args.putInt(ingresosFragment.ARG_INGRESO_ID, ingreso.getId());
+        args.putString(ingresosFragment.ARG_INGRESO_ARTICULO, ingreso.getArticulo());
+        args.putString(ingresosFragment.ARG_INGRESO_MONTO, ingreso.getDescripcion());
+        args.putString(ingresosFragment.ARG_INGRESO_FECHA, ingreso.getFecha());
+        args.putString(ingresosFragment.ARG_INGRESO_PERIODO, ingreso.getPeriodo());
+        args.putBoolean(ingresosFragment.ARG_INGRESO_RECURRENTE, ingreso.isRecurrente());
+        navigateSafely(binding.getRoot(), R.id.action_ingresosInfo_to_navigation_ingresos, args);
+    }
+
     private void mostrarAyuda() {
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.titulo_ayuda_ingresos_info)
@@ -125,10 +149,14 @@ public class ingresosInfo extends Fragment {
     }
 
     private void navigateSafely(View view, int destinationId) {
+        navigateSafely(view, destinationId, null);
+    }
+
+    private void navigateSafely(View view, int destinationId, Bundle args) {
         NavController navController = Navigation.findNavController(view);
         NavDestination currentDestination = navController.getCurrentDestination();
         if (currentDestination == null || currentDestination.getId() != destinationId) {
-            navController.navigate(destinationId);
+            navController.navigate(destinationId, args);
         }
     }
 

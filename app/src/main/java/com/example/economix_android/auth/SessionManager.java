@@ -2,6 +2,7 @@ package com.example.economix_android.auth;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 
 import com.example.economix_android.network.dto.UsuarioDto;
 
@@ -10,6 +11,7 @@ public final class SessionManager {
     private static final String PREF_NAME = "economix_session";
     private static final String KEY_USER_ID = "user_id";
     private static final String KEY_PERFIL = "perfil_usuario";
+    private static final String KEY_FOTO_URI = "foto_perfil_uri";
 
     private SessionManager() {
     }
@@ -39,5 +41,18 @@ public final class SessionManager {
     public static void clearSession(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         preferences.edit().clear().apply();
+    }
+
+    public static void saveProfilePhoto(Context context, Uri uri) {
+        if (context == null || uri == null) {
+            return;
+        }
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        preferences.edit().putString(KEY_FOTO_URI, uri.toString()).apply();
+    }
+
+    public static String getProfilePhotoUri(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return preferences.getString(KEY_FOTO_URI, null);
     }
 }

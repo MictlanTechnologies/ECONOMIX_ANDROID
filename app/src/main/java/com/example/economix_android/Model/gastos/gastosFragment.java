@@ -22,6 +22,7 @@ import com.example.economix_android.databinding.FragmentGastosBinding;
 import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.Model.data.Gasto;
 import com.example.economix_android.Model.data.Ingreso;
+import com.example.economix_android.util.ProfileImageUtils;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -36,11 +37,20 @@ import java.util.Locale;
 
 public class gastosFragment extends Fragment {
 
+    public static final String ARG_GASTO_ID = "arg_gasto_id";
+    public static final String ARG_GASTO_ARTICULO = "arg_gasto_articulo";
+    public static final String ARG_GASTO_MONTO = "arg_gasto_monto";
+    public static final String ARG_GASTO_FECHA = "arg_gasto_fecha";
+    public static final String ARG_GASTO_PERIODO = "arg_gasto_periodo";
+    public static final String ARG_GASTO_RECURRENTE = "arg_gasto_recurrente";
+
     private FragmentGastosBinding binding;
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
     private ArrayAdapter<String> ingresosAdapter;
     private final List<Ingreso> ingresosDisponibles = new ArrayList<>();
     private Ingreso ingresoSeleccionado;
+    private Integer gastoEnEdicionId;
+    private boolean enModoEdicion;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -56,6 +66,7 @@ public class gastosFragment extends Fragment {
                 Navigation.findNavController(v)
                         .navigate(R.id.action_navigation_gastos_to_gastosInfo));
         binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
+        ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaGas.setOnClickListener(v -> mostrarAyuda());
 
         binding.btnGuardarGas.setOnClickListener(v -> guardarGasto());
@@ -83,6 +94,7 @@ public class gastosFragment extends Fragment {
         setupDatePicker(binding.etFechaGas);
         configurarIngresos();
         cargarIngresos();
+        cargarDatosEdicion();
     }
 
     private void mostrarAyuda() {
@@ -94,6 +106,10 @@ public class gastosFragment extends Fragment {
     }
 
     private void guardarGasto() {
+        if (enModoEdicion) {
+            actualizarGasto();
+            return;
+        }
         limpiarErrores();
         String articulo = obtenerTexto(binding.etArticuloGas);
         String descripcion = obtenerTexto(binding.etDescripcionGas);
@@ -176,6 +192,10 @@ public class gastosFragment extends Fragment {
     }
 
     private void eliminarGasto() {
+        if (enModoEdicion) {
+            eliminarGastoSeleccionado();
+            return;
+        }
         setGastoButtonsEnabled(false);
         DataRepository.removeLastGasto(new DataRepository.RepositoryCallback<Boolean>() {
             @Override
@@ -217,6 +237,128 @@ public class gastosFragment extends Fragment {
         binding.etIngresoSeleccionGasto.setText("");
         ingresoSeleccionado = null;
         actualizarIngresoDisponible();
+        establecerModoEdicion(false, null);
+    }
+
+    private void cargarDatosEdicion() {
+        Bundle args = getArguments();
+        if (args == null || !args.containsKey(ARG_GASTO_ID)) {
+            return;
+        }
+        int id = args.getInt(ARG_GASTO_ID, -1);
+        if (id <= 0) {
+            return;
+        }
+        String articulo = args.getString(ARG_GASTO_ARTICULO, "");
+        String monto = args.getString(ARG_GASTO_MONTO, "");
+        String fecha = args.getString(ARG_GASTO_FECHA, "");
+        String periodo = args.getString(ARG_GASTO_PERIODO, "");
+        boolean recurrente = args.getBoolean(ARG_GASTO_RECURRENTE, false);
+
+        binding.etArticuloGas.setText(articulo);
+        binding.etDescripcionGas.setText(monto);
+        binding.etFechaGas.setText(fecha);
+        binding.etPeriodoGas.setText(periodo);
+        binding.rbRecurrenteGas.setChecked(recurrente);
+        establecerModoEdicion(true, id);
+        args.clear();
+    }
+
+    private void establecerModoEdicion(boolean habilitar, Integer gastoId) {
+        enModoEdicion = habilitar;
+        gastoEnEdicionId = habilitar ? gastoId : null;
+        binding.btnGuardarGas.setText(habilitar ? getString(R.string.label_actualizar) : getString(R.string.label_guardar));
+        binding.btnEliminarGas.setText(getString(R.string.label_eliminar));
+    }
+
+    private void actualizarGasto() {
+        limpiarErrores();
+        String articulo = obtenerTexto(binding.etArticuloGas);
+        String descripcion = obtenerTexto(binding.etDescripcionGas);
+        String fecha = obtenerTexto(binding.etFechaGas);
+        String periodo = obtenerTexto(binding.etPeriodoGas);
+        boolean recurrente = binding.rbRecurrenteGas.isChecked();
+
+        if (gastoEnEdicionId == null) {
+            Toast.makeText(requireContext(), R.string.error_gasto_id, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (TextUtils.isEmpty(articulo) || TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)) {
+            Toast.makeText(requireContext(), R.string.error_campos_obligatorios_gasto, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!RegistroFinanciero.esMontoValido(descripcion)) {
+            binding.tilMontoGasto.setError(getString(R.string.error_monto_gasto_invalido));
+            return;
+        }
+
+        String montoNormalizado = RegistroFinanciero.normalizarMonto(descripcion);
+        Gasto gasto = new Gasto(gastoEnEdicionId, articulo, montoNormalizado, fecha, periodo, recurrente);
+        setGastoButtonsEnabled(false);
+        DataRepository.updateGasto(requireContext(), gasto, new DataRepository.RepositoryCallback<Gasto>() {
+            @Override
+            public void onSuccess(Gasto result) {
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(requireContext(), R.string.mensaje_gasto_actualizado, Toast.LENGTH_SHORT).show();
+                limpiarCampos();
+                setGastoButtonsEnabled(true);
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) {
+                    return;
+                }
+                setGastoButtonsEnabled(true);
+                mostrarMensajeError(message);
+            }
+        });
+    }
+
+    private void eliminarGastoSeleccionado() {
+        if (gastoEnEdicionId == null) {
+            Toast.makeText(requireContext(), R.string.error_gasto_id, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.titulo_confirmar_eliminacion)
+                .setMessage(R.string.mensaje_confirmar_eliminacion)
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> ejecutarEliminacionSeleccionada())
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    private void ejecutarEliminacionSeleccionada() {
+        setGastoButtonsEnabled(false);
+        DataRepository.removeGastoById(gastoEnEdicionId, new DataRepository.RepositoryCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean eliminado) {
+                if (!isAdded()) {
+                    return;
+                }
+                int mensaje = Boolean.TRUE.equals(eliminado)
+                        ? R.string.mensaje_gasto_eliminado_seleccionado
+                        : R.string.error_sin_gastos;
+                Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show();
+                limpiarCampos();
+                setGastoButtonsEnabled(true);
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(requireContext(),
+                        message != null ? message : getString(R.string.mensaje_error_operacion),
+                        Toast.LENGTH_SHORT).show();
+                setGastoButtonsEnabled(true);
+            }
+        });
     }
 
     private void limpiarErrores() {

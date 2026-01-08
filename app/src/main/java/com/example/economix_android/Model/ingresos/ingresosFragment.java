@@ -19,6 +19,7 @@ import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentIngresosBinding;
 import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.Model.data.Ingreso;
+import com.example.economix_android.util.ProfileImageUtils;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -30,8 +31,17 @@ import java.util.Locale;
 
 public class ingresosFragment extends Fragment {
 
+    public static final String ARG_INGRESO_ID = "arg_ingreso_id";
+    public static final String ARG_INGRESO_ARTICULO = "arg_ingreso_articulo";
+    public static final String ARG_INGRESO_MONTO = "arg_ingreso_monto";
+    public static final String ARG_INGRESO_FECHA = "arg_ingreso_fecha";
+    public static final String ARG_INGRESO_PERIODO = "arg_ingreso_periodo";
+    public static final String ARG_INGRESO_RECURRENTE = "arg_ingreso_recurrente";
+
     private FragmentIngresosBinding binding;
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    private Integer ingresoEnEdicionId;
+    private boolean enModoEdicion;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -47,6 +57,7 @@ public class ingresosFragment extends Fragment {
                 Navigation.findNavController(v)
                         .navigate(R.id.action_navigation_ingresos_to_ingresosInfo));
         binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
+        ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaIng.setOnClickListener(v -> mostrarAyuda());
 
         binding.btnGuardarIng.setOnClickListener(v -> guardarIngreso());
@@ -72,6 +83,7 @@ public class ingresosFragment extends Fragment {
         binding.navGraficas.setOnClickListener(bottomNavListener);
 
         setupDatePicker(binding.etFechaIng);
+        cargarDatosEdicion();
     }
 
     private void mostrarAyuda() {
@@ -83,6 +95,10 @@ public class ingresosFragment extends Fragment {
     }
 
     private void guardarIngreso() {
+        if (enModoEdicion) {
+            actualizarIngreso();
+            return;
+        }
         String articulo = obtenerTexto(binding.etArticuloIng);
         String descripcion = obtenerTexto(binding.etDescripcionIng);
         String fecha = obtenerTexto(binding.etFechaIng);
@@ -128,6 +144,10 @@ public class ingresosFragment extends Fragment {
     }
 
     private void eliminarIngreso() {
+        if (enModoEdicion) {
+            eliminarIngresoSeleccionado();
+            return;
+        }
         setIngresoButtonsEnabled(false);
         DataRepository.removeLastIngreso(new DataRepository.RepositoryCallback<Boolean>() {
             @Override
@@ -166,6 +186,129 @@ public class ingresosFragment extends Fragment {
         binding.etFechaIng.setText("");
         binding.etPeriodoIng.setText("");
         binding.rbRecurrenteIng.setChecked(false);
+        establecerModoEdicion(false, null);
+    }
+
+    private void cargarDatosEdicion() {
+        Bundle args = getArguments();
+        if (args == null || !args.containsKey(ARG_INGRESO_ID)) {
+            return;
+        }
+        int id = args.getInt(ARG_INGRESO_ID, -1);
+        if (id <= 0) {
+            return;
+        }
+        String articulo = args.getString(ARG_INGRESO_ARTICULO, "");
+        String monto = args.getString(ARG_INGRESO_MONTO, "");
+        String fecha = args.getString(ARG_INGRESO_FECHA, "");
+        String periodo = args.getString(ARG_INGRESO_PERIODO, "");
+        boolean recurrente = args.getBoolean(ARG_INGRESO_RECURRENTE, false);
+
+        binding.etArticuloIng.setText(articulo);
+        binding.etDescripcionIng.setText(monto);
+        binding.etFechaIng.setText(fecha);
+        binding.etPeriodoIng.setText(periodo);
+        binding.rbRecurrenteIng.setChecked(recurrente);
+        establecerModoEdicion(true, id);
+        args.clear();
+    }
+
+    private void establecerModoEdicion(boolean habilitar, Integer ingresoId) {
+        enModoEdicion = habilitar;
+        ingresoEnEdicionId = habilitar ? ingresoId : null;
+        binding.btnGuardarIng.setText(habilitar ? getString(R.string.label_actualizar) : getString(R.string.label_guardar));
+        binding.btnEliminarIng.setText(getString(R.string.label_eliminar));
+    }
+
+    private void actualizarIngreso() {
+        String articulo = obtenerTexto(binding.etArticuloIng);
+        String descripcion = obtenerTexto(binding.etDescripcionIng);
+        String fecha = obtenerTexto(binding.etFechaIng);
+        String periodo = obtenerTexto(binding.etPeriodoIng);
+        boolean recurrente = binding.rbRecurrenteIng.isChecked();
+
+        if (ingresoEnEdicionId == null) {
+            Toast.makeText(requireContext(), R.string.error_ingreso_id, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (TextUtils.isEmpty(articulo) || TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)) {
+            Toast.makeText(requireContext(), R.string.error_campos_obligatorios_ingreso, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!RegistroFinanciero.esMontoValido(descripcion)) {
+            Toast.makeText(requireContext(), R.string.error_monto_ingreso_invalido, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String montoNormalizado = RegistroFinanciero.normalizarMonto(descripcion);
+        Ingreso ingreso = new Ingreso(ingresoEnEdicionId, articulo, montoNormalizado, fecha, periodo, recurrente);
+        setIngresoButtonsEnabled(false);
+        DataRepository.updateIngreso(requireContext(), ingreso, new DataRepository.RepositoryCallback<Ingreso>() {
+            @Override
+            public void onSuccess(Ingreso result) {
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(requireContext(), R.string.mensaje_ingreso_actualizado, Toast.LENGTH_SHORT).show();
+                limpiarCampos();
+                setIngresoButtonsEnabled(true);
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(requireContext(),
+                        message != null ? message : getString(R.string.mensaje_error_operacion),
+                        Toast.LENGTH_SHORT).show();
+                setIngresoButtonsEnabled(true);
+            }
+        });
+    }
+
+    private void eliminarIngresoSeleccionado() {
+        if (ingresoEnEdicionId == null) {
+            Toast.makeText(requireContext(), R.string.error_ingreso_id, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.titulo_confirmar_eliminacion)
+                .setMessage(R.string.mensaje_confirmar_eliminacion)
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> ejecutarEliminacionSeleccionada())
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    private void ejecutarEliminacionSeleccionada() {
+        setIngresoButtonsEnabled(false);
+        DataRepository.removeIngresoById(ingresoEnEdicionId, new DataRepository.RepositoryCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean eliminado) {
+                if (!isAdded()) {
+                    return;
+                }
+                int mensaje = Boolean.TRUE.equals(eliminado)
+                        ? R.string.mensaje_ingreso_eliminado_seleccionado
+                        : R.string.error_sin_ingresos;
+                Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show();
+                limpiarCampos();
+                setIngresoButtonsEnabled(true);
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(requireContext(),
+                        message != null ? message : getString(R.string.mensaje_error_operacion),
+                        Toast.LENGTH_SHORT).show();
+                setIngresoButtonsEnabled(true);
+            }
+        });
     }
 
     private String obtenerTexto(TextInputEditText editText) {

@@ -19,6 +19,7 @@ import com.example.economix_android.Model.data.Gasto;
 import com.example.economix_android.Model.data.RegistroFinanciero;
 import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentGraficaCircularGastosBinding;
+import com.example.economix_android.util.ProfileImageUtils;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
@@ -50,6 +51,7 @@ public class graficaCircularGastos extends Fragment {
 
         binding.btnPerfil.setOnClickListener(v ->
                 Navigation.findNavController(v).navigate(R.id.usuario));
+        ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaIngInf.setOnClickListener(v -> mostrarAyuda());
         binding.buttonBack.setOnClickListener(v ->
                 Navigation.findNavController(v).navigate(R.id.graficasMenuGastos));
