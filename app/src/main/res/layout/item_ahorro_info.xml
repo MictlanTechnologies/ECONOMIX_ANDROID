@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="8dp"
+    app:cardBackgroundColor="@color/tealSurface"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="3dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvMontoAhorro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/softWhite"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvPeriodoAhorro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/softWhite"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvFechaAhorro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/economix_text_secondary"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tvIngresoReferencia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/economix_text_secondary"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnModificarAhorro"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:text="@string/label_modificar"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/tealAccent"
+                app:cornerRadius="18dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAgregarAhorro"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="@string/label_agregar"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/tealLight"
+                app:cornerRadius="18dp" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

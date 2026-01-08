@@ -235,6 +235,17 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnVerAhorros"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/label_ver_registros"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/tealSurface"
+                app:cornerRadius="24dp" />
+
             <TextView
                 android:id="@+id/tvHistorialAhorro"
                 android:layout_width="match_parent"

@@ -63,6 +63,9 @@
         <action
             android:id="@+id/action_navigation_ahorro_to_usuario"
             app:destination="@id/usuario" />
+        <action
+            android:id="@+id/action_navigation_ahorro_to_ahorroInfo"
+            app:destination="@id/ahorroInfo" />
     </fragment>
 
     <fragment
@@ -129,6 +132,18 @@
             app:destination="@id/navigation_ingresos" />
         <action
             android:id="@+id/action_ingresosInfo_to_usuario"
+            app:destination="@id/usuario" />
+    </fragment>
+    <fragment
+        android:id="@+id/ahorroInfo"
+        android:name="com.example.economix_android.Model.ahorro.ahorroInfo"
+        android:label="ahorroInfo"
+        tools:layout="@layout/fragment_ahorro_info" >
+        <action
+            android:id="@+id/action_ahorroInfo_to_navigation_ahorro"
+            app:destination="@id/navigation_ahorro" />
+        <action
+            android:id="@+id/action_ahorroInfo_to_usuario"
             app:destination="@id/usuario" />
     </fragment>
     <fragment

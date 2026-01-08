@@ -20,6 +20,10 @@ public class AhorroRepository {
         ahorroApi.create(dto).enqueue(callback);
     }
 
+    public void actualizarAhorro(Integer id, AhorroDto dto, Callback<AhorroDto> callback) {
+        ahorroApi.update(id, dto).enqueue(callback);
+    }
+
     public void eliminarAhorro(Integer id, Callback<Void> callback) {
         ahorroApi.delete(id).enqueue(callback);
     }

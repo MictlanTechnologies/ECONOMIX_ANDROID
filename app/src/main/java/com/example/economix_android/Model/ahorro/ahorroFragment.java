@@ -80,6 +80,9 @@ public class ahorroFragment extends Fragment {
         binding.btnGuardar.setOnClickListener(v -> guardarAhorro());
         binding.btnEliminar.setOnClickListener(v -> eliminarUltimoAhorro());
         binding.btnLimpiar.setOnClickListener(v -> limpiarCampos());
+        binding.btnVerAhorros.setOnClickListener(v ->
+                Navigation.findNavController(v)
+                        .navigate(R.id.action_navigation_ahorro_to_ahorroInfo));
 
         View.OnClickListener bottomNavListener = v -> {
             int viewId = v.getId();
