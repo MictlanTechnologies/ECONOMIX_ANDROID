@@ -86,10 +86,9 @@ El ecosistema ECONOMIX está dividido en varias partes:
 
 ECONOMIX no es solo una app financiera, también es una **herramienta educativa**, ya que:
 
-- Introduce conceptos básicos de economía personal.
 - Refuerza el hábito del registro financiero.
-- Ayuda a interpretar datos financieros reales.
 - Fomenta la responsabilidad económica.
+- Te hace ser más conciente de tus gastos.
 
 ---
 
