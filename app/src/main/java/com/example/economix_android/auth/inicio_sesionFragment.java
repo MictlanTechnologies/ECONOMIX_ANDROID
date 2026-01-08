@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.economix_android.R;
 import com.example.economix_android.Vista.menu;
+import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.databinding.FragmentInicioSesionBinding;
 import com.example.economix_android.network.dto.LoginRequest;
@@ -87,6 +88,7 @@ public class inicio_sesionFragment extends Fragment {
                 }
                 if (response.isSuccessful() && response.body() != null) {
                     UsuarioDto usuario = response.body();
+                    DataRepository.clearAll();
                     SessionManager.saveSession(requireContext(), usuario);
                     Intent menuIntent = new Intent(requireContext(), menu.class);
                     startActivity(menuIntent);

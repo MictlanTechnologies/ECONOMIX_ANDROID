@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,8 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.economix_android.R;
+import com.example.economix_android.Model.data.DataRepository;
+import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.Model.data.RegistroFinanciero;
 import com.example.economix_android.databinding.FragmentAhorroInfoBinding;
 import com.example.economix_android.network.dto.AhorroDto;
@@ -42,6 +46,9 @@ public class ahorroInfo extends Fragment {
     private final AhorroRepository ahorroRepository = new AhorroRepository();
     private AhorroInfoAdapter adapter;
     private final DateTimeFormatter uiDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
+    private ArrayAdapter<String> ingresosAdapter;
+    private final List<Ingreso> ingresosDisponibles = new ArrayList<>();
+    private Ingreso ingresoSeleccionado;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -82,6 +89,7 @@ public class ahorroInfo extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        cargarIngresos();
         cargarAhorros();
     }
 
@@ -159,7 +167,7 @@ public class ahorroInfo extends Fragment {
                         return;
                     }
                     BigDecimal monto = parseMontoSeguro(montoTexto);
-                    actualizarAhorro(item, titulo, monto);
+                    actualizarAhorro(item, titulo, monto, item.getIngresoId());
                 })
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
@@ -173,29 +181,78 @@ public class ahorroInfo extends Fragment {
         View dialogView = LayoutInflater.from(requireContext())
                 .inflate(R.layout.dialog_agregar_ahorro, null, false);
         TextInputEditText etMonto = dialogView.findViewById(R.id.etMontoAgregar);
+        AutoCompleteTextView etIngreso = dialogView.findViewById(R.id.etIngresoAporte);
+        TextView tvDisponible = dialogView.findViewById(R.id.tvDisponibleIngreso);
+        ingresosAdapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_dropdown_item_1line, new ArrayList<>());
+        etIngreso.setAdapter(ingresosAdapter);
+        etIngreso.setThreshold(0);
+        etIngreso.setOnItemClickListener((parent, view, position, id) -> {
+            if (position >= 0 && position < ingresosDisponibles.size()) {
+                ingresoSeleccionado = ingresosDisponibles.get(position);
+                actualizarDisponible(tvDisponible);
+            }
+        });
+        etIngreso.setOnClickListener(v -> etIngreso.showDropDown());
+        etIngreso.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                etIngreso.showDropDown();
+            }
+        });
+        actualizarIngresoAdapter();
+        actualizarDisponible(tvDisponible);
 
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.titulo_agregar_ahorro)
                 .setView(dialogView)
                 .setPositiveButton(R.string.label_agregar, (dialog, which) -> {
                     String montoTexto = obtenerTexto(etMonto);
+                    if (ingresoSeleccionado == null) {
+                        mostrarMensajeError(getString(R.string.error_ingreso_obligatorio));
+                        return;
+                    }
                     if (!RegistroFinanciero.esMontoValido(montoTexto)) {
                         mostrarMensajeError(getString(R.string.error_monto_ahorro_obligatorio));
                         return;
                     }
                     BigDecimal adicional = parseMontoSeguro(montoTexto);
+                    BigDecimal disponible = parseMontoSeguro(ingresoSeleccionado.getDescripcion());
+                    if (adicional.compareTo(disponible) > 0) {
+                        mostrarMensajeError(getString(R.string.error_aporte_excede_ingreso));
+                        return;
+                    }
                     BigDecimal actual = parseMontoSeguro(item.getMonto());
                     BigDecimal nuevoTotal = actual.add(adicional);
-                    actualizarAhorro(item, item.getPeriodo(), nuevoTotal);
+                    BigDecimal nuevoMontoIngreso = disponible.subtract(adicional);
+                    DataRepository.updateIngresoMonto(requireContext(), ingresoSeleccionado, nuevoMontoIngreso,
+                            new DataRepository.RepositoryCallback<Ingreso>() {
+                                @Override
+                                public void onSuccess(Ingreso result) {
+                                    if (!isAdded()) {
+                                        return;
+                                    }
+                                    actualizarAhorro(item, item.getPeriodo(), nuevoTotal,
+                                            result != null ? result.getId() : ingresoSeleccionado.getId());
+                                    ingresoSeleccionado = null;
+                                }
+
+                                @Override
+                                public void onError(String message) {
+                                    if (!isAdded()) {
+                                        return;
+                                    }
+                                    mostrarMensajeError(message);
+                                }
+                            });
                 })
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
     }
 
-    private void actualizarAhorro(AhorroItem item, String titulo, BigDecimal monto) {
+    private void actualizarAhorro(AhorroItem item, String titulo, BigDecimal monto, Integer ingresoId) {
         AhorroDto dto = AhorroDto.builder()
                 .idAhorro(item.getIdAhorro())
-                .idIngresos(item.getIngresoId())
+                .idIngresos(ingresoId != null ? ingresoId : item.getIngresoId())
                 .periodoTAhorro(titulo)
                 .montoAhorro(monto)
                 .fechaAhorro(parseFecha(item.getFecha()))
@@ -275,6 +332,54 @@ public class ahorroInfo extends Fragment {
 
     private String obtenerTexto(TextInputEditText editText) {
         return editText.getText() != null ? editText.getText().toString().trim() : "";
+    }
+
+    private void cargarIngresos() {
+        DataRepository.refreshIngresos(new DataRepository.RepositoryCallback<List<Ingreso>>() {
+            @Override
+            public void onSuccess(List<Ingreso> result) {
+                if (!isAdded()) {
+                    return;
+                }
+                ingresosDisponibles.clear();
+                ingresosDisponibles.addAll(result);
+                actualizarIngresoAdapter();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) {
+                    return;
+                }
+                mostrarMensajeError(message);
+            }
+        });
+    }
+
+    private void actualizarIngresoAdapter() {
+        if (ingresosAdapter == null) {
+            return;
+        }
+        ingresosAdapter.clear();
+        for (Ingreso ingreso : ingresosDisponibles) {
+            String monto = RegistroFinanciero.normalizarMonto(ingreso.getDescripcion());
+            ingresosAdapter.add(getString(R.string.label_ingreso_item, ingreso.getArticulo(), monto));
+        }
+        ingresosAdapter.notifyDataSetChanged();
+        if (ingresosDisponibles.isEmpty()) {
+            ingresoSeleccionado = null;
+        }
+    }
+
+    private void actualizarDisponible(TextView tvDisponible) {
+        if (tvDisponible == null) {
+            return;
+        }
+        String disponible = "0";
+        if (ingresoSeleccionado != null) {
+            disponible = RegistroFinanciero.normalizarMonto(ingresoSeleccionado.getDescripcion());
+        }
+        tvDisponible.setText(getString(R.string.label_disponible_valor, disponible));
     }
 
     private void mostrarAyuda() {
