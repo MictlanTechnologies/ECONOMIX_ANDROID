@@ -392,7 +392,7 @@ public class gastosFragment extends Fragment {
     }
 
     private void cargarIngresos() {
-        DataRepository.refreshIngresos(new DataRepository.RepositoryCallback<List<Ingreso>>() {
+        DataRepository.refreshIngresos(requireContext(), new DataRepository.RepositoryCallback<List<Ingreso>>() {
             @Override
             public void onSuccess(List<Ingreso> result) {
                 if (!isAdded()) {

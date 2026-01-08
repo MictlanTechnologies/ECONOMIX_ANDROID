@@ -92,7 +92,7 @@ public class gastosInfo extends Fragment {
     }
 
     private void actualizarDatos() {
-        DataRepository.refreshGastos(new DataRepository.RepositoryCallback<List<Gasto>>() {
+        DataRepository.refreshGastos(requireContext(), new DataRepository.RepositoryCallback<List<Gasto>>() {
             @Override
             public void onSuccess(List<Gasto> result) {
                 if (!isAdded()) {

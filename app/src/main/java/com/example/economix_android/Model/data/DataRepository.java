@@ -99,7 +99,8 @@ public final class DataRepository {
         return Collections.unmodifiableList(gastosRecurrentes);
     }
 
-    public static void refreshIngresos(RepositoryCallback<List<Ingreso>> callback) {
+    public static void refreshIngresos(Context context, RepositoryCallback<List<Ingreso>> callback) {
+        Integer userId = SessionManager.getUserId(context);
         ingresoRepository.obtenerIngresos(new Callback<List<IngresoDto>>() {
             @Override
             public void onResponse(Call<List<IngresoDto>> call, Response<List<IngresoDto>> response) {
@@ -108,6 +109,9 @@ public final class DataRepository {
                     List<Ingreso> nuevos = new ArrayList<>();
                     if (body != null) {
                         for (IngresoDto dto : body) {
+                            if (userId != null && !Objects.equals(dto.getIdUsuario(), userId)) {
+                                continue;
+                            }
                             Ingreso ingreso = fromDto(dto);
                             if (ingreso != null) {
                                 nuevos.add(ingreso);
@@ -129,7 +133,8 @@ public final class DataRepository {
         });
     }
 
-    public static void refreshGastos(RepositoryCallback<List<Gasto>> callback) {
+    public static void refreshGastos(Context context, RepositoryCallback<List<Gasto>> callback) {
+        Integer userId = SessionManager.getUserId(context);
         gastoRepository.obtenerGastos(new Callback<List<GastoDto>>() {
             @Override
             public void onResponse(Call<List<GastoDto>> call, Response<List<GastoDto>> response) {
@@ -138,6 +143,9 @@ public final class DataRepository {
                     List<Gasto> nuevos = new ArrayList<>();
                     if (body != null) {
                         for (GastoDto dto : body) {
+                            if (userId != null && !Objects.equals(dto.getIdUsuario(), userId)) {
+                                continue;
+                            }
                             Gasto gasto = fromDto(dto);
                             if (gasto != null) {
                                 nuevos.add(gasto);

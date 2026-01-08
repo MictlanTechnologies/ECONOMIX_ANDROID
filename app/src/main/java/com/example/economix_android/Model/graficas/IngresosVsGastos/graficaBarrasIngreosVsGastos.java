@@ -71,7 +71,7 @@ public class graficaBarrasIngreosVsGastos extends Fragment {
     }
 
     private void refreshData() {
-        DataRepository.refreshIngresos(new DataRepository.RepositoryCallback<List<Ingreso>>() {
+        DataRepository.refreshIngresos(requireContext(), new DataRepository.RepositoryCallback<List<Ingreso>>() {
             @Override
             public void onSuccess(List<Ingreso> result) {
                 cargarGastos();
@@ -89,7 +89,7 @@ public class graficaBarrasIngreosVsGastos extends Fragment {
     }
 
     private void cargarGastos() {
-        DataRepository.refreshGastos(new DataRepository.RepositoryCallback<List<Gasto>>() {
+        DataRepository.refreshGastos(requireContext(), new DataRepository.RepositoryCallback<List<Gasto>>() {
             @Override
             public void onSuccess(List<Gasto> result) {
                 if (!isAdded()) {

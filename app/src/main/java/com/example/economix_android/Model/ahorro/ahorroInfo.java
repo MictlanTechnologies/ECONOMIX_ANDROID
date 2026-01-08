@@ -120,7 +120,17 @@ public class ahorroInfo extends Fragment {
                     List<AhorroItem> items = new ArrayList<>();
                     List<AhorroDto> body = response.body();
                     if (body != null) {
+                        List<Ingreso> ingresosUsuario = DataRepository.getIngresos();
+                        java.util.Set<Integer> idsIngresos = new java.util.HashSet<>();
+                        for (Ingreso ingreso : ingresosUsuario) {
+                            if (ingreso.getId() != null) {
+                                idsIngresos.add(ingreso.getId());
+                            }
+                        }
                         for (AhorroDto dto : body) {
+                            if (dto.getIdIngresos() == null || !idsIngresos.contains(dto.getIdIngresos())) {
+                                continue;
+                            }
                             AhorroItem item = convertir(dto);
                             if (item != null) {
                                 items.add(item);
@@ -335,7 +345,7 @@ public class ahorroInfo extends Fragment {
     }
 
     private void cargarIngresos() {
-        DataRepository.refreshIngresos(new DataRepository.RepositoryCallback<List<Ingreso>>() {
+        DataRepository.refreshIngresos(requireContext(), new DataRepository.RepositoryCallback<List<Ingreso>>() {
             @Override
             public void onSuccess(List<Ingreso> result) {
                 if (!isAdded()) {

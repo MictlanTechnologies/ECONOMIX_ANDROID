@@ -69,7 +69,7 @@ public class graficaBarrasGastos extends Fragment {
     }
 
     private void refreshData() {
-        DataRepository.refreshGastos(new DataRepository.RepositoryCallback<List<Gasto>>() {
+        DataRepository.refreshGastos(requireContext(), new DataRepository.RepositoryCallback<List<Gasto>>() {
             @Override
             public void onSuccess(List<Gasto> result) {
                 if (!isAdded()) {

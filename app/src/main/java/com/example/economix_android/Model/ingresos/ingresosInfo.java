@@ -92,7 +92,7 @@ public class ingresosInfo extends Fragment {
     }
 
     private void actualizarDatos() {
-        DataRepository.refreshIngresos(new DataRepository.RepositoryCallback<List<Ingreso>>() {
+        DataRepository.refreshIngresos(requireContext(), new DataRepository.RepositoryCallback<List<Ingreso>>() {
             @Override
             public void onSuccess(List<Ingreso> result) {
                 if (!isAdded()) {
