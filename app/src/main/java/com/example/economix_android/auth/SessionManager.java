@@ -9,6 +9,7 @@ import com.example.economix_android.network.dto.UsuarioDto;
 public final class SessionManager {
 
     private static final String PREF_NAME = "economix_session";
+    private static final String PREF_PHOTOS = "economix_profile_photos";
     private static final String KEY_USER_ID = "user_id";
     private static final String KEY_PERFIL = "perfil_usuario";
     private static final String KEY_FOTO_URI = "foto_perfil_uri";
@@ -47,12 +48,20 @@ public final class SessionManager {
         if (context == null || uri == null) {
             return;
         }
-        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        preferences.edit().putString(KEY_FOTO_URI, uri.toString()).apply();
+        Integer userId = getUserId(context);
+        if (userId == null) {
+            return;
+        }
+        SharedPreferences preferences = context.getSharedPreferences(PREF_PHOTOS, Context.MODE_PRIVATE);
+        preferences.edit().putString(KEY_FOTO_URI + "_" + userId, uri.toString()).apply();
     }
 
     public static String getProfilePhotoUri(Context context) {
-        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        return preferences.getString(KEY_FOTO_URI, null);
+        Integer userId = getUserId(context);
+        if (userId == null) {
+            return null;
+        }
+        SharedPreferences preferences = context.getSharedPreferences(PREF_PHOTOS, Context.MODE_PRIVATE);
+        return preferences.getString(KEY_FOTO_URI + "_" + userId, null);
     }
 }

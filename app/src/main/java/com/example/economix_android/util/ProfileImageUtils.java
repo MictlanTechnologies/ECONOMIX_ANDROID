@@ -3,6 +3,7 @@ package com.example.economix_android.util;
 import android.content.Context;
 import android.net.Uri;
 import android.widget.ImageView;
+import android.view.ViewOutlineProvider;
 
 import androidx.annotation.DrawableRes;
 import androidx.core.content.ContextCompat;
@@ -29,9 +30,15 @@ public final class ProfileImageUtils {
             imageView.setImageTintList(null);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setPadding(0, 0, 0, 0);
+            imageView.setBackgroundResource(R.drawable.bg_avatar_circle);
+            imageView.setClipToOutline(true);
+            imageView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
         } else {
             imageView.setImageResource(fallbackResId);
             imageView.setImageTintList(ContextCompat.getColorStateList(context, R.color.white));
+            imageView.setBackgroundResource(R.drawable.bg_avatar_circle);
+            imageView.setClipToOutline(true);
+            imageView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
         }
     }
 }
