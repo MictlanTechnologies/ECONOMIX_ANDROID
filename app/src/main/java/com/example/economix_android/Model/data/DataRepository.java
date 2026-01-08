@@ -700,4 +700,14 @@ public final class DataRepository {
             callback.onError(message);
         }
     }
+
+    public static void clearAll() {
+        ingresos.clear();
+        ingresosRecurrentes.clear();
+        gastos.clear();
+        gastosRecurrentes.clear();
+        ingresosRecurrentesIds.clear();
+        gastosRecurrentesIds.clear();
+        ingresosOriginales.clear();
+    }
 }

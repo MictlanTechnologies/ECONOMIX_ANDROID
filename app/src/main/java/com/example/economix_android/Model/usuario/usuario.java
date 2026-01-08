@@ -18,6 +18,7 @@ import androidx.navigation.Navigation;
 import com.example.economix_android.R;
 import com.example.economix_android.activity_inicio;
 import com.example.economix_android.auth.SessionManager;
+import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.databinding.FragmentUsuarioBinding;
 import com.example.economix_android.util.ProfileImageUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -108,6 +109,7 @@ public class usuario extends Fragment {
     }
 
     private void cerrarSesion() {
+        DataRepository.clearAll();
         SessionManager.clearSession(requireContext());
         Intent intent = new Intent(requireContext(), activity_inicio.class);
         intent.putExtra(activity_inicio.EXTRA_MOSTRAR_LOGIN, true);
