@@ -452,7 +452,7 @@ public class usuario_info extends Fragment {
         binding.etNombre.setText("");
         binding.etApellidos.setText("");
         binding.etContacto.setText("");
-        binding.etContraseña.setText("");
+        binding.etContraseA.setText("");
         binding.etDomicilio.setText("");
     }
 
