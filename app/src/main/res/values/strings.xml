@@ -115,6 +115,7 @@
     <string name="label_monto_total_ahorro">Monto total</string>
     <string name="label_ver_registros">Ver registros</string>
     <string name="label_modificar">Modificar</string>
+    <string name="label_agregar">Agregar</string>
     <string name="error_meta_obligatoria">Ingresa una meta de ahorro.</string>
     <string name="error_precio_objetivo_obligatorio">Ingresa un precio objetivo válido.</string>
     <string name="error_fecha_ahorro">Selecciona una fecha válida.</string>
