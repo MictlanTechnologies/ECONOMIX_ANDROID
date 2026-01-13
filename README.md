@@ -139,7 +139,6 @@ ECONOMIX no es solo una app financiera, también es una **herramienta educativa*
 - Validación de datos
 - Manejo adecuado de sesiones
 - Código modular y documentado
-- Uso de estándares de desarrollo
 
 ---
 
