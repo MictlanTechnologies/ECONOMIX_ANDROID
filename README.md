@@ -1,6 +1,6 @@
 # 💰 ECONOMIX
 
-**ECONOMIX** es una aplicación de **educación financiera y gestión económica personal**, desarrollada principalmente en **Java**, que permite a los usuarios **registrar, analizar y mejorar el manejo de sus ingresos, gastos y ahorros**, combinando herramientas prácticas con contenido educativo.
+**ECONOMIX** es una aplicación de **gestión económica personal**, desarrollada principalmente en **Java**, que permite a los usuarios **registrar, analizar y mejorar el manejo de sus ingresos, gastos y ahorros**, combinando herramientas prácticas con contenido educativo.
 
 El proyecto está enfocado principalmente en **estudiantes de nivel medio superior**, pero su diseño permite escalarlo fácilmente a otros públicos.
 
@@ -8,9 +8,8 @@ El proyecto está enfocado principalmente en **estudiantes de nivel medio superi
 
 ## 📌 Objetivo del proyecto
 
-El objetivo principal de ECONOMIX es:
+Los objetivos principales de ECONOMIX es:
 
-- Fomentar la **educación financiera**.
 - Ayudar al usuario a **visualizar y controlar su economía personal**.
 - Promover hábitos financieros saludables mediante **registro, análisis y planeación**.
 
