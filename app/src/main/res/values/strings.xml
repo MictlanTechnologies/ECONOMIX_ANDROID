@@ -42,14 +42,14 @@
     <string name="gastos_chart_empty">Aún no hay datos de gastos para mostrar</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="titulo_ayuda_ingresos">Registro de ingresos</string>
-    <string name="mensaje_ayuda_ingresos">Registra ingresos normales con fecha y periodo. Si marcas \"Recurrente\", se guardará como concepto recurrente y aparecerá en el resumen correspondiente.</string>
+    <string name="mensaje_ayuda_ingresos">Registra ingresos con fecha y periodo. Si marcas \"Recurrente\", se guardará el ingreso normal y también una plantilla sin fecha en ingresos recurrentes.</string>
     <string name="error_campos_obligatorios_ingreso">Completa artículo, fecha y periodo para guardar.</string>
     <string name="error_monto_ingreso_invalido">Ingresa un monto numérico válido en la descripción.</string>
     <string name="mensaje_ingreso_guardado">Ingreso guardado correctamente.</string>
     <string name="mensaje_ingreso_eliminado">Se eliminó el último ingreso guardado.</string>
     <string name="error_sin_ingresos">No hay ingresos registrados todavía.</string>
     <string name="titulo_ayuda_gastos">Registro de gastos</string>
-    <string name="mensaje_ayuda_gastos">Completa la información del gasto y selecciona un ingreso disponible. Si marcas \"Recurrente\", se guardará como concepto recurrente y se mostrará aparte del historial normal.</string>
+    <string name="mensaje_ayuda_gastos">Completa la información del gasto y selecciona un ingreso disponible. Si marcas \"Recurrente\", se guardará el gasto normal y una plantilla sin fecha en gastos recurrentes.</string>
     <string name="error_campos_obligatorios_gasto">Completa artículo, fecha y periodo para guardar.</string>
     <string name="error_monto_gasto_invalido">Ingresa un monto numérico válido en la descripción.</string>
     <string name="mensaje_gasto_guardado">Gasto guardado correctamente.</string>

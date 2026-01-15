@@ -106,9 +106,7 @@ public class ingresosFragment extends Fragment {
         String periodo = obtenerTexto(binding.etPeriodoIng);
         boolean recurrente = binding.rbRecurrenteIng.isChecked();
 
-        if (TextUtils.isEmpty(articulo)
-                || (!recurrente && (TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)))
-                || (recurrente && TextUtils.isEmpty(periodo))) {
+        if (TextUtils.isEmpty(articulo) || TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)) {
             Toast.makeText(requireContext(), R.string.error_campos_obligatorios_ingreso, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -120,7 +118,7 @@ public class ingresosFragment extends Fragment {
 
         String montoNormalizado = RegistroFinanciero.normalizarMonto(descripcion);
 
-        Ingreso ingreso = new Ingreso(null, articulo, montoNormalizado, recurrente ? "" : fecha, periodo, recurrente);
+        Ingreso ingreso = new Ingreso(null, articulo, montoNormalizado, fecha, periodo, recurrente);
         setIngresoButtonsEnabled(false);
         DataRepository.addIngreso(requireContext(), ingreso, new DataRepository.RepositoryCallback<Ingreso>() {
             @Override

@@ -233,10 +233,6 @@ public final class DataRepository {
             notifyError(callback, "El ingreso es inválido.");
             return;
         }
-        if (ingreso.isRecurrente()) {
-            addIngresoRecurrente(ingreso, callback);
-            return;
-        }
         IngresoDto dto = toDto(ingreso, context);
         if (dto == null) {
             notifyError(callback, "Debes iniciar sesión antes de crear ingresos.");
@@ -250,6 +246,9 @@ public final class DataRepository {
                     if (creado != null) {
                         ingresos.add(creado);
                         registrarIngresoOriginal(creado);
+                        if (ingreso.isRecurrente()) {
+                            addIngresoRecurrenteConcepto(ingreso);
+                        }
                     }
                     notifySuccess(callback, creado);
                 } else {
@@ -264,10 +263,9 @@ public final class DataRepository {
         });
     }
 
-    private static void addIngresoRecurrente(Ingreso ingreso, RepositoryCallback<Ingreso> callback) {
+    private static void addIngresoRecurrenteConcepto(Ingreso ingreso) {
         ConceptoIngresoDto dto = toConceptoDto(ingreso);
         if (dto == null) {
-            notifyError(callback, "El ingreso recurrente es inválido.");
             return;
         }
         conceptoIngresoRepository.guardarConcepto(dto, new Callback<ConceptoIngresoDto>() {
@@ -278,15 +276,12 @@ public final class DataRepository {
                     if (creado != null) {
                         ingresosRecurrentes.add(creado);
                     }
-                    notifySuccess(callback, creado);
-                } else {
-                    notifyError(callback, "No se pudo guardar el ingreso recurrente. Código: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<ConceptoIngresoDto> call, Throwable t) {
-                notifyError(callback, "Error al conectar con el servidor de ingresos recurrentes.");
+                // Silent fail for recurrent template creation.
             }
         });
     }
@@ -294,10 +289,6 @@ public final class DataRepository {
     public static void addGasto(Context context, Gasto gasto, RepositoryCallback<Gasto> callback) {
         if (gasto == null) {
             notifyError(callback, "El gasto es inválido.");
-            return;
-        }
-        if (gasto.isRecurrente()) {
-            addGastoRecurrente(gasto, callback);
             return;
         }
         GastoDto dto = toDto(gasto, context);
@@ -312,6 +303,9 @@ public final class DataRepository {
                     Gasto creado = fromDto(response.body());
                     if (creado != null) {
                         gastos.add(creado);
+                        if (gasto.isRecurrente()) {
+                            addGastoRecurrenteConcepto(gasto);
+                        }
                     }
                     notifySuccess(callback, creado);
                 } else {
@@ -326,10 +320,9 @@ public final class DataRepository {
         });
     }
 
-    private static void addGastoRecurrente(Gasto gasto, RepositoryCallback<Gasto> callback) {
+    private static void addGastoRecurrenteConcepto(Gasto gasto) {
         ConceptoGastoDto dto = toConceptoDto(gasto);
         if (dto == null) {
-            notifyError(callback, "El gasto recurrente es inválido.");
             return;
         }
         conceptoGastoRepository.guardarConcepto(dto, new Callback<ConceptoGastoDto>() {
@@ -340,15 +333,12 @@ public final class DataRepository {
                     if (creado != null) {
                         gastosRecurrentes.add(creado);
                     }
-                    notifySuccess(callback, creado);
-                } else {
-                    notifyError(callback, "No se pudo guardar el gasto recurrente. Código: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<ConceptoGastoDto> call, Throwable t) {
-                notifyError(callback, "Error al conectar con el servidor de gastos recurrentes.");
+                // Silent fail for recurrent template creation.
             }
         });
     }

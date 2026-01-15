@@ -118,9 +118,7 @@ public class gastosFragment extends Fragment {
         String periodo = obtenerTexto(binding.etPeriodoGas);
         boolean recurrente = binding.rbRecurrenteGas.isChecked();
 
-        if (TextUtils.isEmpty(articulo)
-                || (!recurrente && (TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)))
-                || (recurrente && TextUtils.isEmpty(periodo))) {
+        if (TextUtils.isEmpty(articulo) || TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)) {
             Toast.makeText(requireContext(), R.string.error_campos_obligatorios_gasto, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -133,32 +131,6 @@ public class gastosFragment extends Fragment {
         String montoNormalizado = RegistroFinanciero.normalizarMonto(descripcion);
         BigDecimal montoGasto = parseMontoSeguro(montoNormalizado);
 
-        if (recurrente) {
-            Gasto gasto = new Gasto(null, articulo, montoNormalizado, "", periodo, true);
-            setGastoButtonsEnabled(false);
-            DataRepository.addGasto(requireContext(), gasto, new DataRepository.RepositoryCallback<Gasto>() {
-                @Override
-                public void onSuccess(Gasto result) {
-                    if (!isAdded()) {
-                        return;
-                    }
-                    Toast.makeText(requireContext(), R.string.mensaje_gasto_guardado, Toast.LENGTH_SHORT).show();
-                    limpiarCampos();
-                    setGastoButtonsEnabled(true);
-                }
-
-                @Override
-                public void onError(String message) {
-                    if (!isAdded()) {
-                        return;
-                    }
-                    setGastoButtonsEnabled(true);
-                    mostrarMensajeError(message);
-                }
-            });
-            return;
-        }
-
         if (ingresoSeleccionado == null) {
             binding.tilIngresoSeleccionGasto.setError(getString(R.string.error_ingreso_obligatorio));
             return;
@@ -170,7 +142,7 @@ public class gastosFragment extends Fragment {
             return;
         }
 
-        Gasto gasto = new Gasto(null, articulo, montoNormalizado, fecha, periodo, false);
+        Gasto gasto = new Gasto(null, articulo, montoNormalizado, fecha, periodo, recurrente);
         setGastoButtonsEnabled(false);
         BigDecimal nuevoMontoIngreso = disponible.subtract(montoGasto);
         BigDecimal montoOriginal = disponible;
