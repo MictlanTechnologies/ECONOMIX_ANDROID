@@ -19,6 +19,7 @@ import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.databinding.FragmentUsuarioInfoBinding;
 import com.example.economix_android.network.dto.ContactoDto;
 import com.example.economix_android.network.dto.DomicilioDto;
+import com.example.economix_android.network.dto.LoginRequest;
 import com.example.economix_android.network.dto.PersonaDto;
 import com.example.economix_android.network.dto.UsuarioDto;
 import com.example.economix_android.network.repository.ContactoRepository;
@@ -282,15 +283,63 @@ public class usuario_info extends Fragment {
             return;
         }
         String nuevoPerfil = obtenerTexto(binding.etPerfilUsuario);
+        String contrasenaActual = obtenerTexto(binding.etContrasenaActual);
         String nuevaContrasena = obtenerTexto(binding.etContrasenaNueva);
         if (TextUtils.isEmpty(nuevoPerfil) && TextUtils.isEmpty(nuevaContrasena)) {
             return;
         }
+        limpiarErroresUsuario();
         String perfilActual = usuarioActual != null ? usuarioActual.getPerfilUsuario() : SessionManager.getPerfil(requireContext());
+        if (!TextUtils.isEmpty(nuevaContrasena)) {
+            if (TextUtils.isEmpty(contrasenaActual)) {
+                binding.tilContrasenaActual.setError(getString(R.string.error_contrasena_obligatoria));
+                return;
+            }
+            validarContrasenaActual(perfilActual, contrasenaActual, () ->
+                    actualizarUsuario(userId, perfilActual, nuevoPerfil, nuevaContrasena));
+            return;
+        }
+
+        actualizarUsuario(userId, perfilActual, nuevoPerfil, null);
+    }
+
+    private void validarContrasenaActual(String perfilActual, String contrasenaActual, Runnable onSuccess) {
+        if (TextUtils.isEmpty(perfilActual)) {
+            mostrarMensaje(getString(R.string.error_usuario_no_autenticado));
+            return;
+        }
+        LoginRequest request = LoginRequest.builder()
+                .perfilUsuario(perfilActual)
+                .contrasenaUsuario(contrasenaActual)
+                .build();
+        usuarioRepository.login(request, new Callback<UsuarioDto>() {
+            @Override
+            public void onResponse(Call<UsuarioDto> call, Response<UsuarioDto> response) {
+                if (!isAdded()) {
+                    return;
+                }
+                if (response.isSuccessful() && response.body() != null) {
+                    onSuccess.run();
+                } else {
+                    binding.tilContrasenaActual.setError(getString(R.string.error_credenciales_invalidas));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UsuarioDto> call, Throwable t) {
+                if (!isAdded()) {
+                    return;
+                }
+                mostrarMensaje(getString(R.string.mensaje_error_servidor));
+            }
+        });
+    }
+
+    private void actualizarUsuario(Integer userId, String perfilActual, String nuevoPerfil, String nuevaContrasena) {
         UsuarioDto dto = UsuarioDto.builder()
                 .idUsuario(userId)
                 .perfilUsuario(TextUtils.isEmpty(nuevoPerfil) ? perfilActual : nuevoPerfil)
-                .contrasenaUsuario(TextUtils.isEmpty(nuevaContrasena) ? null : nuevaContrasena)
+                .contrasenaUsuario(nuevaContrasena)
                 .build();
 
         usuarioRepository.actualizarUsuario(userId, dto, new Callback<UsuarioDto>() {
@@ -304,6 +353,7 @@ public class usuario_info extends Fragment {
                     if (!TextUtils.isEmpty(nuevoPerfil)) {
                         SessionManager.saveSession(requireContext(), usuarioActual);
                     }
+                    binding.etContrasenaActual.setText("");
                     binding.etContrasenaNueva.setText("");
                     mostrarMensaje(getString(R.string.mensaje_usuario_actualizado));
                 } else {
@@ -547,7 +597,12 @@ public class usuario_info extends Fragment {
         binding.etContacto.setText("");
         binding.etDomicilio.setText("");
         binding.etPerfilUsuario.setText("");
+        binding.etContrasenaActual.setText("");
         binding.etContrasenaNueva.setText("");
+    }
+
+    private void limpiarErroresUsuario() {
+        binding.tilContrasenaActual.setError(null);
     }
 
     private void setBotonesEnabled(boolean enabled) {
