@@ -117,7 +117,7 @@ public class gastosFragment extends Fragment {
         String periodo = obtenerTexto(binding.etPeriodoGas);
         boolean recurrente = binding.rbRecurrenteGas.isChecked();
 
-        if (TextUtils.isEmpty(articulo) || TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)) {
+        if (TextUtils.isEmpty(articulo) || TextUtils.isEmpty(periodo) || (!recurrente && TextUtils.isEmpty(fecha))) {
             Toast.makeText(requireContext(), R.string.error_campos_obligatorios_gasto, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -284,7 +284,7 @@ public class gastosFragment extends Fragment {
             return;
         }
 
-        if (TextUtils.isEmpty(articulo) || TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)) {
+        if (TextUtils.isEmpty(articulo) || TextUtils.isEmpty(periodo) || (!recurrente && TextUtils.isEmpty(fecha))) {
             Toast.makeText(requireContext(), R.string.error_campos_obligatorios_gasto, Toast.LENGTH_SHORT).show();
             return;
         }

@@ -17,11 +17,19 @@ public class UsuarioRepository {
         usuarioApi.getAll().enqueue(callback);
     }
 
+    public void obtenerUsuario(Integer id, Callback<UsuarioDto> callback) {
+        usuarioApi.getById(id).enqueue(callback);
+    }
+
     public void crearUsuario(UsuarioDto dto, Callback<UsuarioDto> callback) {
         usuarioApi.create(dto).enqueue(callback);
     }
 
     public void login(LoginRequest request, Callback<UsuarioDto> callback) {
         usuarioApi.login(request).enqueue(callback);
+    }
+
+    public void actualizarUsuario(Integer id, UsuarioDto dto, Callback<UsuarioDto> callback) {
+        usuarioApi.update(id, dto).enqueue(callback);
     }
 }

@@ -79,8 +79,16 @@ public class RegistroAdapter extends RecyclerView.Adapter<RegistroAdapter.Regist
             tvArticulo.setText(registro.getArticulo());
             String descripcion = registro.getDescripcion();
             tvDescripcion.setText(descripcion == null || descripcion.trim().isEmpty() ? "Sin descripción" : descripcion);
-            tvFecha.setText(registro.getFecha());
-            tvPeriodo.setText(registro.getPeriodo());
+            String fecha = registro.getFecha();
+            if (fecha == null || fecha.trim().isEmpty()) {
+                fecha = itemView.getContext().getString(R.string.label_fecha_sin_definir);
+            }
+            tvFecha.setText(fecha);
+            String periodo = registro.getPeriodo();
+            if (periodo == null || periodo.trim().isEmpty()) {
+                periodo = itemView.getContext().getString(R.string.label_periodo_sin_definir);
+            }
+            tvPeriodo.setText(periodo);
             tvRecurrente.setVisibility(registro.isRecurrente() ? View.VISIBLE : View.GONE);
             itemView.setOnClickListener(v -> {
                 long now = SystemClock.elapsedRealtime();

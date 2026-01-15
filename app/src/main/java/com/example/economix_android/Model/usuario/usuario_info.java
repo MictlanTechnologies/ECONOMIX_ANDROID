@@ -20,9 +20,11 @@ import com.example.economix_android.databinding.FragmentUsuarioInfoBinding;
 import com.example.economix_android.network.dto.ContactoDto;
 import com.example.economix_android.network.dto.DomicilioDto;
 import com.example.economix_android.network.dto.PersonaDto;
+import com.example.economix_android.network.dto.UsuarioDto;
 import com.example.economix_android.network.repository.ContactoRepository;
 import com.example.economix_android.network.repository.DomicilioRepository;
 import com.example.economix_android.network.repository.PersonaRepository;
+import com.example.economix_android.network.repository.UsuarioRepository;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.List;
@@ -37,9 +39,11 @@ public class usuario_info extends Fragment {
     private final PersonaRepository personaRepository = new PersonaRepository();
     private final ContactoRepository contactoRepository = new ContactoRepository();
     private final DomicilioRepository domicilioRepository = new DomicilioRepository();
+    private final UsuarioRepository usuarioRepository = new UsuarioRepository();
     private PersonaDto personaActual;
     private ContactoDto contactoActual;
     private DomicilioDto domicilioActual;
+    private UsuarioDto usuarioActual;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -56,7 +60,7 @@ public class usuario_info extends Fragment {
                 Navigation.findNavController(v)
                         .navigate(R.id.usuario));
         binding.btnAyudaUsInf.setOnClickListener(v -> mostrarAyuda());
-        binding.btnGuardar.setOnClickListener(v -> guardarPersona());
+        binding.btnGuardar.setOnClickListener(v -> guardarInformacion());
         binding.btnEliminar.setOnClickListener(v -> eliminarPersona());
         binding.btnLimpiar.setOnClickListener(v -> limpiarFormulario());
 
@@ -79,6 +83,7 @@ public class usuario_info extends Fragment {
         binding.navGraficas.setOnClickListener(bottomNavListener);
 
         cargarPersona();
+        cargarUsuario();
     }
 
     private void cargarPersona() {
@@ -199,33 +204,137 @@ public class usuario_info extends Fragment {
         });
     }
 
-    private void guardarPersona() {
+    private void guardarInformacion() {
         String nombre = obtenerTexto(binding.etNombre);
         String apellidos = obtenerTexto(binding.etApellidos);
-        if (TextUtils.isEmpty(nombre) || TextUtils.isEmpty(apellidos)) {
-            mostrarMensaje(getString(R.string.error_persona_campos_obligatorios));
-            return;
-        }
         Integer userId = SessionManager.getUserId(requireContext());
         if (userId == null) {
             mostrarMensaje(getString(R.string.error_usuario_no_autenticado));
             return;
         }
-        String[] partes = separarApellidos(apellidos);
-        PersonaDto dto = PersonaDto.builder()
-                .idPersona(personaActual != null ? personaActual.getIdPersona() : null)
-                .nombrePersona(nombre)
-                .apellidoP(partes[0])
-                .apellidoM(partes[1])
-                .idUsuario(userId)
-                .build();
-
-        setBotonesEnabled(false);
-        if (personaActual == null) {
-            personaRepository.crearPersona(dto, personaCallback());
-        } else {
-            personaRepository.actualizarPersona(personaActual.getIdPersona(), dto, personaCallback());
+        boolean tienePersona = !TextUtils.isEmpty(nombre) || !TextUtils.isEmpty(apellidos);
+        if ((personaActual != null || tienePersona) && (TextUtils.isEmpty(nombre) || TextUtils.isEmpty(apellidos))) {
+            mostrarMensaje(getString(R.string.error_persona_campos_obligatorios));
+            return;
         }
+
+        boolean requierePersona = personaActual != null || tienePersona;
+        setBotonesEnabled(false);
+        if (requierePersona) {
+            String[] partes = separarApellidos(apellidos);
+            PersonaDto dto = PersonaDto.builder()
+                    .idPersona(personaActual != null ? personaActual.getIdPersona() : null)
+                    .nombrePersona(nombre)
+                    .apellidoP(partes[0])
+                    .apellidoM(partes[1])
+                    .idUsuario(userId)
+                    .build();
+            if (personaActual == null) {
+                personaRepository.crearPersona(dto, personaCallback());
+            } else {
+                personaRepository.actualizarPersona(personaActual.getIdPersona(), dto, personaCallback());
+            }
+        } else {
+            actualizarUsuario();
+        }
+    }
+
+    private void cargarUsuario() {
+        Integer userId = SessionManager.getUserId(requireContext());
+        if (userId == null) {
+            return;
+        }
+        usuarioRepository.obtenerUsuario(userId, new Callback<UsuarioDto>() {
+            @Override
+            public void onResponse(Call<UsuarioDto> call, Response<UsuarioDto> response) {
+                if (!isAdded()) {
+                    return;
+                }
+                if (response.isSuccessful() && response.body() != null) {
+                    usuarioActual = response.body();
+                    binding.etUsuario.setText(usuarioActual.getPerfilUsuario());
+                } else {
+                    String perfil = SessionManager.getPerfil(requireContext());
+                    if (!TextUtils.isEmpty(perfil)) {
+                        binding.etUsuario.setText(perfil);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UsuarioDto> call, Throwable t) {
+                if (!isAdded()) {
+                    return;
+                }
+                String perfil = SessionManager.getPerfil(requireContext());
+                if (!TextUtils.isEmpty(perfil)) {
+                    binding.etUsuario.setText(perfil);
+                }
+            }
+        });
+    }
+
+    private void actualizarUsuario() {
+        Integer userId = SessionManager.getUserId(requireContext());
+        if (userId == null) {
+            setBotonesEnabled(true);
+            return;
+        }
+        String nuevoUsuario = obtenerTexto(binding.etUsuario);
+        String nuevaContrasena = obtenerTexto(binding.etContrasenaNueva);
+
+        boolean cambioUsuario = !TextUtils.isEmpty(nuevoUsuario)
+                && (usuarioActual == null || !nuevoUsuario.equals(usuarioActual.getPerfilUsuario()));
+        boolean cambioContrasena = !TextUtils.isEmpty(nuevaContrasena);
+        if (!cambioUsuario && !cambioContrasena) {
+            setBotonesEnabled(true);
+            return;
+        }
+
+        if (TextUtils.isEmpty(nuevoUsuario)) {
+            mostrarMensaje(getString(R.string.error_perfil_obligatorio));
+            setBotonesEnabled(true);
+            return;
+        }
+
+        String contrasenaActual = usuarioActual != null ? usuarioActual.getContrasenaUsuario() : null;
+        if (TextUtils.isEmpty(nuevaContrasena) && TextUtils.isEmpty(contrasenaActual)) {
+            mostrarMensaje(getString(R.string.error_contrasena_obligatoria));
+            setBotonesEnabled(true);
+            return;
+        }
+
+        UsuarioDto dto = UsuarioDto.builder()
+                .idUsuario(userId)
+                .perfilUsuario(nuevoUsuario)
+                .contrasenaUsuario(TextUtils.isEmpty(nuevaContrasena) ? contrasenaActual : nuevaContrasena)
+                .build();
+        usuarioRepository.actualizarUsuario(userId, dto, new Callback<UsuarioDto>() {
+            @Override
+            public void onResponse(Call<UsuarioDto> call, Response<UsuarioDto> response) {
+                if (!isAdded()) {
+                    return;
+                }
+                if (response.isSuccessful() && response.body() != null) {
+                    usuarioActual = response.body();
+                    SessionManager.saveSession(requireContext(), usuarioActual);
+                    binding.etContrasenaNueva.setText("");
+                    mostrarMensaje(getString(R.string.mensaje_usuario_actualizado));
+                } else {
+                    mostrarMensaje(getString(R.string.mensaje_error_operacion));
+                }
+                setBotonesEnabled(true);
+            }
+
+            @Override
+            public void onFailure(Call<UsuarioDto> call, Throwable t) {
+                if (!isAdded()) {
+                    return;
+                }
+                mostrarMensaje(getString(R.string.mensaje_error_servidor));
+                setBotonesEnabled(true);
+            }
+        });
     }
 
     private Callback<PersonaDto> personaCallback() {
@@ -235,13 +344,14 @@ public class usuario_info extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
-                setBotonesEnabled(true);
                 if (response.isSuccessful() && response.body() != null) {
                     personaActual = response.body();
                     actualizarContactoYDomicilio();
                     mostrarMensaje(getString(R.string.mensaje_persona_guardada));
+                    actualizarUsuario();
                 } else {
                     mostrarMensaje(getString(R.string.mensaje_error_operacion));
+                    setBotonesEnabled(true);
                 }
             }
 
@@ -250,8 +360,8 @@ public class usuario_info extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
-                setBotonesEnabled(true);
                 mostrarMensaje(getString(R.string.mensaje_error_servidor));
+                setBotonesEnabled(true);
             }
         };
     }
@@ -452,8 +562,9 @@ public class usuario_info extends Fragment {
         binding.etNombre.setText("");
         binding.etApellidos.setText("");
         binding.etContacto.setText("");
-        binding.etContraseA.setText("");
         binding.etDomicilio.setText("");
+        binding.etUsuario.setText("");
+        binding.etContrasenaNueva.setText("");
     }
 
     private void setBotonesEnabled(boolean enabled) {

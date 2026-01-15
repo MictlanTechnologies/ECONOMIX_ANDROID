@@ -105,7 +105,7 @@ public class ingresosFragment extends Fragment {
         String periodo = obtenerTexto(binding.etPeriodoIng);
         boolean recurrente = binding.rbRecurrenteIng.isChecked();
 
-        if (TextUtils.isEmpty(articulo) || TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)) {
+        if (TextUtils.isEmpty(articulo) || TextUtils.isEmpty(periodo) || (!recurrente && TextUtils.isEmpty(fecha))) {
             Toast.makeText(requireContext(), R.string.error_campos_obligatorios_ingreso, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -232,7 +232,7 @@ public class ingresosFragment extends Fragment {
             return;
         }
 
-        if (TextUtils.isEmpty(articulo) || TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)) {
+        if (TextUtils.isEmpty(articulo) || TextUtils.isEmpty(periodo) || (!recurrente && TextUtils.isEmpty(fecha))) {
             Toast.makeText(requireContext(), R.string.error_campos_obligatorios_ingreso, Toast.LENGTH_SHORT).show();
             return;
         }
