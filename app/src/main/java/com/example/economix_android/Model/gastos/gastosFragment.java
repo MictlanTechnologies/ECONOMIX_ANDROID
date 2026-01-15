@@ -43,6 +43,7 @@ public class gastosFragment extends Fragment {
     public static final String ARG_GASTO_FECHA = "arg_gasto_fecha";
     public static final String ARG_GASTO_PERIODO = "arg_gasto_periodo";
     public static final String ARG_GASTO_RECURRENTE = "arg_gasto_recurrente";
+    public static final String ARG_GASTO_PLANTILLA = "arg_gasto_plantilla";
 
     private FragmentGastosBinding binding;
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -51,6 +52,7 @@ public class gastosFragment extends Fragment {
     private Ingreso ingresoSeleccionado;
     private Integer gastoEnEdicionId;
     private boolean gastoEnEdicionRecurrente;
+    private boolean enModoPlantilla;
     private boolean enModoEdicion;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -239,18 +241,16 @@ public class gastosFragment extends Fragment {
         binding.etIngresoSeleccionGasto.setText("");
         ingresoSeleccionado = null;
         actualizarIngresoDisponible();
+        enModoPlantilla = false;
         establecerModoEdicion(false, null, false);
     }
 
     private void cargarDatosEdicion() {
         Bundle args = getArguments();
-        if (args == null || !args.containsKey(ARG_GASTO_ID)) {
+        if (args == null) {
             return;
         }
-        int id = args.getInt(ARG_GASTO_ID, -1);
-        if (id <= 0) {
-            return;
-        }
+        boolean esPlantilla = args.getBoolean(ARG_GASTO_PLANTILLA, false);
         String articulo = args.getString(ARG_GASTO_ARTICULO, "");
         String monto = args.getString(ARG_GASTO_MONTO, "");
         String fecha = args.getString(ARG_GASTO_FECHA, "");
@@ -261,8 +261,19 @@ public class gastosFragment extends Fragment {
         binding.etDescripcionGas.setText(monto);
         binding.etFechaGas.setText(fecha);
         binding.etPeriodoGas.setText(periodo);
-        binding.rbRecurrenteGas.setChecked(recurrente);
-        establecerModoEdicion(true, id, recurrente);
+        if (esPlantilla) {
+            enModoPlantilla = true;
+            binding.rbRecurrenteGas.setChecked(false);
+            binding.rbRecurrenteGas.setEnabled(false);
+            establecerModoEdicion(false, null, false);
+        } else {
+            enModoPlantilla = false;
+            binding.rbRecurrenteGas.setChecked(recurrente);
+            int id = args.getInt(ARG_GASTO_ID, -1);
+            if (id > 0) {
+                establecerModoEdicion(true, id, recurrente);
+            }
+        }
         args.clear();
     }
 

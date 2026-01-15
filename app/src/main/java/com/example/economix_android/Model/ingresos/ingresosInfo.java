@@ -98,7 +98,12 @@ public class ingresosInfo extends Fragment {
         recurrentesAdapter = new RegistroAdapter();
         RegistroAdapter.OnRegistroDoubleClickListener listener = registro -> {
             if (registro instanceof Ingreso) {
-                abrirEdicionIngreso((Ingreso) registro);
+                Ingreso ingreso = (Ingreso) registro;
+                if (ingreso.isRecurrente()) {
+                    abrirPlantillaIngreso(ingreso);
+                } else {
+                    abrirEdicionIngreso(ingreso);
+                }
             }
         };
         ingresosAdapter.setOnRegistroDoubleClickListener(listener);
@@ -274,6 +279,18 @@ public class ingresosInfo extends Fragment {
         args.putString(ingresosFragment.ARG_INGRESO_FECHA, ingreso.getFecha());
         args.putString(ingresosFragment.ARG_INGRESO_PERIODO, ingreso.getPeriodo());
         args.putBoolean(ingresosFragment.ARG_INGRESO_RECURRENTE, ingreso.isRecurrente());
+        navigateSafely(binding.getRoot(), R.id.action_ingresosInfo_to_navigation_ingresos, args);
+    }
+
+    private void abrirPlantillaIngreso(Ingreso ingreso) {
+        if (ingreso == null) {
+            return;
+        }
+        Bundle args = new Bundle();
+        args.putString(ingresosFragment.ARG_INGRESO_ARTICULO, ingreso.getArticulo());
+        args.putString(ingresosFragment.ARG_INGRESO_MONTO, ingreso.getDescripcion());
+        args.putString(ingresosFragment.ARG_INGRESO_PERIODO, ingreso.getPeriodo());
+        args.putBoolean(ingresosFragment.ARG_INGRESO_PLANTILLA, true);
         navigateSafely(binding.getRoot(), R.id.action_ingresosInfo_to_navigation_ingresos, args);
     }
 

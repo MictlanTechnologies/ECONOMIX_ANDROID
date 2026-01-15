@@ -37,11 +37,13 @@ public class ingresosFragment extends Fragment {
     public static final String ARG_INGRESO_FECHA = "arg_ingreso_fecha";
     public static final String ARG_INGRESO_PERIODO = "arg_ingreso_periodo";
     public static final String ARG_INGRESO_RECURRENTE = "arg_ingreso_recurrente";
+    public static final String ARG_INGRESO_PLANTILLA = "arg_ingreso_plantilla";
 
     private FragmentIngresosBinding binding;
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
     private Integer ingresoEnEdicionId;
     private boolean ingresoEnEdicionRecurrente;
+    private boolean enModoPlantilla;
     private boolean enModoEdicion;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -188,18 +190,16 @@ public class ingresosFragment extends Fragment {
         binding.etPeriodoIng.setText("");
         binding.rbRecurrenteIng.setChecked(false);
         binding.rbRecurrenteIng.setEnabled(true);
+        enModoPlantilla = false;
         establecerModoEdicion(false, null, false);
     }
 
     private void cargarDatosEdicion() {
         Bundle args = getArguments();
-        if (args == null || !args.containsKey(ARG_INGRESO_ID)) {
+        if (args == null) {
             return;
         }
-        int id = args.getInt(ARG_INGRESO_ID, -1);
-        if (id <= 0) {
-            return;
-        }
+        boolean esPlantilla = args.getBoolean(ARG_INGRESO_PLANTILLA, false);
         String articulo = args.getString(ARG_INGRESO_ARTICULO, "");
         String monto = args.getString(ARG_INGRESO_MONTO, "");
         String fecha = args.getString(ARG_INGRESO_FECHA, "");
@@ -210,8 +210,19 @@ public class ingresosFragment extends Fragment {
         binding.etDescripcionIng.setText(monto);
         binding.etFechaIng.setText(fecha);
         binding.etPeriodoIng.setText(periodo);
-        binding.rbRecurrenteIng.setChecked(recurrente);
-        establecerModoEdicion(true, id, recurrente);
+        if (esPlantilla) {
+            enModoPlantilla = true;
+            binding.rbRecurrenteIng.setChecked(false);
+            binding.rbRecurrenteIng.setEnabled(false);
+            establecerModoEdicion(false, null, false);
+        } else {
+            enModoPlantilla = false;
+            binding.rbRecurrenteIng.setChecked(recurrente);
+            int id = args.getInt(ARG_INGRESO_ID, -1);
+            if (id > 0) {
+                establecerModoEdicion(true, id, recurrente);
+            }
+        }
         args.clear();
     }
 

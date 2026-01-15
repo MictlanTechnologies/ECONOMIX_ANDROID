@@ -98,7 +98,12 @@ public class gastosInfo extends Fragment {
         recurrentesAdapter = new RegistroAdapter();
         RegistroAdapter.OnRegistroDoubleClickListener listener = registro -> {
             if (registro instanceof Gasto) {
-                abrirEdicionGasto((Gasto) registro);
+                Gasto gasto = (Gasto) registro;
+                if (gasto.isRecurrente()) {
+                    abrirPlantillaGasto(gasto);
+                } else {
+                    abrirEdicionGasto(gasto);
+                }
             }
         };
         gastosAdapter.setOnRegistroDoubleClickListener(listener);
@@ -274,6 +279,18 @@ public class gastosInfo extends Fragment {
         args.putString(gastosFragment.ARG_GASTO_FECHA, gasto.getFecha());
         args.putString(gastosFragment.ARG_GASTO_PERIODO, gasto.getPeriodo());
         args.putBoolean(gastosFragment.ARG_GASTO_RECURRENTE, gasto.isRecurrente());
+        navigateSafely(binding.getRoot(), R.id.action_gastosInfo_to_navigation_gastos, args);
+    }
+
+    private void abrirPlantillaGasto(Gasto gasto) {
+        if (gasto == null) {
+            return;
+        }
+        Bundle args = new Bundle();
+        args.putString(gastosFragment.ARG_GASTO_ARTICULO, gasto.getArticulo());
+        args.putString(gastosFragment.ARG_GASTO_MONTO, gasto.getDescripcion());
+        args.putString(gastosFragment.ARG_GASTO_PERIODO, gasto.getPeriodo());
+        args.putBoolean(gastosFragment.ARG_GASTO_PLANTILLA, true);
         navigateSafely(binding.getRoot(), R.id.action_gastosInfo_to_navigation_gastos, args);
     }
 
