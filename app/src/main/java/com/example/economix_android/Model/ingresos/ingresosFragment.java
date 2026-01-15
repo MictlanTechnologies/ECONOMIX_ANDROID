@@ -41,6 +41,7 @@ public class ingresosFragment extends Fragment {
     private FragmentIngresosBinding binding;
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
     private Integer ingresoEnEdicionId;
+    private boolean ingresoEnEdicionRecurrente;
     private boolean enModoEdicion;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -105,7 +106,9 @@ public class ingresosFragment extends Fragment {
         String periodo = obtenerTexto(binding.etPeriodoIng);
         boolean recurrente = binding.rbRecurrenteIng.isChecked();
 
-        if (TextUtils.isEmpty(articulo) || TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)) {
+        if (TextUtils.isEmpty(articulo)
+                || (!recurrente && (TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)))
+                || (recurrente && TextUtils.isEmpty(periodo))) {
             Toast.makeText(requireContext(), R.string.error_campos_obligatorios_ingreso, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -117,7 +120,7 @@ public class ingresosFragment extends Fragment {
 
         String montoNormalizado = RegistroFinanciero.normalizarMonto(descripcion);
 
-        Ingreso ingreso = new Ingreso(null, articulo, montoNormalizado, fecha, periodo, recurrente);
+        Ingreso ingreso = new Ingreso(null, articulo, montoNormalizado, recurrente ? "" : fecha, periodo, recurrente);
         setIngresoButtonsEnabled(false);
         DataRepository.addIngreso(requireContext(), ingreso, new DataRepository.RepositoryCallback<Ingreso>() {
             @Override
@@ -186,7 +189,8 @@ public class ingresosFragment extends Fragment {
         binding.etFechaIng.setText("");
         binding.etPeriodoIng.setText("");
         binding.rbRecurrenteIng.setChecked(false);
-        establecerModoEdicion(false, null);
+        binding.rbRecurrenteIng.setEnabled(true);
+        establecerModoEdicion(false, null, false);
     }
 
     private void cargarDatosEdicion() {
@@ -209,15 +213,17 @@ public class ingresosFragment extends Fragment {
         binding.etFechaIng.setText(fecha);
         binding.etPeriodoIng.setText(periodo);
         binding.rbRecurrenteIng.setChecked(recurrente);
-        establecerModoEdicion(true, id);
+        establecerModoEdicion(true, id, recurrente);
         args.clear();
     }
 
-    private void establecerModoEdicion(boolean habilitar, Integer ingresoId) {
+    private void establecerModoEdicion(boolean habilitar, Integer ingresoId, boolean recurrente) {
         enModoEdicion = habilitar;
         ingresoEnEdicionId = habilitar ? ingresoId : null;
+        ingresoEnEdicionRecurrente = habilitar && recurrente;
         binding.btnGuardarIng.setText(habilitar ? getString(R.string.label_actualizar) : getString(R.string.label_guardar));
         binding.btnEliminarIng.setText(getString(R.string.label_eliminar));
+        binding.rbRecurrenteIng.setEnabled(!habilitar);
     }
 
     private void actualizarIngreso() {
@@ -225,14 +231,15 @@ public class ingresosFragment extends Fragment {
         String descripcion = obtenerTexto(binding.etDescripcionIng);
         String fecha = obtenerTexto(binding.etFechaIng);
         String periodo = obtenerTexto(binding.etPeriodoIng);
-        boolean recurrente = binding.rbRecurrenteIng.isChecked();
 
         if (ingresoEnEdicionId == null) {
             Toast.makeText(requireContext(), R.string.error_ingreso_id, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (TextUtils.isEmpty(articulo) || TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)) {
+        if (TextUtils.isEmpty(articulo)
+                || (!ingresoEnEdicionRecurrente && (TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)))
+                || (ingresoEnEdicionRecurrente && TextUtils.isEmpty(periodo))) {
             Toast.makeText(requireContext(), R.string.error_campos_obligatorios_ingreso, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -243,7 +250,8 @@ public class ingresosFragment extends Fragment {
         }
 
         String montoNormalizado = RegistroFinanciero.normalizarMonto(descripcion);
-        Ingreso ingreso = new Ingreso(ingresoEnEdicionId, articulo, montoNormalizado, fecha, periodo, recurrente);
+        Ingreso ingreso = new Ingreso(ingresoEnEdicionId, articulo, montoNormalizado,
+                ingresoEnEdicionRecurrente ? "" : fecha, periodo, ingresoEnEdicionRecurrente);
         setIngresoButtonsEnabled(false);
         DataRepository.updateIngreso(requireContext(), ingreso, new DataRepository.RepositoryCallback<Ingreso>() {
             @Override
@@ -284,7 +292,7 @@ public class ingresosFragment extends Fragment {
 
     private void ejecutarEliminacionSeleccionada() {
         setIngresoButtonsEnabled(false);
-        DataRepository.removeIngresoById(ingresoEnEdicionId, new DataRepository.RepositoryCallback<Boolean>() {
+        DataRepository.RepositoryCallback<Boolean> callback = new DataRepository.RepositoryCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean eliminado) {
                 if (!isAdded()) {
@@ -308,7 +316,13 @@ public class ingresosFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
                 setIngresoButtonsEnabled(true);
             }
-        });
+        };
+
+        if (ingresoEnEdicionRecurrente) {
+            DataRepository.removeIngresoRecurrenteById(ingresoEnEdicionId, callback);
+        } else {
+            DataRepository.removeIngresoById(ingresoEnEdicionId, callback);
+        }
     }
 
     private String obtenerTexto(TextInputEditText editText) {

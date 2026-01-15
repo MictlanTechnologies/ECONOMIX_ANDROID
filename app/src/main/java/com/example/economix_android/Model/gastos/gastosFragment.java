@@ -50,6 +50,7 @@ public class gastosFragment extends Fragment {
     private final List<Ingreso> ingresosDisponibles = new ArrayList<>();
     private Ingreso ingresoSeleccionado;
     private Integer gastoEnEdicionId;
+    private boolean gastoEnEdicionRecurrente;
     private boolean enModoEdicion;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -117,7 +118,9 @@ public class gastosFragment extends Fragment {
         String periodo = obtenerTexto(binding.etPeriodoGas);
         boolean recurrente = binding.rbRecurrenteGas.isChecked();
 
-        if (TextUtils.isEmpty(articulo) || TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)) {
+        if (TextUtils.isEmpty(articulo)
+                || (!recurrente && (TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)))
+                || (recurrente && TextUtils.isEmpty(periodo))) {
             Toast.makeText(requireContext(), R.string.error_campos_obligatorios_gasto, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -130,6 +133,32 @@ public class gastosFragment extends Fragment {
         String montoNormalizado = RegistroFinanciero.normalizarMonto(descripcion);
         BigDecimal montoGasto = parseMontoSeguro(montoNormalizado);
 
+        if (recurrente) {
+            Gasto gasto = new Gasto(null, articulo, montoNormalizado, "", periodo, true);
+            setGastoButtonsEnabled(false);
+            DataRepository.addGasto(requireContext(), gasto, new DataRepository.RepositoryCallback<Gasto>() {
+                @Override
+                public void onSuccess(Gasto result) {
+                    if (!isAdded()) {
+                        return;
+                    }
+                    Toast.makeText(requireContext(), R.string.mensaje_gasto_guardado, Toast.LENGTH_SHORT).show();
+                    limpiarCampos();
+                    setGastoButtonsEnabled(true);
+                }
+
+                @Override
+                public void onError(String message) {
+                    if (!isAdded()) {
+                        return;
+                    }
+                    setGastoButtonsEnabled(true);
+                    mostrarMensajeError(message);
+                }
+            });
+            return;
+        }
+
         if (ingresoSeleccionado == null) {
             binding.tilIngresoSeleccionGasto.setError(getString(R.string.error_ingreso_obligatorio));
             return;
@@ -141,7 +170,7 @@ public class gastosFragment extends Fragment {
             return;
         }
 
-        Gasto gasto = new Gasto(null, articulo, montoNormalizado, fecha, periodo, recurrente);
+        Gasto gasto = new Gasto(null, articulo, montoNormalizado, fecha, periodo, false);
         setGastoButtonsEnabled(false);
         BigDecimal nuevoMontoIngreso = disponible.subtract(montoGasto);
         BigDecimal montoOriginal = disponible;
@@ -234,10 +263,11 @@ public class gastosFragment extends Fragment {
         binding.etFechaGas.setText("");
         binding.etPeriodoGas.setText("");
         binding.rbRecurrenteGas.setChecked(false);
+        binding.rbRecurrenteGas.setEnabled(true);
         binding.etIngresoSeleccionGasto.setText("");
         ingresoSeleccionado = null;
         actualizarIngresoDisponible();
-        establecerModoEdicion(false, null);
+        establecerModoEdicion(false, null, false);
     }
 
     private void cargarDatosEdicion() {
@@ -260,15 +290,17 @@ public class gastosFragment extends Fragment {
         binding.etFechaGas.setText(fecha);
         binding.etPeriodoGas.setText(periodo);
         binding.rbRecurrenteGas.setChecked(recurrente);
-        establecerModoEdicion(true, id);
+        establecerModoEdicion(true, id, recurrente);
         args.clear();
     }
 
-    private void establecerModoEdicion(boolean habilitar, Integer gastoId) {
+    private void establecerModoEdicion(boolean habilitar, Integer gastoId, boolean recurrente) {
         enModoEdicion = habilitar;
         gastoEnEdicionId = habilitar ? gastoId : null;
+        gastoEnEdicionRecurrente = habilitar && recurrente;
         binding.btnGuardarGas.setText(habilitar ? getString(R.string.label_actualizar) : getString(R.string.label_guardar));
         binding.btnEliminarGas.setText(getString(R.string.label_eliminar));
+        binding.rbRecurrenteGas.setEnabled(!habilitar);
     }
 
     private void actualizarGasto() {
@@ -277,14 +309,15 @@ public class gastosFragment extends Fragment {
         String descripcion = obtenerTexto(binding.etDescripcionGas);
         String fecha = obtenerTexto(binding.etFechaGas);
         String periodo = obtenerTexto(binding.etPeriodoGas);
-        boolean recurrente = binding.rbRecurrenteGas.isChecked();
 
         if (gastoEnEdicionId == null) {
             Toast.makeText(requireContext(), R.string.error_gasto_id, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (TextUtils.isEmpty(articulo) || TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)) {
+        if (TextUtils.isEmpty(articulo)
+                || (!gastoEnEdicionRecurrente && (TextUtils.isEmpty(fecha) || TextUtils.isEmpty(periodo)))
+                || (gastoEnEdicionRecurrente && TextUtils.isEmpty(periodo))) {
             Toast.makeText(requireContext(), R.string.error_campos_obligatorios_gasto, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -295,7 +328,8 @@ public class gastosFragment extends Fragment {
         }
 
         String montoNormalizado = RegistroFinanciero.normalizarMonto(descripcion);
-        Gasto gasto = new Gasto(gastoEnEdicionId, articulo, montoNormalizado, fecha, periodo, recurrente);
+        Gasto gasto = new Gasto(gastoEnEdicionId, articulo, montoNormalizado,
+                gastoEnEdicionRecurrente ? "" : fecha, periodo, gastoEnEdicionRecurrente);
         setGastoButtonsEnabled(false);
         DataRepository.updateGasto(requireContext(), gasto, new DataRepository.RepositoryCallback<Gasto>() {
             @Override
@@ -334,7 +368,7 @@ public class gastosFragment extends Fragment {
 
     private void ejecutarEliminacionSeleccionada() {
         setGastoButtonsEnabled(false);
-        DataRepository.removeGastoById(gastoEnEdicionId, new DataRepository.RepositoryCallback<Boolean>() {
+        DataRepository.RepositoryCallback<Boolean> callback = new DataRepository.RepositoryCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean eliminado) {
                 if (!isAdded()) {
@@ -358,7 +392,13 @@ public class gastosFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
                 setGastoButtonsEnabled(true);
             }
-        });
+        };
+
+        if (gastoEnEdicionRecurrente) {
+            DataRepository.removeGastoRecurrenteById(gastoEnEdicionId, callback);
+        } else {
+            DataRepository.removeGastoById(gastoEnEdicionId, callback);
+        }
     }
 
     private void limpiarErrores() {
