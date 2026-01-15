@@ -153,4 +153,9 @@
     <string name="label_ingreso_relacionado">Ingreso relacionado: %1$s</string>
     <string name="label_no_ingreso">Sin ingreso asignado</string>
     <string name="label_fecha_desconocida">Fecha sin especificar</string>
+    <string name="hint_buscar_concepto">Buscar por concepto</string>
+    <string name="label_todas_fechas">Todas las fechas</string>
+    <string name="label_rango_fechas">%1$s - %2$s</string>
+    <string name="titulo_seleccionar_periodo">Selecciona un periodo</string>
+    <string name="desc_filtrar_fechas">Filtrar por fechas</string>
 </resources>

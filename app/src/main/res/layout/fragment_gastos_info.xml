@@ -166,6 +166,67 @@
                         android:textColor="@color/softWhite"
                         android:textSize="14sp" />
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilBusquedaGastos"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            app:boxBackgroundColor="@color/softWhite"
+                            app:boxBackgroundMode="filled"
+                            app:boxCornerRadiusBottomEnd="20dp"
+                            app:boxCornerRadiusBottomStart="20dp"
+                            app:boxCornerRadiusTopEnd="20dp"
+                            app:boxCornerRadiusTopStart="20dp"
+                            app:boxStrokeColor="@color/tealAccent"
+                            app:startIconDrawable="@drawable/ic_search_24"
+                            app:startIconTint="@color/tealAccent">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etBuscarGastos"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/hint_buscar_concepto"
+                                android:inputType="textCapSentences"
+                                android:textColor="@android:color/black"
+                                android:textColorHint="@android:color/darker_gray" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageButton
+                                android:id="@+id/btnFiltroFechaGastos"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:contentDescription="@string/desc_filtrar_fechas"
+                                android:padding="6dp"
+                                android:src="@drawable/ic_calendar_24"
+                                android:tint="@color/softWhite"
+                                tools:ignore="UseAppTint" />
+
+                            <TextView
+                                android:id="@+id/tvRangoFechasGastos"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="@string/label_todas_fechas"
+                                android:textColor="@color/softWhite"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/tablaGastos"
                         android:layout_width="match_parent"
