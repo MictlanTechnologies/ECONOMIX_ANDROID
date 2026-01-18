@@ -7,9 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -394,9 +396,22 @@ public class ahorroInfo extends Fragment {
     }
 
     private void mostrarAyuda() {
+        mostrarDialogoInformativo(R.drawable.ayuda,
+                getString(R.string.titulo_ayuda_ahorro_info),
+                getString(R.string.mensaje_ayuda_ahorro_info));
+    }
+
+    private void mostrarDialogoInformativo(@DrawableRes int iconRes, String title, String message) {
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_info, null, false);
+        ImageView icon = dialogView.findViewById(R.id.dialogIcon);
+        TextView titleView = dialogView.findViewById(R.id.dialogTitle);
+        TextView messageView = dialogView.findViewById(R.id.dialogMessage);
+        icon.setImageResource(iconRes);
+        titleView.setText(title);
+        messageView.setText(message);
+
         new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.titulo_ayuda_ahorro_info)
-                .setMessage(R.string.mensaje_ayuda_ahorro_info)
+                .setView(dialogView)
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
     }
