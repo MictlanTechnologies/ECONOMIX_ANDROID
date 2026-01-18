@@ -56,6 +56,7 @@ public class ahorroInfo extends Fragment {
     private static final String KEY_META_COMPLETADA_NOMBRE = "meta_completada_nombre";
     private static final String KEY_META_COMPLETADA_FECHA = "meta_completada_fecha";
     private static final String KEY_METAS_COMPLETADAS = "metas_completadas";
+    private static final String KEY_METAS_OBJETIVO = "metas_objetivo";
     private static final String KEY_AHORRO_EDIT_ID = "ahorro_edit_id";
     private static final String KEY_AHORRO_EDIT_META = "ahorro_edit_meta";
     private static final String KEY_AHORRO_EDIT_MONTO = "ahorro_edit_monto";
@@ -195,7 +196,13 @@ public class ahorroInfo extends Fragment {
         TextInputEditText etTitulo = dialogView.findViewById(R.id.etTituloAhorro);
         TextInputEditText etMonto = dialogView.findViewById(R.id.etMontoAhorro);
         etTitulo.setText(item.getPeriodo());
-        etMonto.setText(item.getMonto());
+        etTitulo.setEnabled(false);
+        BigDecimal objetivoActual = obtenerObjetivoMeta(item.getPeriodo());
+        if (objetivoActual.compareTo(BigDecimal.ZERO) > 0) {
+            etMonto.setText(objetivoActual.stripTrailingZeros().toPlainString());
+        } else {
+            etMonto.setText("");
+        }
 
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.titulo_editar_ahorro)
@@ -207,8 +214,10 @@ public class ahorroInfo extends Fragment {
                         mostrarMensajeError(getString(R.string.error_campos_obligatorios_ahorro));
                         return;
                     }
-                    BigDecimal monto = parseMontoSeguro(montoTexto);
-                    actualizarAhorro(item, titulo, monto, item.getIngresoId());
+                    BigDecimal montoObjetivo = parseMontoSeguro(montoTexto);
+                    guardarObjetivoMeta(titulo, montoObjetivo);
+                    Toast.makeText(requireContext(), R.string.mensaje_ahorro_actualizado, Toast.LENGTH_SHORT).show();
+                    cargarAhorros();
                 })
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
@@ -371,6 +380,56 @@ public class ahorroInfo extends Fragment {
         }
     }
 
+    private void guardarObjetivoMeta(String meta, BigDecimal precio) {
+        if (TextUtils.isEmpty(meta) || precio.compareTo(BigDecimal.ZERO) <= 0) {
+            return;
+        }
+        Map<String, BigDecimal> objetivos = cargarObjetivos();
+        objetivos.put(meta, precio);
+        SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_AHORRO, Context.MODE_PRIVATE);
+        java.util.Set<String> registros = new java.util.HashSet<>();
+        for (Map.Entry<String, BigDecimal> entry : objetivos.entrySet()) {
+            registros.add(entry.getKey() + META_DELIMITER + entry.getValue().stripTrailingZeros().toPlainString());
+        }
+        prefs.edit()
+                .putStringSet(KEY_METAS_OBJETIVO, registros)
+                .putString(KEY_META_NOMBRE, meta)
+                .putString(KEY_META_PRECIO, precio.stripTrailingZeros().toPlainString())
+                .apply();
+    }
+
+    private Map<String, BigDecimal> cargarObjetivos() {
+        SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_AHORRO, Context.MODE_PRIVATE);
+        java.util.Set<String> registros = prefs.getStringSet(KEY_METAS_OBJETIVO, new java.util.HashSet<>());
+        Map<String, BigDecimal> objetivos = new HashMap<>();
+        if (registros != null) {
+            for (String registro : registros) {
+                if (TextUtils.isEmpty(registro)) {
+                    continue;
+                }
+                String[] partes = registro.split("\\Q" + META_DELIMITER + "\\E");
+                if (partes.length < 2) {
+                    continue;
+                }
+                BigDecimal objetivo = parseMontoSeguro(partes[1]);
+                if (!TextUtils.isEmpty(partes[0]) && objetivo.compareTo(BigDecimal.ZERO) > 0) {
+                    objetivos.put(partes[0], objetivo);
+                }
+            }
+        }
+        return objetivos;
+    }
+
+    private BigDecimal obtenerObjetivoMeta(String meta) {
+        Map<String, BigDecimal> objetivos = cargarObjetivos();
+        for (Map.Entry<String, BigDecimal> entry : objetivos.entrySet()) {
+            if (meta.equalsIgnoreCase(entry.getKey())) {
+                return entry.getValue();
+            }
+        }
+        return BigDecimal.ZERO;
+    }
+
     private java.util.Set<String> obtenerMetasCompletadas(SharedPreferences prefs) {
         java.util.Set<String> completadas = prefs.getStringSet(KEY_METAS_COMPLETADAS, new java.util.HashSet<>());
         if (completadas != null && !completadas.isEmpty()) {
@@ -409,15 +468,13 @@ public class ahorroInfo extends Fragment {
             BigDecimal acumulado = totales.containsKey(periodo) ? totales.get(periodo) : BigDecimal.ZERO;
             totales.put(periodo, acumulado.add(parseMontoSeguro(item.getMonto())));
         }
-        SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_AHORRO, Context.MODE_PRIVATE);
-        String metaNombre = prefs.getString(KEY_META_NOMBRE, "");
-        BigDecimal objetivo = parseMontoSeguro(prefs.getString(KEY_META_PRECIO, ""));
         Map<String, AhorroInfoAdapter.ProgresoMeta> progreso = new HashMap<>();
+        Map<String, BigDecimal> objetivos = cargarObjetivos();
         for (Map.Entry<String, BigDecimal> entry : totales.entrySet()) {
             String periodo = entry.getKey();
             BigDecimal total = entry.getValue();
-            if (TextUtils.isEmpty(metaNombre) || !periodo.equalsIgnoreCase(metaNombre)
-                    || objetivo.compareTo(BigDecimal.ZERO) <= 0) {
+            BigDecimal objetivo = objetivos.containsKey(periodo) ? objetivos.get(periodo) : BigDecimal.ZERO;
+            if (objetivo.compareTo(BigDecimal.ZERO) <= 0) {
                 continue;
             }
             int porcentaje = total.multiply(BigDecimal.valueOf(100))
@@ -521,6 +578,8 @@ public class ahorroInfo extends Fragment {
                 .putString(KEY_AHORRO_EDIT_MONTO, item.getMonto())
                 .putString(KEY_AHORRO_EDIT_FECHA, item.getFecha())
                 .putInt(KEY_AHORRO_EDIT_INGRESO_ID, item.getIngresoId() != null ? item.getIngresoId() : -1)
+                .putString(KEY_META_NOMBRE, item.getPeriodo())
+                .putString(KEY_META_PRECIO, obtenerObjetivoMeta(item.getPeriodo()).stripTrailingZeros().toPlainString())
                 .apply();
         if (getView() != null) {
             navigateSafely(getView(), R.id.navigation_ahorro);

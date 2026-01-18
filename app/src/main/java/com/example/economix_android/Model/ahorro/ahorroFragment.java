@@ -60,6 +60,9 @@ public class ahorroFragment extends Fragment {
     private static final String KEY_META_PRECIO = "meta_precio";
     private static final String KEY_META_COMPLETADA_NOMBRE = "meta_completada_nombre";
     private static final String KEY_META_COMPLETADA_FECHA = "meta_completada_fecha";
+    private static final String KEY_METAS_COMPLETADAS = "metas_completadas";
+    private static final String KEY_METAS_OBJETIVO = "metas_objetivo";
+    private static final String META_DELIMITER = "||";
     private static final String KEY_AHORRO_EDIT_ID = "ahorro_edit_id";
     private static final String KEY_AHORRO_EDIT_META = "ahorro_edit_meta";
     private static final String KEY_AHORRO_EDIT_MONTO = "ahorro_edit_monto";
@@ -77,6 +80,7 @@ public class ahorroFragment extends Fragment {
     private String metaNombreGuardada;
     private String metaCompletadaNombre;
     private LocalDate metaCompletadaFecha;
+    private final java.util.Set<String> metasCompletadas = new java.util.HashSet<>();
     private Integer ahorroEditId;
     private Integer ahorroEditIngresoId;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault());
@@ -332,6 +336,14 @@ public class ahorroFragment extends Fragment {
             return;
         }
 
+        if (estaMetaCompletada(meta)) {
+            mostrarDialogoInformativo(R.drawable.ahorro,
+                    getString(R.string.titulo_meta_completada),
+                    getString(R.string.mensaje_meta_completada_bloqueo, meta),
+                    null);
+            return;
+        }
+
         if (precio.compareTo(BigDecimal.ZERO) > 0 && totalActualMeta.compareTo(precio) >= 0) {
             mostrarDialogoInformativo(R.drawable.ahorro,
                     getString(R.string.titulo_meta_completada),
@@ -546,6 +558,10 @@ public class ahorroFragment extends Fragment {
         binding.etMetaAhorro.setText(meta);
         binding.etAporteAhorro.setText(monto);
         binding.etFechaAhorro.setText(fecha);
+        BigDecimal objetivo = obtenerObjetivoMeta(meta);
+        if (objetivo.compareTo(BigDecimal.ZERO) > 0) {
+            binding.etPrecioMeta.setText(objetivo.stripTrailingZeros().toPlainString());
+        }
     }
 
     private void limpiarSeleccionAhorro() {
@@ -629,6 +645,14 @@ public class ahorroFragment extends Fragment {
         metaCompletadaNombre = prefs.getString(KEY_META_COMPLETADA_NOMBRE, "");
         String fecha = prefs.getString(KEY_META_COMPLETADA_FECHA, "");
         metaCompletadaFecha = parseFechaGuardada(fecha);
+        metasCompletadas.clear();
+        java.util.Set<String> stored = prefs.getStringSet(KEY_METAS_COMPLETADAS, new java.util.HashSet<>());
+        if (stored != null) {
+            metasCompletadas.addAll(stored);
+        }
+        if (!TextUtils.isEmpty(metaCompletadaNombre)) {
+            metasCompletadas.add(metaCompletadaNombre);
+        }
     }
 
     private void guardarMeta(String meta, BigDecimal precio) {
@@ -638,6 +662,7 @@ public class ahorroFragment extends Fragment {
                 .putString(KEY_META_NOMBRE, meta)
                 .putString(KEY_META_PRECIO, precio.stripTrailingZeros().toPlainString())
                 .apply();
+        guardarObjetivoMeta(meta, precio);
         metaNombreGuardada = meta;
     }
 
@@ -729,12 +754,12 @@ public class ahorroFragment extends Fragment {
     }
 
     private List<AhorroItem> filtrarHistorial(List<AhorroItem> items) {
-        if (TextUtils.isEmpty(metaCompletadaNombre)) {
+        if (metasCompletadas.isEmpty()) {
             return new ArrayList<>();
         }
         List<AhorroItem> historial = new ArrayList<>();
         for (AhorroItem item : items) {
-            if (metaCompletadaNombre.equalsIgnoreCase(item.getPeriodo())) {
+            if (estaMetaCompletada(item.getPeriodo())) {
                 historial.add(item);
             }
         }
@@ -788,13 +813,11 @@ public class ahorroFragment extends Fragment {
             totales.put(periodo, acumulado.add(parseMontoSeguro(item.getMonto())));
         }
         Map<String, AhorroAdapter.ProgresoMeta> progreso = new HashMap<>();
+        Map<String, BigDecimal> objetivos = cargarObjetivos();
         for (Map.Entry<String, BigDecimal> entry : totales.entrySet()) {
             String periodo = entry.getKey();
             BigDecimal total = entry.getValue();
-            BigDecimal objetivo = BigDecimal.ZERO;
-            if (!TextUtils.isEmpty(metaNombreGuardada) && periodo.equalsIgnoreCase(metaNombreGuardada)) {
-                objetivo = metaPrecio;
-            }
+            BigDecimal objetivo = objetivos.containsKey(periodo) ? objetivos.get(periodo) : BigDecimal.ZERO;
             int porcentaje = 0;
             if (objetivo.compareTo(BigDecimal.ZERO) > 0) {
                 porcentaje = total.multiply(BigDecimal.valueOf(100))
@@ -834,15 +857,81 @@ public class ahorroFragment extends Fragment {
         prefs.edit()
                 .putString(KEY_META_COMPLETADA_NOMBRE, meta)
                 .putString(KEY_META_COMPLETADA_FECHA, LocalDate.now().format(dateFormatter))
+                .putStringSet(KEY_METAS_COMPLETADAS, agregarMetaCompletada(meta))
                 .apply();
         metaCompletadaNombre = meta;
         metaCompletadaFecha = LocalDate.now();
+        metasCompletadas.add(meta);
         String totalTexto = total.stripTrailingZeros().toPlainString();
         String objetivoTexto = objetivo.stripTrailingZeros().toPlainString();
         mostrarDialogoInformativo(R.drawable.ahorro,
                 getString(R.string.titulo_meta_completada),
                 getString(R.string.mensaje_meta_completada, meta, totalTexto, objetivoTexto),
                 this::limpiarCampos);
+    }
+
+    private boolean estaMetaCompletada(String meta) {
+        if (TextUtils.isEmpty(meta)) {
+            return false;
+        }
+        for (String completada : metasCompletadas) {
+            if (meta.equalsIgnoreCase(completada)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private java.util.Set<String> agregarMetaCompletada(String meta) {
+        java.util.Set<String> nuevas = new java.util.HashSet<>(metasCompletadas);
+        nuevas.add(meta);
+        return nuevas;
+    }
+
+    private void guardarObjetivoMeta(String meta, BigDecimal precio) {
+        if (TextUtils.isEmpty(meta) || precio.compareTo(BigDecimal.ZERO) <= 0) {
+            return;
+        }
+        Map<String, BigDecimal> objetivos = cargarObjetivos();
+        objetivos.put(meta, precio);
+        SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_AHORRO, Context.MODE_PRIVATE);
+        java.util.Set<String> registros = new java.util.HashSet<>();
+        for (Map.Entry<String, BigDecimal> entry : objetivos.entrySet()) {
+            registros.add(entry.getKey() + META_DELIMITER + entry.getValue().stripTrailingZeros().toPlainString());
+        }
+        prefs.edit().putStringSet(KEY_METAS_OBJETIVO, registros).apply();
+    }
+
+    private Map<String, BigDecimal> cargarObjetivos() {
+        SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_AHORRO, Context.MODE_PRIVATE);
+        java.util.Set<String> registros = prefs.getStringSet(KEY_METAS_OBJETIVO, new java.util.HashSet<>());
+        Map<String, BigDecimal> objetivos = new HashMap<>();
+        if (registros != null) {
+            for (String registro : registros) {
+                if (TextUtils.isEmpty(registro)) {
+                    continue;
+                }
+                String[] partes = registro.split("\\Q" + META_DELIMITER + "\\E");
+                if (partes.length < 2) {
+                    continue;
+                }
+                BigDecimal objetivo = parseMontoSeguro(partes[1]);
+                if (!TextUtils.isEmpty(partes[0]) && objetivo.compareTo(BigDecimal.ZERO) > 0) {
+                    objetivos.put(partes[0], objetivo);
+                }
+            }
+        }
+        return objetivos;
+    }
+
+    private BigDecimal obtenerObjetivoMeta(String meta) {
+        Map<String, BigDecimal> objetivos = cargarObjetivos();
+        for (Map.Entry<String, BigDecimal> entry : objetivos.entrySet()) {
+            if (meta.equalsIgnoreCase(entry.getKey())) {
+                return entry.getValue();
+            }
+        }
+        return BigDecimal.ZERO;
     }
 
     private void mostrarDialogoInformativo(@DrawableRes int iconRes, String title, String message,
