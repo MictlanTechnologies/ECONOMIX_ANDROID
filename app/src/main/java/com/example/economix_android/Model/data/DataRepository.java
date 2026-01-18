@@ -42,6 +42,8 @@ public final class DataRepository {
     private static final List<Gasto> gastos = new ArrayList<>();
     private static final List<Gasto> gastosRecurrentes = new ArrayList<>();
     private static final Map<Integer, BigDecimal> ingresosOriginales = new HashMap<>();
+    private static final Map<Integer, Integer> conceptoIngresoLinks = new HashMap<>();
+    private static final Map<Integer, Integer> conceptoGastoLinks = new HashMap<>();
 
     private static final IngresoRepository ingresoRepository = new IngresoRepository();
     private static final GastoRepository gastoRepository = new GastoRepository();
@@ -103,22 +105,40 @@ public final class DataRepository {
         return Collections.unmodifiableList(gastosRecurrentes);
     }
 
-    private static void refreshIngresosRecurrentes(RepositoryCallback<List<Ingreso>> callback) {
+    private static void refreshIngresosRecurrentes(Context context, RepositoryCallback<List<Ingreso>> callback) {
+        Integer userId = SessionManager.getUserId(context);
+        Set<Integer> ingresosIds = new HashSet<>();
+        if (userId != null) {
+            for (Ingreso ingreso : ingresos) {
+                if (ingreso.getId() != null) {
+                    ingresosIds.add(ingreso.getId());
+                }
+            }
+        }
         conceptoIngresoRepository.obtenerConceptos(new Callback<List<ConceptoIngresoDto>>() {
             @Override
             public void onResponse(Call<List<ConceptoIngresoDto>> call, Response<List<ConceptoIngresoDto>> response) {
                 if (response.isSuccessful()) {
                     List<Ingreso> nuevos = new ArrayList<>();
+                    Map<Integer, Integer> nuevosLinks = new HashMap<>();
                     List<ConceptoIngresoDto> body = response.body();
                     if (body != null) {
                         for (ConceptoIngresoDto dto : body) {
+                            Integer ingresoId = dto.getIdIngresos();
+                            if (userId != null && (ingresoId == null || !ingresosIds.contains(ingresoId))) {
+                                continue;
+                            }
                             Ingreso ingreso = fromConceptoDto(dto);
                             if (ingreso != null) {
                                 nuevos.add(ingreso);
+                                if (dto.getIdConcepto() != null && ingresoId != null) {
+                                    nuevosLinks.put(dto.getIdConcepto(), ingresoId);
+                                }
                             }
                         }
                     }
                     replaceIngresosRecurrentes(nuevos);
+                    replaceConceptoIngresoLinks(nuevosLinks);
                     notifySuccess(callback, getIngresos());
                 } else {
                     notifyError(callback, "No se pudo obtener los ingresos recurrentes. Código: " + response.code());
@@ -132,22 +152,40 @@ public final class DataRepository {
         });
     }
 
-    private static void refreshGastosRecurrentes(RepositoryCallback<List<Gasto>> callback) {
+    private static void refreshGastosRecurrentes(Context context, RepositoryCallback<List<Gasto>> callback) {
+        Integer userId = SessionManager.getUserId(context);
+        Set<Integer> gastosIds = new HashSet<>();
+        if (userId != null) {
+            for (Gasto gasto : gastos) {
+                if (gasto.getId() != null) {
+                    gastosIds.add(gasto.getId());
+                }
+            }
+        }
         conceptoGastoRepository.obtenerConceptos(new Callback<List<ConceptoGastoDto>>() {
             @Override
             public void onResponse(Call<List<ConceptoGastoDto>> call, Response<List<ConceptoGastoDto>> response) {
                 if (response.isSuccessful()) {
                     List<Gasto> nuevos = new ArrayList<>();
+                    Map<Integer, Integer> nuevosLinks = new HashMap<>();
                     List<ConceptoGastoDto> body = response.body();
                     if (body != null) {
                         for (ConceptoGastoDto dto : body) {
+                            Integer gastoId = dto.getIdGastos();
+                            if (userId != null && (gastoId == null || !gastosIds.contains(gastoId))) {
+                                continue;
+                            }
                             Gasto gasto = fromConceptoDto(dto);
                             if (gasto != null) {
                                 nuevos.add(gasto);
+                                if (dto.getIdConcepto() != null && gastoId != null) {
+                                    nuevosLinks.put(dto.getIdConcepto(), gastoId);
+                                }
                             }
                         }
                     }
                     replaceGastosRecurrentes(nuevos);
+                    replaceConceptoGastoLinks(nuevosLinks);
                     notifySuccess(callback, getGastos());
                 } else {
                     notifyError(callback, "No se pudo obtener los gastos recurrentes. Código: " + response.code());
@@ -182,7 +220,7 @@ public final class DataRepository {
                     }
                     replaceIngresos(nuevos);
                     registrarIngresosOriginales(nuevos);
-                    refreshIngresosRecurrentes(callback);
+                    refreshIngresosRecurrentes(context, callback);
                 } else {
                     notifyError(callback, "No se pudo obtener los ingresos. Código: " + response.code());
                 }
@@ -215,7 +253,7 @@ public final class DataRepository {
                         }
                     }
                     replaceGastos(nuevos);
-                    refreshGastosRecurrentes(callback);
+                    refreshGastosRecurrentes(context, callback);
                 } else {
                     notifyError(callback, "No se pudo obtener los gastos. Código: " + response.code());
                 }
@@ -247,7 +285,13 @@ public final class DataRepository {
                         ingresos.add(creado);
                         registrarIngresoOriginal(creado);
                         if (ingreso.isRecurrente()) {
-                            addIngresoRecurrenteConcepto(ingreso);
+                            Ingreso concepto = new Ingreso(null,
+                                    ingreso.getArticulo(),
+                                    ingreso.getDescripcion(),
+                                    "",
+                                    ingreso.getPeriodo(),
+                                    true);
+                            addIngresoRecurrenteConcepto(concepto, creado.getId());
                         }
                     }
                     notifySuccess(callback, creado);
@@ -263,8 +307,8 @@ public final class DataRepository {
         });
     }
 
-    private static void addIngresoRecurrenteConcepto(Ingreso ingreso) {
-        ConceptoIngresoDto dto = toConceptoDto(ingreso);
+    private static void addIngresoRecurrenteConcepto(Ingreso ingreso, Integer ingresoId) {
+        ConceptoIngresoDto dto = toConceptoDto(ingreso, ingresoId);
         if (dto == null) {
             return;
         }
@@ -275,6 +319,9 @@ public final class DataRepository {
                     Ingreso creado = fromConceptoDto(response.body());
                     if (creado != null) {
                         ingresosRecurrentes.add(creado);
+                        if (response.body().getIdConcepto() != null && response.body().getIdIngresos() != null) {
+                            conceptoIngresoLinks.put(response.body().getIdConcepto(), response.body().getIdIngresos());
+                        }
                     }
                 }
             }
@@ -304,7 +351,13 @@ public final class DataRepository {
                     if (creado != null) {
                         gastos.add(creado);
                         if (gasto.isRecurrente()) {
-                            addGastoRecurrenteConcepto(gasto);
+                            Gasto concepto = new Gasto(null,
+                                    gasto.getArticulo(),
+                                    gasto.getDescripcion(),
+                                    "",
+                                    gasto.getPeriodo(),
+                                    true);
+                            addGastoRecurrenteConcepto(concepto, creado.getId());
                         }
                     }
                     notifySuccess(callback, creado);
@@ -320,8 +373,8 @@ public final class DataRepository {
         });
     }
 
-    private static void addGastoRecurrenteConcepto(Gasto gasto) {
-        ConceptoGastoDto dto = toConceptoDto(gasto);
+    private static void addGastoRecurrenteConcepto(Gasto gasto, Integer gastoId) {
+        ConceptoGastoDto dto = toConceptoDto(gasto, gastoId);
         if (dto == null) {
             return;
         }
@@ -332,6 +385,9 @@ public final class DataRepository {
                     Gasto creado = fromConceptoDto(response.body());
                     if (creado != null) {
                         gastosRecurrentes.add(creado);
+                        if (response.body().getIdConcepto() != null && response.body().getIdGastos() != null) {
+                            conceptoGastoLinks.put(response.body().getIdConcepto(), response.body().getIdGastos());
+                        }
                     }
                 }
             }
@@ -482,7 +538,7 @@ public final class DataRepository {
     }
 
     private static void updateIngresoRecurrente(Ingreso ingreso, RepositoryCallback<Ingreso> callback) {
-        ConceptoIngresoDto dto = toConceptoDto(ingreso);
+        ConceptoIngresoDto dto = toConceptoDto(ingreso, conceptoIngresoLinks.get(ingreso.getId()));
         if (dto == null || ingreso.getId() == null) {
             notifyError(callback, "El ingreso recurrente no es válido para actualizar.");
             return;
@@ -544,7 +600,7 @@ public final class DataRepository {
     }
 
     private static void updateGastoRecurrente(Gasto gasto, RepositoryCallback<Gasto> callback) {
-        ConceptoGastoDto dto = toConceptoDto(gasto);
+        ConceptoGastoDto dto = toConceptoDto(gasto, conceptoGastoLinks.get(gasto.getId()));
         if (dto == null || gasto.getId() == null) {
             notifyError(callback, "El gasto recurrente no es válido para actualizar.");
             return;
@@ -678,6 +734,16 @@ public final class DataRepository {
     private static void replaceGastosRecurrentes(List<Gasto> nuevos) {
         gastosRecurrentes.clear();
         gastosRecurrentes.addAll(nuevos);
+    }
+
+    private static void replaceConceptoIngresoLinks(Map<Integer, Integer> nuevos) {
+        conceptoIngresoLinks.clear();
+        conceptoIngresoLinks.putAll(nuevos);
+    }
+
+    private static void replaceConceptoGastoLinks(Map<Integer, Integer> nuevos) {
+        conceptoGastoLinks.clear();
+        conceptoGastoLinks.putAll(nuevos);
     }
 
     private static void eliminarIngresoPorId(Integer id) {
@@ -832,7 +898,7 @@ public final class DataRepository {
                 .build();
     }
 
-    private static ConceptoIngresoDto toConceptoDto(Ingreso ingreso) {
+    private static ConceptoIngresoDto toConceptoDto(Ingreso ingreso, Integer ingresoId) {
         if (ingreso == null) {
             return null;
         }
@@ -841,11 +907,11 @@ public final class DataRepository {
                 .nombreConcepto(ingreso.getArticulo())
                 .descripcionConcepto(ingreso.getPeriodo())
                 .precioConcepto(parseMonto(ingreso.getDescripcion()))
-                .idIngresos(null)
+                .idIngresos(ingresoId)
                 .build();
     }
 
-    private static ConceptoGastoDto toConceptoDto(Gasto gasto) {
+    private static ConceptoGastoDto toConceptoDto(Gasto gasto, Integer gastoId) {
         if (gasto == null) {
             return null;
         }
@@ -854,7 +920,7 @@ public final class DataRepository {
                 .nombreConcepto(gasto.getArticulo())
                 .descripcionConcepto(gasto.getPeriodo())
                 .precioConcepto(parseMonto(gasto.getDescripcion()))
-                .idGastos(null)
+                .idGastos(gastoId)
                 .build();
     }
 
@@ -945,5 +1011,7 @@ public final class DataRepository {
         gastos.clear();
         gastosRecurrentes.clear();
         ingresosOriginales.clear();
+        conceptoIngresoLinks.clear();
+        conceptoGastoLinks.clear();
     }
 }
