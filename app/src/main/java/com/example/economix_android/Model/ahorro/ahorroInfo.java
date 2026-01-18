@@ -1,5 +1,7 @@
 package com.example.economix_android.Model.ahorro;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -36,14 +38,30 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.math.RoundingMode;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ahorroInfo extends Fragment {
+
+    private static final String PREFS_AHORRO = "ahorro_prefs";
+    private static final String KEY_META_NOMBRE = "meta_nombre";
+    private static final String KEY_META_PRECIO = "meta_precio";
+    private static final String KEY_META_COMPLETADA_NOMBRE = "meta_completada_nombre";
+    private static final String KEY_META_COMPLETADA_FECHA = "meta_completada_fecha";
+    private static final String KEY_METAS_COMPLETADAS = "metas_completadas";
+    private static final String KEY_AHORRO_EDIT_ID = "ahorro_edit_id";
+    private static final String KEY_AHORRO_EDIT_META = "ahorro_edit_meta";
+    private static final String KEY_AHORRO_EDIT_MONTO = "ahorro_edit_monto";
+    private static final String KEY_AHORRO_EDIT_FECHA = "ahorro_edit_fecha";
+    private static final String KEY_AHORRO_EDIT_INGRESO_ID = "ahorro_edit_ingreso_id";
+    private static final String META_DELIMITER = "||";
 
     private FragmentAhorroInfoBinding binding;
     private final AhorroRepository ahorroRepository = new AhorroRepository();
@@ -107,6 +125,11 @@ public class ahorroInfo extends Fragment {
             public void onAgregar(AhorroItem item) {
                 mostrarDialogoAgregar(item);
             }
+
+            @Override
+            public void onSeleccionar(AhorroItem item) {
+                seleccionarAhorro(item);
+            }
         });
         binding.listaAhorros.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.listaAhorros.setAdapter(adapter);
@@ -123,6 +146,8 @@ public class ahorroInfo extends Fragment {
                     List<AhorroItem> items = new ArrayList<>();
                     List<AhorroDto> body = response.body();
                     if (body != null) {
+                        SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_AHORRO, Context.MODE_PRIVATE);
+                        java.util.Set<String> metasCompletadas = obtenerMetasCompletadas(prefs);
                         List<Ingreso> ingresosUsuario = DataRepository.getIngresos();
                         java.util.Set<Integer> idsIngresos = new java.util.HashSet<>();
                         for (Ingreso ingreso : ingresosUsuario) {
@@ -136,11 +161,14 @@ public class ahorroInfo extends Fragment {
                             }
                             AhorroItem item = convertir(dto);
                             if (item != null) {
+                                if (estaMetaCompletada(item.getPeriodo(), metasCompletadas)) {
+                                    continue;
+                                }
                                 items.add(item);
                             }
                         }
                     }
-                    adapter.update(items);
+                    adapter.update(items, construirProgresoPorMeta(items));
                     binding.tvAhorrosVacio.setVisibility(items.isEmpty() ? View.VISIBLE : View.GONE);
                 } else {
                     mostrarMensajeError(null);
@@ -343,6 +371,67 @@ public class ahorroInfo extends Fragment {
         }
     }
 
+    private java.util.Set<String> obtenerMetasCompletadas(SharedPreferences prefs) {
+        java.util.Set<String> completadas = prefs.getStringSet(KEY_METAS_COMPLETADAS, new java.util.HashSet<>());
+        if (completadas != null && !completadas.isEmpty()) {
+            return completadas;
+        }
+        String metaAnterior = prefs.getString(KEY_META_COMPLETADA_NOMBRE, "");
+        String fechaAnterior = prefs.getString(KEY_META_COMPLETADA_FECHA, "");
+        if (!TextUtils.isEmpty(metaAnterior) && !TextUtils.isEmpty(fechaAnterior)) {
+            java.util.Set<String> legacy = new java.util.HashSet<>();
+            legacy.add(metaAnterior + META_DELIMITER + fechaAnterior);
+            return legacy;
+        }
+        return new java.util.HashSet<>();
+    }
+
+    private boolean estaMetaCompletada(String meta, java.util.Set<String> completadas) {
+        if (TextUtils.isEmpty(meta) || completadas == null || completadas.isEmpty()) {
+            return false;
+        }
+        for (String registro : completadas) {
+            if (TextUtils.isEmpty(registro)) {
+                continue;
+            }
+            String[] partes = registro.split("\\Q" + META_DELIMITER + "\\E");
+            if (partes.length > 0 && meta.equalsIgnoreCase(partes[0])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Map<String, AhorroInfoAdapter.ProgresoMeta> construirProgresoPorMeta(List<AhorroItem> items) {
+        Map<String, BigDecimal> totales = new HashMap<>();
+        for (AhorroItem item : items) {
+            String periodo = item.getPeriodo();
+            BigDecimal acumulado = totales.containsKey(periodo) ? totales.get(periodo) : BigDecimal.ZERO;
+            totales.put(periodo, acumulado.add(parseMontoSeguro(item.getMonto())));
+        }
+        SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_AHORRO, Context.MODE_PRIVATE);
+        String metaNombre = prefs.getString(KEY_META_NOMBRE, "");
+        BigDecimal objetivo = parseMontoSeguro(prefs.getString(KEY_META_PRECIO, ""));
+        Map<String, AhorroInfoAdapter.ProgresoMeta> progreso = new HashMap<>();
+        for (Map.Entry<String, BigDecimal> entry : totales.entrySet()) {
+            String periodo = entry.getKey();
+            BigDecimal total = entry.getValue();
+            if (TextUtils.isEmpty(metaNombre) || !periodo.equalsIgnoreCase(metaNombre)
+                    || objetivo.compareTo(BigDecimal.ZERO) <= 0) {
+                continue;
+            }
+            int porcentaje = total.multiply(BigDecimal.valueOf(100))
+                    .divide(objetivo, 0, RoundingMode.HALF_UP)
+                    .intValue();
+            porcentaje = Math.min(porcentaje, 100);
+            String totalTexto = total.stripTrailingZeros().toPlainString();
+            String objetivoTexto = objetivo.stripTrailingZeros().toPlainString();
+            String texto = getString(R.string.label_progreso_ahorro, totalTexto, objetivoTexto, porcentaje);
+            progreso.put(periodo, new AhorroInfoAdapter.ProgresoMeta(texto, porcentaje));
+        }
+        return progreso;
+    }
+
     private String obtenerTexto(TextInputEditText editText) {
         return editText.getText() != null ? editText.getText().toString().trim() : "";
     }
@@ -419,6 +508,23 @@ public class ahorroInfo extends Fragment {
     private void mostrarMensajeError(String message) {
         String texto = message != null ? message : getString(R.string.mensaje_error_servidor);
         Toast.makeText(requireContext(), texto, Toast.LENGTH_SHORT).show();
+    }
+
+    private void seleccionarAhorro(AhorroItem item) {
+        if (item == null || item.getIdAhorro() == null) {
+            return;
+        }
+        SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_AHORRO, Context.MODE_PRIVATE);
+        prefs.edit()
+                .putInt(KEY_AHORRO_EDIT_ID, item.getIdAhorro())
+                .putString(KEY_AHORRO_EDIT_META, item.getPeriodo())
+                .putString(KEY_AHORRO_EDIT_MONTO, item.getMonto())
+                .putString(KEY_AHORRO_EDIT_FECHA, item.getFecha())
+                .putInt(KEY_AHORRO_EDIT_INGRESO_ID, item.getIngresoId() != null ? item.getIngresoId() : -1)
+                .apply();
+        if (getView() != null) {
+            navigateSafely(getView(), R.id.navigation_ahorro);
+        }
     }
 
     private void navigateSafely(View view, int destinationId) {

@@ -46,6 +46,25 @@
             android:textColor="@color/economix_text_secondary"
             android:textSize="12sp" />
 
+        <TextView
+            android:id="@+id/tvProgresoAhorroInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/label_avance_ahorro"
+            android:textColor="@color/softWhite"
+            android:textSize="12sp" />
+
+        <ProgressBar
+            android:id="@+id/progresoAhorroInfo"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_marginTop="6dp"
+            android:progress="0"
+            android:progressTint="@color/tealAccent"
+            android:backgroundTint="@color/tealSurfaceVariant" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
