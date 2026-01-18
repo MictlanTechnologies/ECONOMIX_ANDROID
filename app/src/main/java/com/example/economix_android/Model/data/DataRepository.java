@@ -39,6 +39,7 @@ public final class DataRepository {
 
     private static final List<Ingreso> ingresos = new ArrayList<>();
     private static final List<Ingreso> ingresosRecurrentes = new ArrayList<>();
+    private static final List<Ingreso> ingresosHistorial = new ArrayList<>();
     private static final List<Gasto> gastos = new ArrayList<>();
     private static final List<Gasto> gastosRecurrentes = new ArrayList<>();
     private static final Map<Integer, BigDecimal> ingresosOriginales = new HashMap<>();
@@ -74,23 +75,7 @@ public final class DataRepository {
     }
 
     public static List<Ingreso> getIngresosHistorial() {
-        List<Ingreso> historial = new ArrayList<>();
-        for (Ingreso ingreso : ingresos) {
-            String monto = ingreso.getDescripcion();
-            if (ingreso.getId() != null) {
-                BigDecimal original = ingresosOriginales.get(ingreso.getId());
-                if (original != null) {
-                    monto = original.stripTrailingZeros().toPlainString();
-                }
-            }
-            historial.add(new Ingreso(ingreso.getId(),
-                    ingreso.getArticulo(),
-                    monto,
-                    ingreso.getFecha(),
-                    ingreso.getPeriodo(),
-                    ingreso.isRecurrente()));
-        }
-        return Collections.unmodifiableList(historial);
+        return Collections.unmodifiableList(ingresosHistorial);
     }
 
     public static List<Ingreso> getIngresosRecurrentes() {
@@ -207,6 +192,7 @@ public final class DataRepository {
                 if (response.isSuccessful()) {
                     List<IngresoDto> body = response.body();
                     List<Ingreso> nuevos = new ArrayList<>();
+                    List<Ingreso> historialNuevos = new ArrayList<>();
                     if (body != null) {
                         for (IngresoDto dto : body) {
                             if (userId != null && !Objects.equals(dto.getIdUsuario(), userId)) {
@@ -214,11 +200,19 @@ public final class DataRepository {
                             }
                             Ingreso ingreso = fromDto(dto);
                             if (ingreso != null) {
+                                if (isIngresoAgotado(ingreso)) {
+                                    Ingreso historial = createIngresoHistorial(ingreso);
+                                    if (historial != null) {
+                                        historialNuevos.add(historial);
+                                    }
+                                    continue;
+                                }
                                 nuevos.add(ingreso);
                             }
                         }
                     }
                     replaceIngresos(nuevos);
+                    replaceIngresosHistorial(historialNuevos);
                     registrarIngresosOriginales(nuevos);
                     refreshIngresosRecurrentes(context, callback);
                 } else {
@@ -701,6 +695,9 @@ public final class DataRepository {
                     Ingreso actualizadoRemoto = fromDto(response.body());
                     if (actualizadoRemoto != null) {
                         reemplazarIngreso(actualizadoRemoto);
+                        if (isIngresoAgotado(actualizadoRemoto)) {
+                            moverIngresoAHistorial(actualizadoRemoto);
+                        }
                     }
                     notifySuccess(callback, actualizadoRemoto);
                 } else {
@@ -718,12 +715,17 @@ public final class DataRepository {
     private static void replaceIngresos(List<Ingreso> nuevos) {
         ingresos.clear();
         ingresos.addAll(nuevos);
-        pruneIngresosOriginales(nuevos);
+        pruneIngresosOriginales(nuevos, ingresosHistorial);
     }
 
     private static void replaceIngresosRecurrentes(List<Ingreso> nuevos) {
         ingresosRecurrentes.clear();
         ingresosRecurrentes.addAll(nuevos);
+    }
+
+    private static void replaceIngresosHistorial(List<Ingreso> nuevos) {
+        ingresosHistorial.clear();
+        ingresosHistorial.addAll(nuevos);
     }
 
     private static void replaceGastos(List<Gasto> nuevos) {
@@ -749,6 +751,7 @@ public final class DataRepository {
     private static void eliminarIngresoPorId(Integer id) {
         ingresos.removeIf(ingreso -> Objects.equals(ingreso.getId(), id));
         ingresosOriginales.remove(id);
+        ingresosHistorial.removeIf(ingreso -> Objects.equals(ingreso.getId(), id));
     }
 
     private static void eliminarIngresoRecurrentePorId(Integer id) {
@@ -941,14 +944,78 @@ public final class DataRepository {
         }
     }
 
-    private static void pruneIngresosOriginales(List<Ingreso> nuevos) {
+    private static void pruneIngresosOriginales(List<Ingreso> nuevos, List<Ingreso> historial) {
         Set<Integer> ids = new HashSet<>();
         for (Ingreso ingreso : nuevos) {
             if (ingreso.getId() != null) {
                 ids.add(ingreso.getId());
             }
         }
+        for (Ingreso ingreso : historial) {
+            if (ingreso.getId() != null) {
+                ids.add(ingreso.getId());
+            }
+        }
         ingresosOriginales.keySet().retainAll(ids);
+    }
+
+    private static boolean isIngresoAgotado(Ingreso ingreso) {
+        if (ingreso == null) {
+            return false;
+        }
+        BigDecimal monto = parseMonto(ingreso.getDescripcion());
+        return monto.compareTo(BigDecimal.ZERO) <= 0;
+    }
+
+    private static void moverIngresoAHistorial(Ingreso ingreso) {
+        if (ingreso == null || ingreso.getId() == null) {
+            return;
+        }
+        eliminarIngresoActivoPorId(ingreso.getId());
+        addIngresoHistorial(ingreso);
+    }
+
+    private static void eliminarIngresoActivoPorId(Integer id) {
+        ingresos.removeIf(ingreso -> Objects.equals(ingreso.getId(), id));
+    }
+
+    private static void addIngresoHistorial(Ingreso ingreso) {
+        Ingreso historial = createIngresoHistorial(ingreso);
+        if (historial != null) {
+            reemplazarIngresoHistorial(historial);
+        }
+    }
+
+    private static Ingreso createIngresoHistorial(Ingreso ingreso) {
+        if (ingreso == null) {
+            return null;
+        }
+        String monto = ingreso.getDescripcion();
+        if (ingreso.getId() != null) {
+            BigDecimal original = ingresosOriginales.get(ingreso.getId());
+            if (original != null) {
+                monto = original.stripTrailingZeros().toPlainString();
+            }
+        }
+        return new Ingreso(ingreso.getId(),
+                ingreso.getArticulo(),
+                monto,
+                ingreso.getFecha(),
+                ingreso.getPeriodo(),
+                ingreso.isRecurrente());
+    }
+
+    private static void reemplazarIngresoHistorial(Ingreso ingreso) {
+        if (ingreso == null || ingreso.getId() == null) {
+            return;
+        }
+        for (int i = 0; i < ingresosHistorial.size(); i++) {
+            if (Objects.equals(ingresosHistorial.get(i).getId(), ingreso.getId())) {
+                ingresosHistorial.set(i, ingreso);
+                return;
+            }
+        }
+        ingresosHistorial.add(ingreso);
     }
 
     private static String formatDate(LocalDate date) {
@@ -1008,6 +1075,7 @@ public final class DataRepository {
     public static void clearAll() {
         ingresos.clear();
         ingresosRecurrentes.clear();
+        ingresosHistorial.clear();
         gastos.clear();
         gastosRecurrentes.clear();
         ingresosOriginales.clear();

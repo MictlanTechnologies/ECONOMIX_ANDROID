@@ -281,6 +281,7 @@ public class ahorroInfo extends Fragment {
                                     if (!isAdded()) {
                                         return;
                                     }
+                                    mostrarIngresoAgotado(result);
                                     actualizarAhorro(item, item.getPeriodo(), nuevoTotal,
                                             result != null ? result.getId() : ingresoSeleccionado.getId());
                                     ingresoSeleccionado = null;
@@ -565,6 +566,16 @@ public class ahorroInfo extends Fragment {
     private void mostrarMensajeError(String message) {
         String texto = message != null ? message : getString(R.string.mensaje_error_servidor);
         Toast.makeText(requireContext(), texto, Toast.LENGTH_SHORT).show();
+    }
+
+    private void mostrarIngresoAgotado(Ingreso ingreso) {
+        if (ingreso == null) {
+            return;
+        }
+        BigDecimal disponible = parseMontoSeguro(ingreso.getDescripcion());
+        if (disponible.compareTo(BigDecimal.ZERO) <= 0) {
+            Toast.makeText(requireContext(), R.string.mensaje_ingreso_agotado, Toast.LENGTH_LONG).show();
+        }
     }
 
     private void seleccionarAhorro(AhorroItem item) {

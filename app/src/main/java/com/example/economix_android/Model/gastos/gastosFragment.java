@@ -155,6 +155,7 @@ public class gastosFragment extends Fragment {
                         if (!isAdded()) {
                             return;
                         }
+                        mostrarIngresoAgotado(result);
                         crearGasto(gasto, result, montoOriginal);
                     }
 
@@ -558,6 +559,16 @@ public class gastosFragment extends Fragment {
     private void mostrarMensajeError(String message) {
         String texto = message != null ? message : getString(R.string.mensaje_error_operacion);
         Toast.makeText(requireContext(), texto, Toast.LENGTH_SHORT).show();
+    }
+
+    private void mostrarIngresoAgotado(Ingreso ingreso) {
+        if (ingreso == null) {
+            return;
+        }
+        BigDecimal disponible = parseMontoSeguro(ingreso.getDescripcion());
+        if (disponible.compareTo(BigDecimal.ZERO) <= 0) {
+            Toast.makeText(requireContext(), R.string.mensaje_ingreso_agotado, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
