@@ -46,6 +46,25 @@
             android:textSize="12sp"
             android:layout_marginTop="2dp" />
 
+        <TextView
+            android:id="@+id/tvProgresoAhorroItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/softWhite"
+            android:textSize="12sp"
+            android:layout_marginTop="8dp"
+            android:text="@string/label_avance_ahorro" />
+
+        <ProgressBar
+            android:id="@+id/progresoAhorroItem"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_marginTop="6dp"
+            android:progress="0"
+            android:progressTint="@color/teal_700"
+            android:backgroundTint="@color/teal_200" />
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

@@ -43,8 +43,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.math.RoundingMode;
 
 import retrofit2.Call;
@@ -67,6 +69,7 @@ public class ahorroFragment extends Fragment {
     private final List<AhorroItem> ahorrosActuales = new ArrayList<>();
     private Ingreso ingresoSeleccionado;
     private BigDecimal metaPrecio = BigDecimal.ZERO;
+    private String metaNombreGuardada;
     private String metaCompletadaNombre;
     private LocalDate metaCompletadaFecha;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault());
@@ -234,7 +237,7 @@ public class ahorroFragment extends Fragment {
                     }
                     ahorrosActuales.clear();
                     ahorrosActuales.addAll(items);
-                    ahorroAdapter.update(items);
+                    ahorroAdapter.update(items, construirProgresoPorMeta(items));
                     binding.tvAhorrosVacio.setVisibility(items.isEmpty() ? View.VISIBLE : View.GONE);
                     actualizarProgreso(items);
                 } else {
@@ -292,10 +295,28 @@ public class ahorroFragment extends Fragment {
         BigDecimal disponible = ingresoSeleccionado != null
                 ? parseMontoSeguro(ingresoSeleccionado.getDescripcion())
                 : BigDecimal.ZERO;
+        BigDecimal totalActualMeta = obtenerTotalMeta(meta);
 
         if (aporte.compareTo(disponible) > 0) {
             binding.tilAporteAhorro.setError(getString(R.string.error_aporte_excede_ingreso));
             hayError = true;
+        }
+
+        if (metaCompletadaNombre != null && metaCompletadaFecha != null
+                && meta.equalsIgnoreCase(metaCompletadaNombre)) {
+            mostrarDialogoInformativo(R.drawable.ahorro,
+                    getString(R.string.titulo_meta_completada),
+                    getString(R.string.mensaje_meta_completada_bloqueo, meta),
+                    null);
+            return;
+        }
+
+        if (precio.compareTo(BigDecimal.ZERO) > 0 && totalActualMeta.compareTo(precio) >= 0) {
+            mostrarDialogoInformativo(R.drawable.ahorro,
+                    getString(R.string.titulo_meta_completada),
+                    getString(R.string.mensaje_meta_completada_bloqueo, meta),
+                    null);
+            return;
         }
 
         if (precio.compareTo(BigDecimal.ZERO) > 0 && metaActualExcedeObjetivo(meta, precio, aporte)) {
@@ -318,7 +339,7 @@ public class ahorroFragment extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
-                crearAhorro(meta, aporte, fechaAhorro, result, montoOriginal);
+                crearAhorro(meta, aporte, fechaAhorro, result, montoOriginal, totalActualMeta, precio);
             }
 
             @Override
@@ -333,7 +354,8 @@ public class ahorroFragment extends Fragment {
     }
 
     private void crearAhorro(String meta, BigDecimal aporte, LocalDate fechaAhorro,
-                             Ingreso ingresoActualizado, BigDecimal montoOriginal) {
+                             Ingreso ingresoActualizado, BigDecimal montoOriginal,
+                             BigDecimal totalActualMeta, BigDecimal objetivo) {
         AhorroDto dto = AhorroDto.builder()
                 .montoAhorro(aporte)
                 .periodoTAhorro(meta)
@@ -350,9 +372,14 @@ public class ahorroFragment extends Fragment {
                 setButtonsEnabled(true);
                 if (response.isSuccessful() && response.body() != null) {
                     Toast.makeText(requireContext(), R.string.mensaje_ahorro_guardado, Toast.LENGTH_SHORT).show();
-                    limpiarCampos();
                     cargarIngresos();
                     cargarAhorros();
+                    if (objetivo.compareTo(BigDecimal.ZERO) > 0
+                            && totalActualMeta.add(aporte).compareTo(objetivo) >= 0) {
+                        mostrarMetaCompletada(meta, totalActualMeta.add(aporte), objetivo);
+                    } else {
+                        limpiarCampos();
+                    }
                 } else {
                     revertirIngreso(ingresoActualizado, montoOriginal);
                     mostrarMensajeError(null);
@@ -521,6 +548,7 @@ public class ahorroFragment extends Fragment {
         String precio = prefs.getString(KEY_META_PRECIO, "");
         if (!TextUtils.isEmpty(meta)) {
             binding.etMetaAhorro.setText(meta);
+            metaNombreGuardada = meta;
         }
         if (!TextUtils.isEmpty(precio)) {
             binding.etPrecioMeta.setText(precio);
@@ -543,6 +571,7 @@ public class ahorroFragment extends Fragment {
                 .putString(KEY_META_NOMBRE, meta)
                 .putString(KEY_META_PRECIO, precio.stripTrailingZeros().toPlainString())
                 .apply();
+        metaNombreGuardada = meta;
     }
 
     private AhorroItem convertir(AhorroDto dto) {
@@ -611,18 +640,33 @@ public class ahorroFragment extends Fragment {
         }
     }
 
-    private boolean metaActualExcedeObjetivo(String meta, BigDecimal objetivo, BigDecimal aporte) {
+    private String obtenerMetaActual() {
+        String metaIngresada = obtenerTexto(binding.etMetaAhorro);
+        if (!TextUtils.isEmpty(metaIngresada)) {
+            return metaIngresada;
+        }
+        return metaNombreGuardada != null ? metaNombreGuardada : "";
+    }
+
+    private BigDecimal obtenerTotalMeta(String meta) {
+        if (TextUtils.isEmpty(meta)) {
+            return BigDecimal.ZERO;
+        }
         BigDecimal totalActual = BigDecimal.ZERO;
         for (AhorroItem item : ahorrosActuales) {
             if (meta.equalsIgnoreCase(item.getPeriodo())) {
                 totalActual = totalActual.add(parseMontoSeguro(item.getMonto()));
             }
         }
-        return totalActual.add(aporte).compareTo(objetivo) > 0;
+        return totalActual;
+    }
+
+    private boolean metaActualExcedeObjetivo(String meta, BigDecimal objetivo, BigDecimal aporte) {
+        return obtenerTotalMeta(meta).add(aporte).compareTo(objetivo) > 0;
     }
 
     private void actualizarProgreso(List<AhorroItem> items) {
-        String meta = obtenerTexto(binding.etMetaAhorro);
+        String meta = obtenerMetaActual();
         if (TextUtils.isEmpty(meta)) {
             actualizarTextoProgreso(BigDecimal.ZERO, BigDecimal.ZERO, 0);
             binding.progresoAhorro.setProgress(0);
@@ -658,6 +702,41 @@ public class ahorroFragment extends Fragment {
         if (objetivo.compareTo(BigDecimal.ZERO) > 0 && total.compareTo(objetivo) >= 0) {
             mostrarMetaCompletada(meta, total, objetivo);
         }
+        actualizarProgresoEnRegistros(items);
+    }
+
+    private void actualizarProgresoEnRegistros(List<AhorroItem> items) {
+        ahorroAdapter.update(items, construirProgresoPorMeta(items));
+    }
+
+    private Map<String, AhorroAdapter.ProgresoMeta> construirProgresoPorMeta(List<AhorroItem> items) {
+        Map<String, BigDecimal> totales = new HashMap<>();
+        for (AhorroItem item : items) {
+            String periodo = item.getPeriodo();
+            BigDecimal acumulado = totales.containsKey(periodo) ? totales.get(periodo) : BigDecimal.ZERO;
+            totales.put(periodo, acumulado.add(parseMontoSeguro(item.getMonto())));
+        }
+        Map<String, AhorroAdapter.ProgresoMeta> progreso = new HashMap<>();
+        for (Map.Entry<String, BigDecimal> entry : totales.entrySet()) {
+            String periodo = entry.getKey();
+            BigDecimal total = entry.getValue();
+            BigDecimal objetivo = BigDecimal.ZERO;
+            if (!TextUtils.isEmpty(metaNombreGuardada) && periodo.equalsIgnoreCase(metaNombreGuardada)) {
+                objetivo = metaPrecio;
+            }
+            int porcentaje = 0;
+            if (objetivo.compareTo(BigDecimal.ZERO) > 0) {
+                porcentaje = total.multiply(BigDecimal.valueOf(100))
+                        .divide(objetivo, 0, RoundingMode.HALF_UP)
+                        .intValue();
+                porcentaje = Math.min(porcentaje, 100);
+            }
+            String totalTexto = total.stripTrailingZeros().toPlainString();
+            String objetivoTexto = objetivo.stripTrailingZeros().toPlainString();
+            String texto = getString(R.string.label_progreso_ahorro, totalTexto, objetivoTexto, porcentaje);
+            progreso.put(periodo, new AhorroAdapter.ProgresoMeta(texto, porcentaje));
+        }
+        return progreso;
     }
 
     private void actualizarTextoProgreso(BigDecimal total, BigDecimal objetivo, int porcentaje) {

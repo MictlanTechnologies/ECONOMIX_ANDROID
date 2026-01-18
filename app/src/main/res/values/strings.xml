@@ -78,6 +78,7 @@
     <string name="mensaje_ayuda_ahorro">Define una meta, su monto objetivo y el ingreso desde el que aportarás. La barra de avance refleja el progreso alcanzado.</string>
     <string name="titulo_meta_completada">Meta completada</string>
     <string name="mensaje_meta_completada">¡Felicidades! Ya completaste la meta "%1$s". Ahorraste $%2$s de $%3$s.</string>
+    <string name="mensaje_meta_completada_bloqueo">La meta "%1$s" ya está completada y no admite más aportes.</string>
     <string name="titulo_ayuda_graficas_menu">Centro de gráficas</string>
     <string name="mensaje_ayuda_graficas_menu">Selecciona el tipo de análisis que quieres revisar para comparar tus gastos e ingresos por categoría o periodo.</string>
     <string name="titulo_ayuda_graficas_gastos">Gráficas de gastos</string>
