@@ -20,5 +20,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ECONOMIX_ANDROID"
+rootProject.name = "ECONOMIX"
 include(":app")

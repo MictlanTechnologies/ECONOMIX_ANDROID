@@ -19,10 +19,13 @@ import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.databinding.FragmentUsuarioInfoBinding;
 import com.example.economix_android.network.dto.ContactoDto;
 import com.example.economix_android.network.dto.DomicilioDto;
+import com.example.economix_android.network.dto.LoginRequest;
 import com.example.economix_android.network.dto.PersonaDto;
+import com.example.economix_android.network.dto.UsuarioDto;
 import com.example.economix_android.network.repository.ContactoRepository;
 import com.example.economix_android.network.repository.DomicilioRepository;
 import com.example.economix_android.network.repository.PersonaRepository;
+import com.example.economix_android.network.repository.UsuarioRepository;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.List;
@@ -37,9 +40,11 @@ public class usuario_info extends Fragment {
     private final PersonaRepository personaRepository = new PersonaRepository();
     private final ContactoRepository contactoRepository = new ContactoRepository();
     private final DomicilioRepository domicilioRepository = new DomicilioRepository();
+    private final UsuarioRepository usuarioRepository = new UsuarioRepository();
     private PersonaDto personaActual;
     private ContactoDto contactoActual;
     private DomicilioDto domicilioActual;
+    private UsuarioDto usuarioActual;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -56,7 +61,7 @@ public class usuario_info extends Fragment {
                 Navigation.findNavController(v)
                         .navigate(R.id.usuario));
         binding.btnAyudaUsInf.setOnClickListener(v -> mostrarAyuda());
-        binding.btnGuardar.setOnClickListener(v -> guardarPersona());
+        binding.btnGuardar.setOnClickListener(v -> guardarCambios());
         binding.btnEliminar.setOnClickListener(v -> eliminarPersona());
         binding.btnLimpiar.setOnClickListener(v -> limpiarFormulario());
 
@@ -79,6 +84,7 @@ public class usuario_info extends Fragment {
         binding.navGraficas.setOnClickListener(bottomNavListener);
 
         cargarPersona();
+        cargarUsuario();
     }
 
     private void cargarPersona() {
@@ -199,9 +205,51 @@ public class usuario_info extends Fragment {
         });
     }
 
+    private void cargarUsuario() {
+        Integer userId = SessionManager.getUserId(requireContext());
+        if (userId == null) {
+            return;
+        }
+        usuarioRepository.obtenerUsuario(userId, new Callback<UsuarioDto>() {
+            @Override
+            public void onResponse(Call<UsuarioDto> call, Response<UsuarioDto> response) {
+                if (!isAdded()) {
+                    return;
+                }
+                if (response.isSuccessful() && response.body() != null) {
+                    usuarioActual = response.body();
+                    String perfil = usuarioActual.getPerfilUsuario();
+                    if (!TextUtils.isEmpty(perfil)) {
+                        binding.etPerfilUsuario.setText(perfil);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UsuarioDto> call, Throwable t) {
+                if (!isAdded()) {
+                    return;
+                }
+                mostrarMensaje(getString(R.string.mensaje_error_servidor));
+            }
+        });
+    }
+
+    private void guardarCambios() {
+        guardarUsuario();
+        guardarPersona();
+    }
+
     private void guardarPersona() {
         String nombre = obtenerTexto(binding.etNombre);
         String apellidos = obtenerTexto(binding.etApellidos);
+        if (TextUtils.isEmpty(nombre)
+                && TextUtils.isEmpty(apellidos)
+                && personaActual == null
+                && TextUtils.isEmpty(obtenerTexto(binding.etContacto))
+                && TextUtils.isEmpty(obtenerTexto(binding.etDomicilio))) {
+            return;
+        }
         if (TextUtils.isEmpty(nombre) || TextUtils.isEmpty(apellidos)) {
             mostrarMensaje(getString(R.string.error_persona_campos_obligatorios));
             return;
@@ -226,6 +274,101 @@ public class usuario_info extends Fragment {
         } else {
             personaRepository.actualizarPersona(personaActual.getIdPersona(), dto, personaCallback());
         }
+    }
+
+    private void guardarUsuario() {
+        Integer userId = SessionManager.getUserId(requireContext());
+        if (userId == null) {
+            mostrarMensaje(getString(R.string.error_usuario_no_autenticado));
+            return;
+        }
+        String nuevoPerfil = obtenerTexto(binding.etPerfilUsuario);
+        String contrasenaActual = obtenerTexto(binding.etContrasenaActual);
+        String nuevaContrasena = obtenerTexto(binding.etContrasenaNueva);
+        if (TextUtils.isEmpty(nuevoPerfil) && TextUtils.isEmpty(nuevaContrasena)) {
+            return;
+        }
+        limpiarErroresUsuario();
+        String perfilActual = usuarioActual != null ? usuarioActual.getPerfilUsuario() : SessionManager.getPerfil(requireContext());
+        if (!TextUtils.isEmpty(nuevaContrasena)) {
+            if (TextUtils.isEmpty(contrasenaActual)) {
+                binding.tilContrasenaActual.setError(getString(R.string.error_contrasena_obligatoria));
+                return;
+            }
+            validarContrasenaActual(perfilActual, contrasenaActual, () ->
+                    actualizarUsuario(userId, perfilActual, nuevoPerfil, nuevaContrasena));
+            return;
+        }
+
+        actualizarUsuario(userId, perfilActual, nuevoPerfil, null);
+    }
+
+    private void validarContrasenaActual(String perfilActual, String contrasenaActual, Runnable onSuccess) {
+        if (TextUtils.isEmpty(perfilActual)) {
+            mostrarMensaje(getString(R.string.error_usuario_no_autenticado));
+            return;
+        }
+        LoginRequest request = LoginRequest.builder()
+                .perfilUsuario(perfilActual)
+                .contrasenaUsuario(contrasenaActual)
+                .build();
+        usuarioRepository.login(request, new Callback<UsuarioDto>() {
+            @Override
+            public void onResponse(Call<UsuarioDto> call, Response<UsuarioDto> response) {
+                if (!isAdded()) {
+                    return;
+                }
+                if (response.isSuccessful() && response.body() != null) {
+                    onSuccess.run();
+                } else {
+                    binding.tilContrasenaActual.setError(getString(R.string.error_credenciales_invalidas));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UsuarioDto> call, Throwable t) {
+                if (!isAdded()) {
+                    return;
+                }
+                mostrarMensaje(getString(R.string.mensaje_error_servidor));
+            }
+        });
+    }
+
+    private void actualizarUsuario(Integer userId, String perfilActual, String nuevoPerfil, String nuevaContrasena) {
+        UsuarioDto dto = UsuarioDto.builder()
+                .idUsuario(userId)
+                .perfilUsuario(TextUtils.isEmpty(nuevoPerfil) ? perfilActual : nuevoPerfil)
+                .contrasenaUsuario(nuevaContrasena)
+                .build();
+
+        usuarioRepository.actualizarUsuario(userId, dto, new Callback<UsuarioDto>() {
+            @Override
+            public void onResponse(Call<UsuarioDto> call, Response<UsuarioDto> response) {
+                if (!isAdded()) {
+                    return;
+                }
+                if (response.isSuccessful() && response.body() != null) {
+                    usuarioActual = response.body();
+                    if (!TextUtils.isEmpty(nuevoPerfil)) {
+                        SessionManager.saveSession(requireContext(), usuarioActual);
+                    }
+                    binding.etContrasenaActual.setText("");
+                    binding.etContrasenaNueva.setText("");
+                    mostrarMensaje(getString(R.string.mensaje_usuario_actualizado));
+                } else {
+                    mostrarMensaje(getString(R.string.mensaje_error_operacion));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UsuarioDto> call, Throwable t) {
+                if (!isAdded()) {
+                    return;
+                }
+                mostrarMensaje(getString(R.string.mensaje_error_servidor));
+            }
+        });
     }
 
     private Callback<PersonaDto> personaCallback() {
@@ -452,8 +595,14 @@ public class usuario_info extends Fragment {
         binding.etNombre.setText("");
         binding.etApellidos.setText("");
         binding.etContacto.setText("");
-        binding.etContraseA.setText("");
         binding.etDomicilio.setText("");
+        binding.etPerfilUsuario.setText("");
+        binding.etContrasenaActual.setText("");
+        binding.etContrasenaNueva.setText("");
+    }
+
+    private void limpiarErroresUsuario() {
+        binding.tilContrasenaActual.setError(null);
     }
 
     private void setBotonesEnabled(boolean enabled) {
