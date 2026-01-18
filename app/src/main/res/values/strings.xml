@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ECONOMIX_ANDROID</string>
+    <string name="app_name">ECONOMIX</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -76,6 +76,9 @@
     <string name="mensaje_ayuda_menu">Usa los accesos rápidos para registrar gastos o ingresos, gestionar tus ahorros y abrir las gráficas comparativas.</string>
     <string name="titulo_ayuda_ahorro">Panel de ahorro</string>
     <string name="mensaje_ayuda_ahorro">Define una meta, su monto objetivo y el ingreso desde el que aportarás. La barra de avance refleja el progreso alcanzado.</string>
+    <string name="titulo_meta_completada">Meta completada</string>
+    <string name="mensaje_meta_completada">¡Felicidades! Ya completaste la meta "%1$s". Ahorraste $%2$s de $%3$s.</string>
+    <string name="mensaje_meta_completada_bloqueo">La meta "%1$s" ya está completada y no admite más aportes.</string>
     <string name="titulo_ayuda_graficas_menu">Centro de gráficas</string>
     <string name="mensaje_ayuda_graficas_menu">Selecciona el tipo de análisis que quieres revisar para comparar tus gastos e ingresos por categoría o periodo.</string>
     <string name="titulo_ayuda_graficas_gastos">Gráficas de gastos</string>
@@ -105,6 +108,7 @@
     <string name="error_periodo_ahorro_obligatorio">Ingresa el periodo del ahorro.</string>
     <string name="error_ingreso_id">Ingresa un ID de ingreso válido.</string>
     <string name="error_gasto_id">Ingresa un ID de gasto válido.</string>
+    <string name="error_aporte_excede_meta">El aporte supera el monto objetivo de la meta.</string>
     <string name="label_meta_ahorro">Nombre del ahorro</string>
     <string name="label_precio_objetivo">Precio objetivo</string>
     <string name="label_fecha_ahorro">Fecha</string>

@@ -137,24 +137,6 @@
                             android:textColorHint="@android:color/darker_gray" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <TextView
-                        android:id="@+id/tvProgresoAhorro"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="@string/label_avance_ahorro"
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
-
-                    <com.google.android.material.progressindicator.LinearProgressIndicator
-                        android:id="@+id/progresoAhorro"
-                        android:layout_width="match_parent"
-                        android:layout_height="6dp"
-                        android:layout_marginTop="8dp"
-                        android:indeterminate="false"
-                        app:trackColor="@color/tealSurfaceVariant"
-                        app:indicatorColor="@color/tealAccent" />
-
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilIngresoSeleccion"
                         android:layout_width="match_parent"
