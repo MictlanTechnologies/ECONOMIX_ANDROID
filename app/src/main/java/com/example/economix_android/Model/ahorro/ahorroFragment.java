@@ -459,15 +459,7 @@ public class ahorroFragment extends Fragment {
     private void eliminarUltimoAhorro() {
         Integer idEliminar = ahorroEditId;
         if (idEliminar == null) {
-            AhorroItem ultimo = ahorroAdapter.getLast();
-            if (ultimo == null || ultimo.getIdAhorro() == null) {
-                Toast.makeText(requireContext(), R.string.error_sin_ahorros, Toast.LENGTH_SHORT).show();
-                return;
-            }
-            idEliminar = ultimo.getIdAhorro();
-        }
-        if (idEliminar == null) {
-            Toast.makeText(requireContext(), R.string.error_sin_ahorros, Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.mensaje_selecciona_ahorro_eliminar, Toast.LENGTH_SHORT).show();
             return;
         }
         setButtonsEnabled(false);

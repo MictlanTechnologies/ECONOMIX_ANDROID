@@ -200,31 +200,7 @@ public class gastosFragment extends Fragment {
             eliminarGastoSeleccionado();
             return;
         }
-        setGastoButtonsEnabled(false);
-        DataRepository.removeLastGasto(new DataRepository.RepositoryCallback<Boolean>() {
-            @Override
-            public void onSuccess(Boolean eliminado) {
-                if (!isAdded()) {
-                    return;
-                }
-                int mensaje = Boolean.TRUE.equals(eliminado)
-                        ? R.string.mensaje_gasto_eliminado
-                        : R.string.error_sin_gastos;
-                Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show();
-                setGastoButtonsEnabled(true);
-            }
-
-            @Override
-            public void onError(String message) {
-                if (!isAdded()) {
-                    return;
-                }
-                Toast.makeText(requireContext(),
-                        message != null ? message : getString(R.string.mensaje_error_operacion),
-                        Toast.LENGTH_SHORT).show();
-                setGastoButtonsEnabled(true);
-            }
-        });
+        Toast.makeText(requireContext(), R.string.mensaje_selecciona_gasto_eliminar, Toast.LENGTH_SHORT).show();
     }
 
     private void setGastoButtonsEnabled(boolean enabled) {

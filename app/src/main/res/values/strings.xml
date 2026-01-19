@@ -142,6 +142,9 @@
     <string name="mensaje_ingreso_eliminado_seleccionado">Se eliminó el ingreso seleccionado.</string>
     <string name="mensaje_gasto_eliminado_seleccionado">Se eliminó el gasto seleccionado.</string>
     <string name="mensaje_ingreso_agotado">El ingreso se agotó y se movió al historial.</string>
+    <string name="mensaje_selecciona_ingreso_eliminar">Selecciona un ingreso para eliminarlo.</string>
+    <string name="mensaje_selecciona_gasto_eliminar">Selecciona un gasto para eliminarlo.</string>
+    <string name="mensaje_selecciona_ahorro_eliminar">Selecciona un ahorro para eliminarlo.</string>
     <string name="titulo_historial_ingresos">Historial de ingresos</string>
     <string name="subtitulo_historial_ingresos">Ingresos agotados con su monto inicial</string>
     <string name="mensaje_ahorro_actualizado">Ahorro actualizado correctamente.</string>
