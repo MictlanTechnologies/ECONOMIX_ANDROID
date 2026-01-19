@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -75,7 +76,12 @@ public final class DataRepository {
     }
 
     public static List<Ingreso> getIngresosHistorial() {
-        return Collections.unmodifiableList(ingresosHistorial);
+        List<Ingreso> resultado = new ArrayList<>();
+        Map<Integer, Ingreso> porId = new LinkedHashMap<>();
+        agregarIngresosHistorial(ingresos, resultado, porId);
+        agregarIngresosHistorial(ingresosHistorial, resultado, porId);
+        resultado.addAll(porId.values());
+        return Collections.unmodifiableList(resultado);
     }
 
     public static List<Ingreso> getIngresosRecurrentes() {
@@ -957,6 +963,23 @@ public final class DataRepository {
             }
         }
         ingresosOriginales.keySet().retainAll(ids);
+    }
+
+    private static void agregarIngresosHistorial(List<Ingreso> ingresos,
+                                                  List<Ingreso> resultado,
+                                                  Map<Integer, Ingreso> porId) {
+        for (Ingreso ingreso : ingresos) {
+            Ingreso historial = createIngresoHistorial(ingreso);
+            if (historial == null) {
+                continue;
+            }
+            Integer id = historial.getId();
+            if (id == null) {
+                resultado.add(historial);
+            } else {
+                porId.put(id, historial);
+            }
+        }
     }
 
     private static boolean isIngresoAgotado(Ingreso ingreso) {

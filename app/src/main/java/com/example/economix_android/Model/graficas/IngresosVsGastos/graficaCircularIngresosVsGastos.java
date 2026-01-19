@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -27,7 +28,13 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.datepicker.MaterialDatePicker;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -35,6 +42,10 @@ import java.util.Locale;
 public class graficaCircularIngresosVsGastos extends Fragment {
 
     private FragmentGraficaCircularIngresosVsGastosBinding binding;
+    private LocalDate filtroInicio;
+    private LocalDate filtroFin;
+    private final DateTimeFormatter dateFormatter =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -55,6 +66,7 @@ public class graficaCircularIngresosVsGastos extends Fragment {
                 Navigation.findNavController(v).navigate(R.id.graficasMenuIngresosVsGastos));
 
         configureChartAppearance();
+        configurarFiltros();
         refreshData();
     }
 
@@ -121,6 +133,13 @@ public class graficaCircularIngresosVsGastos extends Fragment {
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        legend.setDrawInside(false);
+        legend.setWordWrapEnabled(true);
+        legend.setTextSize(12f);
+        legend.setFormSize(12f);
+        legend.setFormToTextSpace(8f);
+        legend.setXEntrySpace(16f);
+        legend.setYEntrySpace(8f);
     }
 
     private void updateChartData() {
@@ -130,8 +149,8 @@ public class graficaCircularIngresosVsGastos extends Fragment {
 
         PieChart chart = binding.pieChartIngresosVsGastos;
 
-        float ingresos = sumarMontos(DataRepository.getIngresosHistorial());
-        float gastos = sumarMontos(DataRepository.getGastos());
+        float ingresos = sumarMontos(filtrarPorFecha(DataRepository.getIngresosHistorial()));
+        float gastos = sumarMontos(filtrarPorFecha(DataRepository.getGastos()));
 
         if (ingresos <= 0f && gastos <= 0f) {
             chart.clear();
@@ -171,6 +190,82 @@ public class graficaCircularIngresosVsGastos extends Fragment {
         chart.highlightValues(null);
         chart.invalidate();
         chart.animateY(800);
+    }
+
+    private void configurarFiltros() {
+        binding.btnFiltroFechaIngresosVsGastos.setOnClickListener(v -> mostrarSelectorFechas());
+        binding.btnFiltroFechaIngresosVsGastos.setOnLongClickListener(v -> {
+            limpiarFiltroFechas();
+            return true;
+        });
+        actualizarTextoRango();
+    }
+
+    private void mostrarSelectorFechas() {
+        MaterialDatePicker<Pair<Long, Long>> picker =
+                MaterialDatePicker.Builder.dateRangePicker()
+                        .setTitleText(R.string.titulo_seleccionar_periodo)
+                        .build();
+        picker.addOnPositiveButtonClickListener(selection -> {
+            if (selection == null || selection.first == null || selection.second == null) {
+                return;
+            }
+            filtroInicio = Instant.ofEpochMilli(selection.first)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            filtroFin = Instant.ofEpochMilli(selection.second)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            actualizarTextoRango();
+            updateChartData();
+        });
+        picker.show(getParentFragmentManager(), "ingresos_vs_gastos_date_range");
+    }
+
+    private void limpiarFiltroFechas() {
+        filtroInicio = null;
+        filtroFin = null;
+        actualizarTextoRango();
+        updateChartData();
+    }
+
+    private void actualizarTextoRango() {
+        if (filtroInicio == null || filtroFin == null) {
+            binding.tvRangoFechasIngresosVsGastos.setText(getString(R.string.label_todas_fechas));
+            return;
+        }
+        String rango = getString(R.string.label_rango_fechas,
+                dateFormatter.format(filtroInicio),
+                dateFormatter.format(filtroFin));
+        binding.tvRangoFechasIngresosVsGastos.setText(rango);
+    }
+
+    private <T extends RegistroFinanciero> List<T> filtrarPorFecha(List<T> registros) {
+        if (filtroInicio == null || filtroFin == null) {
+            return registros;
+        }
+        List<T> resultado = new ArrayList<>();
+        for (T registro : registros) {
+            LocalDate fechaRegistro = parseFecha(registro.getFecha());
+            if (fechaRegistro == null) {
+                continue;
+            }
+            if (!fechaRegistro.isBefore(filtroInicio) && !fechaRegistro.isAfter(filtroFin)) {
+                resultado.add(registro);
+            }
+        }
+        return resultado;
+    }
+
+    private LocalDate parseFecha(String fecha) {
+        if (fecha == null || fecha.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            return LocalDate.parse(fecha, dateFormatter);
+        } catch (DateTimeParseException ex) {
+            return null;
+        }
     }
 
     private float sumarMontos(List<? extends RegistroFinanciero> registros) {
