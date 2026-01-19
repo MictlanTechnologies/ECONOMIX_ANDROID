@@ -151,31 +151,7 @@ public class ingresosFragment extends Fragment {
             eliminarIngresoSeleccionado();
             return;
         }
-        setIngresoButtonsEnabled(false);
-        DataRepository.removeLastIngreso(new DataRepository.RepositoryCallback<Boolean>() {
-            @Override
-            public void onSuccess(Boolean eliminado) {
-                if (!isAdded()) {
-                    return;
-                }
-                int mensaje = Boolean.TRUE.equals(eliminado)
-                        ? R.string.mensaje_ingreso_eliminado
-                        : R.string.error_sin_ingresos;
-                Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show();
-                setIngresoButtonsEnabled(true);
-            }
-
-            @Override
-            public void onError(String message) {
-                if (!isAdded()) {
-                    return;
-                }
-                Toast.makeText(requireContext(),
-                        message != null ? message : getString(R.string.mensaje_error_operacion),
-                        Toast.LENGTH_SHORT).show();
-                setIngresoButtonsEnabled(true);
-            }
-        });
+        Toast.makeText(requireContext(), R.string.mensaje_selecciona_ingreso_eliminar, Toast.LENGTH_SHORT).show();
     }
 
     private void setIngresoButtonsEnabled(boolean enabled) {

@@ -42,8 +42,10 @@ public class ingresosInfo extends Fragment {
     private FragmentIngresosInfoBinding binding;
     private RegistroAdapter ingresosAdapter;
     private RegistroAdapter recurrentesAdapter;
+    private RegistroAdapter historialAdapter;
     private final List<Ingreso> ingresosBase = new ArrayList<>();
     private final List<Ingreso> recurrentesBase = new ArrayList<>();
+    private final List<Ingreso> historialBase = new ArrayList<>();
     private String filtroConcepto = "";
     private LocalDate filtroInicio;
     private LocalDate filtroFin;
@@ -96,6 +98,7 @@ public class ingresosInfo extends Fragment {
     private void configurarListas() {
         ingresosAdapter = new RegistroAdapter();
         recurrentesAdapter = new RegistroAdapter();
+        historialAdapter = new RegistroAdapter();
         RegistroAdapter.OnRegistroDoubleClickListener listener = registro -> {
             if (registro instanceof Ingreso) {
                 Ingreso ingreso = (Ingreso) registro;
@@ -114,6 +117,9 @@ public class ingresosInfo extends Fragment {
 
         binding.listaRecurrentes.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.listaRecurrentes.setAdapter(recurrentesAdapter);
+
+        binding.listaHistorialIngresos.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.listaHistorialIngresos.setAdapter(historialAdapter);
     }
 
     private void actualizarDatos() {
@@ -142,6 +148,8 @@ public class ingresosInfo extends Fragment {
         ingresosBase.addAll(DataRepository.getIngresos());
         recurrentesBase.clear();
         recurrentesBase.addAll(DataRepository.getIngresosRecurrentes());
+        historialBase.clear();
+        historialBase.addAll(DataRepository.getIngresosHistorial());
 
         aplicarFiltros();
     }
@@ -215,12 +223,16 @@ public class ingresosInfo extends Fragment {
     private void aplicarFiltros() {
         List<Ingreso> filtrados = filtrarRegistros(ingresosBase);
         List<Ingreso> recurrentesFiltrados = filtrarRegistros(recurrentesBase);
+        List<Ingreso> historialFiltrados = filtrarRegistros(historialBase);
 
         ingresosAdapter.updateData(filtrados);
         recurrentesAdapter.updateData(recurrentesFiltrados);
+        historialAdapter.updateData(historialFiltrados);
 
         binding.tvIngresosVacio.setVisibility(ingresosAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
         binding.tvRecurrentesVacio.setVisibility(recurrentesAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        binding.tvHistorialIngresosVacio.setVisibility(
+                historialAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
     private <T extends RegistroFinanciero> List<T> filtrarRegistros(List<T> registros) {

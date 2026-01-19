@@ -372,6 +372,7 @@ public class ahorroFragment extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
+                mostrarIngresoAgotado(result);
                 crearAhorro(meta, aporte, fechaAhorro, result, montoOriginal, totalActualMeta, precio);
             }
 
@@ -458,15 +459,7 @@ public class ahorroFragment extends Fragment {
     private void eliminarUltimoAhorro() {
         Integer idEliminar = ahorroEditId;
         if (idEliminar == null) {
-            AhorroItem ultimo = ahorroAdapter.getLast();
-            if (ultimo == null || ultimo.getIdAhorro() == null) {
-                Toast.makeText(requireContext(), R.string.error_sin_ahorros, Toast.LENGTH_SHORT).show();
-                return;
-            }
-            idEliminar = ultimo.getIdAhorro();
-        }
-        if (idEliminar == null) {
-            Toast.makeText(requireContext(), R.string.error_sin_ahorros, Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.mensaje_selecciona_ahorro_eliminar, Toast.LENGTH_SHORT).show();
             return;
         }
         setButtonsEnabled(false);
@@ -957,6 +950,16 @@ public class ahorroFragment extends Fragment {
     private void mostrarMensajeError(String message) {
         String texto = message != null ? message : getString(R.string.mensaje_error_servidor);
         Toast.makeText(requireContext(), texto, Toast.LENGTH_SHORT).show();
+    }
+
+    private void mostrarIngresoAgotado(Ingreso ingreso) {
+        if (ingreso == null) {
+            return;
+        }
+        BigDecimal disponible = parseMontoSeguro(ingreso.getDescripcion());
+        if (disponible.compareTo(BigDecimal.ZERO) <= 0) {
+            Toast.makeText(requireContext(), R.string.mensaje_ingreso_agotado, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
