@@ -12,6 +12,8 @@
     <color name="tealDark">#042B2C</color>
     <color name="tealLight">#6FD8D2</color>
     <color name="tealAccent">#2FB6B0</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
     <color name="tealSurface">#135856</color>
     <color name="tealSurfaceVariant">#1D6F6B</color>
     <color name="goldAccent">#F3D373</color>
