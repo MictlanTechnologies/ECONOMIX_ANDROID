@@ -167,19 +167,12 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private List<AhorroDto> filterAhorrosByUser(List<AhorroDto> ahorros, List<IngresoDto> ingresosUsuario, Integer userId) {
-        Map<Integer, IngresoDto> ingresosMap = new HashMap<>();
-        for (IngresoDto ingreso : ingresosUsuario) {
-            if (ingreso != null && ingreso.getIdIngresos() != null && userId.equals(ingreso.getIdUsuario())) {
-                ingresosMap.put(ingreso.getIdIngresos(), ingreso);
-            }
-        }
-
         List<AhorroDto> filtered = new ArrayList<>();
         for (AhorroDto ahorro : ahorros) {
-            if (ahorro == null || ahorro.getIdIngresos() == null) {
+            if (ahorro == null) {
                 continue;
             }
-            if (ingresosMap.containsKey(ahorro.getIdIngresos())) {
+            if (userId.equals(ahorro.getIdUsuario())) {
                 filtered.add(ahorro);
             }
         }
@@ -285,8 +278,8 @@ public class ChatActivity extends AppCompatActivity {
     private BigDecimal sumAhorros(List<AhorroDto> ahorros) {
         BigDecimal total = BigDecimal.ZERO;
         for (AhorroDto ahorro : ahorros) {
-            if (ahorro != null && ahorro.getMontoAhorro() != null) {
-                total = total.add(ahorro.getMontoAhorro());
+            if (ahorro != null && ahorro.getMontoAhorrado() != null) {
+                total = total.add(ahorro.getMontoAhorrado());
             }
         }
         return total;

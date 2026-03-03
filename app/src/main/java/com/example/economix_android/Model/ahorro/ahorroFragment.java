@@ -242,15 +242,9 @@ public class ahorroFragment extends Fragment {
                     List<AhorroDto> body = response.body();
                     List<AhorroItem> items = new ArrayList<>();
                     if (body != null) {
-                        List<Ingreso> ingresosUsuario = DataRepository.getIngresos();
-                        java.util.Set<Integer> idsIngresos = new java.util.HashSet<>();
-                        for (Ingreso ingreso : ingresosUsuario) {
-                            if (ingreso.getId() != null) {
-                                idsIngresos.add(ingreso.getId());
-                            }
-                        }
+                        Integer userId = SessionManager.getUserId(requireContext());
                         for (AhorroDto dto : body) {
-                            if (dto.getIdIngresos() == null || !idsIngresos.contains(dto.getIdIngresos())) {
+                            if (userId != null && dto.getIdUsuario() != null && !userId.equals(dto.getIdUsuario())) {
                                 continue;
                             }
                             AhorroItem item = convertir(dto);
@@ -391,10 +385,12 @@ public class ahorroFragment extends Fragment {
                              Ingreso ingresoActualizado, BigDecimal montoOriginal,
                              BigDecimal totalActualMeta, BigDecimal objetivo) {
         AhorroDto dto = AhorroDto.builder()
-                .montoAhorro(aporte)
-                .periodoTAhorro(meta)
-                .idIngresos(ingresoActualizado != null ? ingresoActualizado.getId() : null)
-                .fechaAhorro(fechaAhorro)
+                                .idUsuario(SessionManager.getUserId(requireContext()))
+                .nombreObjetivo(meta)
+                .descripcionObjetivo(meta)
+                .meta(objetivo)
+                .montoAhorrado(aporte)
+                .fechaLimite(fechaAhorro)
                 .build();
 
         ahorroRepository.crearAhorro(dto, new Callback<AhorroDto>() {
@@ -663,10 +659,10 @@ public class ahorroFragment extends Fragment {
         if (dto == null) {
             return null;
         }
-        String monto = dto.getMontoAhorro() != null ? dto.getMontoAhorro().stripTrailingZeros().toPlainString() : "0";
-        String periodo = dto.getPeriodoTAhorro() != null ? dto.getPeriodoTAhorro() : getString(R.string.label_periodo_sin_definir);
-        String fecha = formatearFecha(dto.getFechaAhorro());
-        return new AhorroItem(dto.getIdAhorro(), monto, periodo, fecha, dto.getIdIngresos());
+        String monto = dto.getMontoAhorrado() != null ? dto.getMontoAhorrado().stripTrailingZeros().toPlainString() : "0";
+        String periodo = dto.getNombreObjetivo() != null ? dto.getNombreObjetivo() : getString(R.string.label_periodo_sin_definir);
+        String fecha = formatearFecha(dto.getFechaLimite());
+        return new AhorroItem(dto.getIdAhorro(), monto, periodo, fecha, dto.getIdUsuario());
     }
 
     private LocalDate parseFechaGuardada(String fecha) {

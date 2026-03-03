@@ -6,18 +6,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class IngresoDto {
-    private Integer idIngresos;
+public class MovimientoAhorroDto {
+    private Integer idMovimiento;
+    private Integer idAhorro;
     private Integer idUsuario;
-    private Integer idFuente;
-    private BigDecimal montoIngreso;
-    private String periodicidadIngreso;
-    private LocalDate fechaIngresos;
-    private String descripcionIngreso;
+    private String tipoMovimiento;
+    private BigDecimal monto;
+    private LocalDateTime fechaMovimiento;
+    private String nota;
 }
