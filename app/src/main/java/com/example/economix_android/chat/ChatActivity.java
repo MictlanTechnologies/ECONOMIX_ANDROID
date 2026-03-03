@@ -165,16 +165,11 @@ public class ChatActivity extends AppCompatActivity {
             return;
         }
 
-        String prompt = "Rol: analista financiero personal.\n"
-                + "Hechos JSON del backend (usar solo estos hechos, no inventar datos):\n"
-                + factsJson
-                + "\n\nInstrucciones:\n"
-                + "1) Explica la situación financiera con claridad.\n"
-                + "2) Da recomendaciones accionables.\n"
-                + "3) Si un dato no está disponible, dilo explícitamente.\n"
-                + "4) Responde a la consulta del usuario: " + query;
+        String systemPrompt = buildSystemInstruction();
+        String userContent = "Facts JSON del backend (no inventar):\n" + factsJson
+                + "\n\nPregunta del usuario:\n" + query;
 
-        GeminiRequest requestBody = new GeminiRequest(prompt);
+        GeminiRequest requestBody = new GeminiRequest(systemPrompt, userContent);
         geminiApi.generateContent("gemini-1.5-flash", apiKey, requestBody).enqueue(new Callback<GeminiResponse>() {
             @Override
             public void onResponse(@NonNull Call<GeminiResponse> call, @NonNull Response<GeminiResponse> response) {
@@ -195,6 +190,21 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+
+    private String buildSystemInstruction() {
+        return "Eres el asistente analítico de ECONOMIX. "
+                + "Usa únicamente los datos numéricos presentes en el JSON recibido. "
+                + "Nunca inventes cifras ni campos. "
+                + "Si falta un campo, indícalo explícitamente. "
+                + "Explica en español sencillo el significado de IC 95% y la interpretación de p-value vs alpha. "
+                + "Responde estrictamente en este formato: "
+                + "1) Diagnóstico actual (con números), "
+                + "2) Predicción (con intervalo y significado), "
+                + "3) Riesgos (presupuesto/anomalías), "
+                + "4) Recomendaciones accionables (3-6), "
+                + "5) Qué dato faltaría para mejorar precisión.";
+    }
+
     private void addMessage(String message, ChatMessage.Sender sender) {
         chatMessages.add(new ChatMessage(message, sender));
         chatAdapter.notifyItemInserted(chatMessages.size() - 1);
@@ -211,11 +221,24 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     static class GeminiRequest {
+        @SerializedName("system_instruction")
+        private final SystemInstruction systemInstruction;
+
         @SerializedName("contents")
         private final List<Content> contents;
 
-        GeminiRequest(String text) {
-            this.contents = Collections.singletonList(new Content(text));
+        GeminiRequest(String systemPrompt, String userText) {
+            this.systemInstruction = new SystemInstruction(systemPrompt);
+            this.contents = Collections.singletonList(new Content(userText));
+        }
+    }
+
+    static class SystemInstruction {
+        @SerializedName("parts")
+        private final List<Part> parts;
+
+        SystemInstruction(String text) {
+            this.parts = Collections.singletonList(new Part(text));
         }
     }
 
