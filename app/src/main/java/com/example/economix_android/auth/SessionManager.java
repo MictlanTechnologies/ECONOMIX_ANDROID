@@ -64,4 +64,13 @@ public final class SessionManager {
         SharedPreferences preferences = context.getSharedPreferences(PREF_PHOTOS, Context.MODE_PRIVATE);
         return preferences.getString(KEY_FOTO_URI + "_" + userId, null);
     }
+
+    public static void clearProfilePhoto(Context context) {
+        Integer userId = getUserId(context);
+        if (userId == null) {
+            return;
+        }
+        SharedPreferences preferences = context.getSharedPreferences(PREF_PHOTOS, Context.MODE_PRIVATE);
+        preferences.edit().remove(KEY_FOTO_URI + "_" + userId).apply();
+    }
 }
