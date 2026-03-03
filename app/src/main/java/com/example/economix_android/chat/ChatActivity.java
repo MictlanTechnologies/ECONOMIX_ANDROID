@@ -12,20 +12,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.economix_android.BuildConfig;
 import com.example.economix_android.R;
+import com.example.economix_android.ai.AiModels;
+import com.example.economix_android.ai.AiRepository;
 import com.example.economix_android.auth.SessionManager;
-import com.example.economix_android.network.dto.AhorroDto;
-import com.example.economix_android.network.dto.GastoDto;
-import com.example.economix_android.network.dto.IngresoDto;
-import com.example.economix_android.network.repository.AhorroRepository;
-import com.example.economix_android.network.repository.GastoRepository;
-import com.example.economix_android.network.repository.IngresoRepository;
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -49,9 +45,8 @@ public class ChatActivity extends AppCompatActivity {
     private final List<ChatMessage> chatMessages = new ArrayList<>();
     private ChatAdapter chatAdapter;
 
-    private final GastoRepository gastoRepository = new GastoRepository();
-    private final IngresoRepository ingresoRepository = new IngresoRepository();
-    private final AhorroRepository ahorroRepository = new AhorroRepository();
+    private final AiRepository aiRepository = new AiRepository();
+    private final Gson gson = new Gson();
 
     private GeminiApi geminiApi;
 
@@ -68,8 +63,7 @@ public class ChatActivity extends AppCompatActivity {
         rvMessages.setLayoutManager(new LinearLayoutManager(this));
         rvMessages.setAdapter(chatAdapter);
 
-        addMessage("¡Hola! Soy tu asistente de ciencia de datos financiera. "
-                + "Puedo analizar tus gastos, ingresos y ahorros para darte sugerencias.", ChatMessage.Sender.IA);
+        addMessage("¡Hola! Soy tu asistente de ciencia de datos financiera. Puedo explicar resultados analíticos y recomendar acciones.", ChatMessage.Sender.IA);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://generativelanguage.googleapis.com/")
@@ -89,7 +83,7 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    public void performDataAnalysis(String query) {
+    private void performDataAnalysis(String query) {
         Integer userId = SessionManager.getUserId(this);
         if (userId == null) {
             addMessage("No pude identificar tu sesión. Inicia sesión nuevamente para analizar tus datos.", ChatMessage.Sender.IA);
@@ -97,124 +91,73 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         btnSend.setEnabled(false);
-        addMessage("Analizando tus datos financieros para responder con contexto...", ChatMessage.Sender.IA);
+        addMessage("Consultando hechos analíticos en backend AI...", ChatMessage.Sender.IA);
 
-        AtomicInteger pendingRequests = new AtomicInteger(3);
-        List<GastoDto> gastosUsuario = Collections.synchronizedList(new ArrayList<>());
-        List<IngresoDto> ingresosUsuario = Collections.synchronizedList(new ArrayList<>());
-        List<AhorroDto> ahorrosRaw = Collections.synchronizedList(new ArrayList<>());
+        LocalDate to = LocalDate.now();
+        LocalDate from = to.minusDays(30);
 
-        Runnable onCompleted = () -> {
-            if (pendingRequests.decrementAndGet() == 0) {
-                List<AhorroDto> ahorrosUsuario = filterAhorrosByUser(ahorrosRaw, ingresosUsuario, userId);
-                String financialContext = buildFinancialContext(query, gastosUsuario, ingresosUsuario, ahorrosUsuario);
-                requestAiResponse(query, financialContext);
+        Map<String, Object> facts = Collections.synchronizedMap(new LinkedHashMap<>());
+        facts.put("userId", userId);
+        facts.put("from", from.toString());
+        facts.put("to", to.toString());
+
+        AtomicInteger pending = new AtomicInteger(3);
+        Runnable done = () -> {
+            if (pending.decrementAndGet() == 0) {
+                requestAiResponse(query, gson.toJson(facts));
             }
         };
 
-        gastoRepository.obtenerGastos(new Callback<List<GastoDto>>() {
+        aiRepository.getSummary(userId, from, to, new Callback<AiModels.AISummaryResponse>() {
             @Override
-            public void onResponse(@NonNull Call<List<GastoDto>> call, @NonNull Response<List<GastoDto>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    for (GastoDto gasto : response.body()) {
-                        if (gasto != null && userId.equals(gasto.getIdUsuario())) {
-                            gastosUsuario.add(gasto);
-                        }
-                    }
-                }
-                onCompleted.run();
+            public void onResponse(@NonNull Call<AiModels.AISummaryResponse> call, @NonNull Response<AiModels.AISummaryResponse> response) {
+                facts.put("summary", response.isSuccessful() ? response.body() : null);
+                if (!response.isSuccessful()) facts.put("summaryError", response.code());
+                done.run();
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<GastoDto>> call, @NonNull Throwable t) {
-                onCompleted.run();
+            public void onFailure(@NonNull Call<AiModels.AISummaryResponse> call, @NonNull Throwable t) {
+                facts.put("summary", null);
+                facts.put("summaryError", t.getMessage());
+                done.run();
             }
         });
 
-        ingresoRepository.obtenerIngresos(new Callback<List<IngresoDto>>() {
+        aiRepository.getSpendPrediction(userId, 30, new Callback<AiModels.SpendForecastResponse>() {
             @Override
-            public void onResponse(@NonNull Call<List<IngresoDto>> call, @NonNull Response<List<IngresoDto>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    for (IngresoDto ingreso : response.body()) {
-                        if (ingreso != null && userId.equals(ingreso.getIdUsuario())) {
-                            ingresosUsuario.add(ingreso);
-                        }
-                    }
-                }
-                onCompleted.run();
+            public void onResponse(@NonNull Call<AiModels.SpendForecastResponse> call, @NonNull Response<AiModels.SpendForecastResponse> response) {
+                facts.put("spendPrediction", response.isSuccessful() ? response.body() : null);
+                if (!response.isSuccessful()) facts.put("spendPredictionError", response.code());
+                done.run();
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<IngresoDto>> call, @NonNull Throwable t) {
-                onCompleted.run();
+            public void onFailure(@NonNull Call<AiModels.SpendForecastResponse> call, @NonNull Throwable t) {
+                facts.put("spendPrediction", null);
+                facts.put("spendPredictionError", t.getMessage());
+                done.run();
             }
         });
 
-        ahorroRepository.obtenerAhorros(new Callback<List<AhorroDto>>() {
+        aiRepository.getBudgetRisk(userId, to.getMonthValue(), to.getYear(), new Callback<AiModels.BudgetRiskResponse>() {
             @Override
-            public void onResponse(@NonNull Call<List<AhorroDto>> call, @NonNull Response<List<AhorroDto>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    ahorrosRaw.addAll(response.body());
-                }
-                onCompleted.run();
+            public void onResponse(@NonNull Call<AiModels.BudgetRiskResponse> call, @NonNull Response<AiModels.BudgetRiskResponse> response) {
+                facts.put("budgetRisk", response.isSuccessful() ? response.body() : null);
+                if (!response.isSuccessful()) facts.put("budgetRiskError", response.code());
+                done.run();
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<AhorroDto>> call, @NonNull Throwable t) {
-                onCompleted.run();
+            public void onFailure(@NonNull Call<AiModels.BudgetRiskResponse> call, @NonNull Throwable t) {
+                facts.put("budgetRisk", null);
+                facts.put("budgetRiskError", t.getMessage());
+                done.run();
             }
         });
     }
 
-    private List<AhorroDto> filterAhorrosByUser(List<AhorroDto> ahorros, List<IngresoDto> ingresosUsuario, Integer userId) {
-        List<AhorroDto> filtered = new ArrayList<>();
-        for (AhorroDto ahorro : ahorros) {
-            if (ahorro == null) {
-                continue;
-            }
-            if (userId.equals(ahorro.getIdUsuario())) {
-                filtered.add(ahorro);
-            }
-        }
-        return filtered;
-    }
-
-    private String buildFinancialContext(String query, List<GastoDto> gastos, List<IngresoDto> ingresos, List<AhorroDto> ahorros) {
-        BigDecimal totalGastos = sumGastos(gastos);
-        BigDecimal totalIngresos = sumIngresos(ingresos);
-        BigDecimal totalAhorros = sumAhorros(ahorros);
-
-        BigDecimal balance = totalIngresos.subtract(totalGastos);
-        BigDecimal tasaAhorro = BigDecimal.ZERO;
-        if (totalIngresos.compareTo(BigDecimal.ZERO) > 0) {
-            tasaAhorro = totalAhorros.divide(totalIngresos, 4, RoundingMode.HALF_UP)
-                    .multiply(new BigDecimal("100"));
-        }
-
-        StringBuilder builder = new StringBuilder();
-        builder.append("Rol del asistente: Especialista en ciencia de datos, estadística y analítica financiera personal.\n")
-                .append("Objetivo: responder de forma clara, accionable y basada en datos.\n")
-                .append("Consulta del usuario: ").append(query).append("\n\n")
-                .append("Datos agregados del usuario:\n")
-                .append("- Total ingresos: ").append(formatMoney(totalIngresos)).append("\n")
-                .append("- Total gastos: ").append(formatMoney(totalGastos)).append("\n")
-                .append("- Total ahorros: ").append(formatMoney(totalAhorros)).append("\n")
-                .append("- Balance (ingresos - gastos): ").append(formatMoney(balance)).append("\n")
-                .append("- Tasa de ahorro: ").append(tasaAhorro.setScale(2, RoundingMode.HALF_UP)).append("%\n")
-                .append("- Número de registros de ingresos: ").append(ingresos.size()).append("\n")
-                .append("- Número de registros de gastos: ").append(gastos.size()).append("\n")
-                .append("- Número de registros de ahorros: ").append(ahorros.size()).append("\n\n")
-                .append("Instrucciones de respuesta:\n")
-                .append("1) Entregar una interpretación del estado financiero actual.\n")
-                .append("2) Añadir recomendaciones prácticas de optimización.\n")
-                .append("3) Incluir una mini-predicción o escenario probable a corto plazo con base en tendencias observadas.\n")
-                .append("4) Si faltan datos para estimaciones robustas, indicarlo y proponer qué capturar.\n")
-                .append("5) Mantener tono profesional, claro y en español.\n");
-
-        return builder.toString();
-    }
-
-    private void requestAiResponse(String query, String financialContext) {
+    private void requestAiResponse(String query, String factsJson) {
         String apiKey = BuildConfig.GEMINI_API_KEY;
         if (TextUtils.isEmpty(apiKey) || "YOUR_GEMINI_API_KEY".equals(apiKey)) {
             btnSend.setEnabled(true);
@@ -222,9 +165,16 @@ public class ChatActivity extends AppCompatActivity {
             return;
         }
 
-        String prompt = financialContext + "\nResponde la siguiente pregunta de seguimiento del usuario:\n" + query;
-        GeminiRequest requestBody = new GeminiRequest(prompt);
+        String prompt = "Rol: analista financiero personal.\n"
+                + "Hechos JSON del backend (usar solo estos hechos, no inventar datos):\n"
+                + factsJson
+                + "\n\nInstrucciones:\n"
+                + "1) Explica la situación financiera con claridad.\n"
+                + "2) Da recomendaciones accionables.\n"
+                + "3) Si un dato no está disponible, dilo explícitamente.\n"
+                + "4) Responde a la consulta del usuario: " + query;
 
+        GeminiRequest requestBody = new GeminiRequest(prompt);
         geminiApi.generateContent("gemini-1.5-flash", apiKey, requestBody).enqueue(new Callback<GeminiResponse>() {
             @Override
             public void onResponse(@NonNull Call<GeminiResponse> call, @NonNull Response<GeminiResponse> response) {
@@ -233,12 +183,8 @@ public class ChatActivity extends AppCompatActivity {
                     addMessage("No pude obtener una respuesta del modelo en este momento. Intenta nuevamente.", ChatMessage.Sender.IA);
                     return;
                 }
-
                 String text = response.body().extractText();
-                if (TextUtils.isEmpty(text)) {
-                    text = "Recibí la solicitud, pero no hubo contenido de respuesta útil.";
-                }
-                addMessage(text, ChatMessage.Sender.IA);
+                addMessage(TextUtils.isEmpty(text) ? "Recibí la solicitud, pero no hubo contenido útil." : text, ChatMessage.Sender.IA);
             }
 
             @Override
@@ -253,40 +199,6 @@ public class ChatActivity extends AppCompatActivity {
         chatMessages.add(new ChatMessage(message, sender));
         chatAdapter.notifyItemInserted(chatMessages.size() - 1);
         rvMessages.scrollToPosition(chatMessages.size() - 1);
-    }
-
-    private BigDecimal sumGastos(List<GastoDto> gastos) {
-        BigDecimal total = BigDecimal.ZERO;
-        for (GastoDto gasto : gastos) {
-            if (gasto != null && gasto.getMontoGasto() != null) {
-                total = total.add(gasto.getMontoGasto());
-            }
-        }
-        return total;
-    }
-
-    private BigDecimal sumIngresos(List<IngresoDto> ingresos) {
-        BigDecimal total = BigDecimal.ZERO;
-        for (IngresoDto ingreso : ingresos) {
-            if (ingreso != null && ingreso.getMontoIngreso() != null) {
-                total = total.add(ingreso.getMontoIngreso());
-            }
-        }
-        return total;
-    }
-
-    private BigDecimal sumAhorros(List<AhorroDto> ahorros) {
-        BigDecimal total = BigDecimal.ZERO;
-        for (AhorroDto ahorro : ahorros) {
-            if (ahorro != null && ahorro.getMontoAhorrado() != null) {
-                total = total.add(ahorro.getMontoAhorrado());
-            }
-        }
-        return total;
-    }
-
-    private String formatMoney(BigDecimal value) {
-        return "$" + value.setScale(2, RoundingMode.HALF_UP).toPlainString();
     }
 
     interface GeminiApi {
@@ -330,13 +242,9 @@ public class ChatActivity extends AppCompatActivity {
         List<Candidate> candidates;
 
         String extractText() {
-            if (candidates == null || candidates.isEmpty()) {
-                return null;
-            }
+            if (candidates == null || candidates.isEmpty()) return null;
             Candidate candidate = candidates.get(0);
-            if (candidate.content == null || candidate.content.parts == null || candidate.content.parts.isEmpty()) {
-                return null;
-            }
+            if (candidate.content == null || candidate.content.parts == null || candidate.content.parts.isEmpty()) return null;
             return candidate.content.parts.get(0).text;
         }
     }
