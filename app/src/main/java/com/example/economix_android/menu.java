@@ -1,5 +1,6 @@
 package com.example.economix_android;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +14,8 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.example.economix_android.auth.SessionManager;
+import com.example.economix_android.chat.ChatActivity;
 import com.example.economix_android.util.ProfileImageUtils;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class menu extends Fragment implements View.OnClickListener {
 
@@ -41,7 +42,7 @@ public class menu extends Fragment implements View.OnClickListener {
         String saludo = perfil != null ? getString(R.string.label_hola_usuario, perfil) : getString(R.string.label_hola);
         saludoUsuario.setText(saludo);
 
-        ayudaButton.setOnClickListener(v -> mostrarAyuda());
+        ayudaButton.setOnClickListener(v -> abrirChatAyuda());
         gastosButton.setOnClickListener(this);
         ingresosButton.setOnClickListener(this);
         ahorroButton.setOnClickListener(this);
@@ -65,11 +66,8 @@ public class menu extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void mostrarAyuda() {
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.titulo_ayuda_menu)
-                .setMessage(R.string.mensaje_ayuda_menu)
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
+    private void abrirChatAyuda() {
+        Intent intent = new Intent(requireContext(), ChatActivity.class);
+        startActivity(intent);
     }
 }
