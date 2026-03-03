@@ -248,4 +248,11 @@
             android:id="@+id/action_usuario_info_to_usuario"
             app:destination="@id/usuario" />
     </fragment>
+
+    <fragment
+        android:id="@+id/navigation_predictions"
+        android:name="com.example.economix_android.ai.PredictionsFragment"
+        android:label="@string/title_predictions"
+        tools:layout="@layout/fragment_predictions" />
+
 </navigation>

@@ -1,5 +1,6 @@
 package com.example.economix_android.network;
 
+import com.example.economix_android.ai.AiApi;
 import com.example.economix_android.network.api.AhorroApi;
 import com.example.economix_android.network.api.CategoriaGastoApi;
 import com.example.economix_android.network.api.ConceptoGastoApi;
@@ -80,6 +81,10 @@ public final class ApiClient {
 
     public static AhorroApi getAhorroApi() {
         return retrofit.create(AhorroApi.class);
+    }
+
+    public static AiApi getAiApi() {
+        return retrofit.create(AiApi.class);
     }
 
 

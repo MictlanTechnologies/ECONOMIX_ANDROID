@@ -14,6 +14,7 @@
     <string name="title_ingresos">Ingresos</string>
     <string name="title_ahorro">Ahorro</string>
     <string name="title_graficas">Graficas</string>
+    <string name="title_predictions">Predicciones</string>
     <string name="title_gastos_por_categoria">Gastos por categoría</string>
     <string name="title_gastos_por_periodo">Gastos por categoría</string>
     <string name="action_back">Volver</string>

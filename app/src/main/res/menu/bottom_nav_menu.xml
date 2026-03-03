@@ -21,4 +21,10 @@
         android:icon="@drawable/graficastexto1"
         android:title="@string/title_graficas" />
 
+
+    <item
+        android:id="@+id/navigation_predictions"
+        android:icon="@drawable/graficastexto1"
+        android:title="@string/title_predictions" />
+
 </menu>
