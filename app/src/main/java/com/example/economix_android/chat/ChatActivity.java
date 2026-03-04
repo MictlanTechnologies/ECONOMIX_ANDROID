@@ -170,16 +170,20 @@ public class ChatActivity extends AppCompatActivity {
                 + "\n\nPregunta del usuario:\n" + query;
 
         GeminiRequest requestBody = new GeminiRequest(systemPrompt, userContent);
-        geminiApi.generateContent("gemini-1.5-flash", apiKey, requestBody).enqueue(new Callback<GeminiResponse>() {
+        geminiApi.generateContent("gemini-2.5-flash", apiKey, requestBody).enqueue(new Callback<GeminiResponse>() {
             @Override
             public void onResponse(@NonNull Call<GeminiResponse> call, @NonNull Response<GeminiResponse> response) {
                 btnSend.setEnabled(true);
                 if (!response.isSuccessful() || response.body() == null) {
-                    addMessage("No pude obtener una respuesta del modelo en este momento. Intenta nuevamente.", ChatMessage.Sender.IA);
+                    String err = "";
+                    try { err = response.errorBody() != null ? response.errorBody().string() : ""; }
+                    catch (Exception ignored) {}
+                    addMessage("Gemini error HTTP " + response.code() + ":\n" + err, ChatMessage.Sender.IA);
                     return;
                 }
                 String text = response.body().extractText();
                 addMessage(TextUtils.isEmpty(text) ? "Recibí la solicitud, pero no hubo contenido útil." : text, ChatMessage.Sender.IA);
+
             }
 
             @Override

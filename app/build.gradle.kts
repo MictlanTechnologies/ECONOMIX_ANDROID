@@ -24,11 +24,12 @@ android {
             }
         }
 
-        val geminiApiKey = (project.findProperty("GEMINI_API_KEY") as String?)
-            ?: localProperties.getProperty("GEMINI_API_KEY")
-            ?: System.getenv("GEMINI_API_KEY")
-            ?: "YOUR_GEMINI_API_KEY"
-        buildConfigField("String", "GEMINI_API_KEY", "\"${geminiApiKey}\"")
+        val geminiApiKey =
+            (project.findProperty("GEMINI_API_KEY") as String?)?.takeIf { it.isNotBlank() }
+                ?: localProperties.getProperty("GEMINI_API_KEY")?.takeIf { it.isNotBlank() }
+                ?: System.getenv("GEMINI_API_KEY")?.takeIf { it.isNotBlank() }
+                ?: "YOUR_GEMINI_API_KEY"
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
     }
 
     buildTypes {
