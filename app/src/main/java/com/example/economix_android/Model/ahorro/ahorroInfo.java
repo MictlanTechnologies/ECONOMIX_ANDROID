@@ -26,6 +26,7 @@ import com.example.economix_android.R;
 import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.Model.data.RegistroFinanciero;
+import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.databinding.FragmentAhorroInfoBinding;
 import com.example.economix_android.network.dto.AhorroDto;
 import com.example.economix_android.network.repository.AhorroRepository;
