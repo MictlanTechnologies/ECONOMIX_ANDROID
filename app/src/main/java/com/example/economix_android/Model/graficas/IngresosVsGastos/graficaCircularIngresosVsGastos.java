@@ -1,66 +1,297 @@
 package com.example.economix_android.Model.graficas.IngresosVsGastos;
 
+import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.util.Pair;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+
+import com.example.economix_android.Model.data.DataRepository;
+import com.example.economix_android.Model.data.Gasto;
+import com.example.economix_android.Model.data.Ingreso;
+import com.example.economix_android.Model.data.RegistroFinanciero;
 import com.example.economix_android.R;
+import com.example.economix_android.databinding.FragmentGraficaCircularIngresosVsGastosBinding;
+import com.example.economix_android.util.ProfileImageUtils;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.datepicker.MaterialDatePicker;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link graficaCircularIngresosVsGastos#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 public class graficaCircularIngresosVsGastos extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private FragmentGraficaCircularIngresosVsGastosBinding binding;
+    private LocalDate filtroInicio;
+    private LocalDate filtroFin;
+    private final DateTimeFormatter dateFormatter =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public graficaCircularIngresosVsGastos() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment graficaCircularIngresosVsGastos.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static graficaCircularIngresosVsGastos newInstance(String param1, String param2) {
-        graficaCircularIngresosVsGastos fragment = new graficaCircularIngresosVsGastos();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        binding = FragmentGraficaCircularIngresosVsGastosBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        binding.btnPerfil.setOnClickListener(v ->
+                Navigation.findNavController(v).navigate(R.id.usuario));
+        ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
+        binding.btnAyudaIngInf.setOnClickListener(v -> mostrarAyuda());
+        binding.buttonBack.setOnClickListener(v ->
+                Navigation.findNavController(v).navigate(R.id.graficasMenuIngresosVsGastos));
+
+        configureChartAppearance();
+        configurarFiltros();
+        refreshData();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshData();
+    }
+
+    private void refreshData() {
+        DataRepository.refreshIngresos(requireContext(), new DataRepository.RepositoryCallback<List<Ingreso>>() {
+            @Override
+            public void onSuccess(List<Ingreso> result) {
+                cargarGastos();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) {
+                    return;
+                }
+                mostrarMensajeError(message);
+                cargarGastos();
+            }
+        });
+    }
+
+    private void cargarGastos() {
+        DataRepository.refreshGastos(requireContext(), new DataRepository.RepositoryCallback<List<Gasto>>() {
+            @Override
+            public void onSuccess(List<Gasto> result) {
+                if (!isAdded()) {
+                    return;
+                }
+                updateChartData();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) {
+                    return;
+                }
+                mostrarMensajeError(message);
+                updateChartData();
+            }
+        });
+    }
+
+    private void configureChartAppearance() {
+        PieChart chart = binding.pieChartIngresosVsGastos;
+        chart.setUsePercentValues(false);
+        chart.getDescription().setEnabled(false);
+        chart.setDrawHoleEnabled(true);
+        chart.setHoleRadius(55f);
+        chart.setTransparentCircleRadius(60f);
+        chart.setEntryLabelColor(Color.WHITE);
+        chart.setNoDataText(getString(R.string.chart_empty_ingresos_vs_gastos));
+        chart.setNoDataTextColor(Color.WHITE);
+
+        Legend legend = chart.getLegend();
+        legend.setEnabled(true);
+        legend.setTextColor(Color.WHITE);
+        legend.setForm(Legend.LegendForm.CIRCLE);
+        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        legend.setDrawInside(false);
+        legend.setWordWrapEnabled(true);
+        legend.setTextSize(12f);
+        legend.setFormSize(12f);
+        legend.setFormToTextSpace(8f);
+        legend.setXEntrySpace(16f);
+        legend.setYEntrySpace(8f);
+    }
+
+    private void updateChartData() {
+        if (binding == null) {
+            return;
+        }
+
+        PieChart chart = binding.pieChartIngresosVsGastos;
+
+        float ingresos = sumarMontos(filtrarPorFecha(DataRepository.getIngresosHistorial()));
+        float gastos = sumarMontos(filtrarPorFecha(DataRepository.getGastos()));
+
+        if (ingresos <= 0f && gastos <= 0f) {
+            chart.clear();
+            chart.invalidate();
+            return;
+        }
+
+        List<PieEntry> entries = new ArrayList<>();
+        List<Integer> colors = new ArrayList<>();
+
+        if (ingresos > 0f) {
+            entries.add(new PieEntry(ingresos, getString(R.string.label_ingresos)));
+            colors.add(ContextCompat.getColor(requireContext(), R.color.economix_bar_1));
+        }
+
+        if (gastos > 0f) {
+            entries.add(new PieEntry(gastos, getString(R.string.label_gastos)));
+            colors.add(ContextCompat.getColor(requireContext(), R.color.economix_bar_3));
+        }
+
+        PieDataSet dataSet = new PieDataSet(entries, "");
+        dataSet.setColors(colors);
+        dataSet.setSliceSpace(2f);
+        dataSet.setSelectionShift(6f);
+
+        PieData data = new PieData(dataSet);
+        data.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getPieLabel(float value, PieEntry pieEntry) {
+                return String.format(Locale.getDefault(), "%.2f", value);
+            }
+        });
+        data.setValueTextColor(Color.WHITE);
+        data.setValueTextSize(12f);
+
+        chart.setData(data);
+        chart.highlightValues(null);
+        chart.invalidate();
+        chart.animateY(800);
+    }
+
+    private void configurarFiltros() {
+        binding.btnFiltroFechaIngresosVsGastos.setOnClickListener(v -> mostrarSelectorFechas());
+        binding.btnFiltroFechaIngresosVsGastos.setOnLongClickListener(v -> {
+            limpiarFiltroFechas();
+            return true;
+        });
+        actualizarTextoRango();
+    }
+
+    private void mostrarSelectorFechas() {
+        MaterialDatePicker<Pair<Long, Long>> picker =
+                MaterialDatePicker.Builder.dateRangePicker()
+                        .setTitleText(R.string.titulo_seleccionar_periodo)
+                        .build();
+        picker.addOnPositiveButtonClickListener(selection -> {
+            if (selection == null || selection.first == null || selection.second == null) {
+                return;
+            }
+            filtroInicio = Instant.ofEpochMilli(selection.first)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            filtroFin = Instant.ofEpochMilli(selection.second)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            actualizarTextoRango();
+            updateChartData();
+        });
+        picker.show(getParentFragmentManager(), "ingresos_vs_gastos_date_range");
+    }
+
+    private void limpiarFiltroFechas() {
+        filtroInicio = null;
+        filtroFin = null;
+        actualizarTextoRango();
+        updateChartData();
+    }
+
+    private void actualizarTextoRango() {
+        if (filtroInicio == null || filtroFin == null) {
+            binding.tvRangoFechasIngresosVsGastos.setText(getString(R.string.label_todas_fechas));
+            return;
+        }
+        String rango = getString(R.string.label_rango_fechas,
+                dateFormatter.format(filtroInicio),
+                dateFormatter.format(filtroFin));
+        binding.tvRangoFechasIngresosVsGastos.setText(rango);
+    }
+
+    private <T extends RegistroFinanciero> List<T> filtrarPorFecha(List<T> registros) {
+        if (filtroInicio == null || filtroFin == null) {
+            return registros;
+        }
+        List<T> resultado = new ArrayList<>();
+        for (T registro : registros) {
+            LocalDate fechaRegistro = parseFecha(registro.getFecha());
+            if (fechaRegistro == null) {
+                continue;
+            }
+            if (!fechaRegistro.isBefore(filtroInicio) && !fechaRegistro.isAfter(filtroFin)) {
+                resultado.add(registro);
+            }
+        }
+        return resultado;
+    }
+
+    private LocalDate parseFecha(String fecha) {
+        if (fecha == null || fecha.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            return LocalDate.parse(fecha, dateFormatter);
+        } catch (DateTimeParseException ex) {
+            return null;
         }
     }
 
+    private float sumarMontos(List<? extends RegistroFinanciero> registros) {
+        float total = 0f;
+        for (RegistroFinanciero registro : registros) {
+            total += registro.getMonto();
+        }
+        return total;
+    }
+
+    private void mostrarAyuda() {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.titulo_ayuda_grafica_circular_ingresos_vs_gastos)
+                .setMessage(R.string.mensaje_ayuda_grafica_circular_ingresos_vs_gastos)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
+    }
+
+    private void mostrarMensajeError(String message) {
+        String texto = message != null ? message : getString(R.string.mensaje_error_servidor);
+        Toast.makeText(requireContext(), texto, Toast.LENGTH_SHORT).show();
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_grafica_circular_ingresos_vs_gastos, container, false);
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

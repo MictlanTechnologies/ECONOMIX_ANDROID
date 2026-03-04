@@ -1,0 +1,1108 @@
+package com.example.economix_android.Model.data;
+
+import android.content.Context;
+
+import com.example.economix_android.auth.SessionManager;
+import com.example.economix_android.network.dto.ConceptoGastoDto;
+import com.example.economix_android.network.dto.ConceptoIngresoDto;
+import com.example.economix_android.network.dto.GastoDto;
+import com.example.economix_android.network.dto.IngresoDto;
+import com.example.economix_android.network.repository.ConceptoGastoRepository;
+import com.example.economix_android.network.repository.ConceptoIngresoRepository;
+import com.example.economix_android.network.repository.GastoRepository;
+import com.example.economix_android.network.repository.IngresoRepository;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public final class DataRepository {
+
+    public interface RepositoryCallback<T> {
+        void onSuccess(T result);
+        void onError(String message);
+    }
+
+    private static final List<Ingreso> ingresos = new ArrayList<>();
+    private static final List<Ingreso> ingresosRecurrentes = new ArrayList<>();
+    private static final List<Ingreso> ingresosHistorial = new ArrayList<>();
+    private static final List<Gasto> gastos = new ArrayList<>();
+    private static final List<Gasto> gastosRecurrentes = new ArrayList<>();
+    private static final Map<Integer, BigDecimal> ingresosOriginales = new HashMap<>();
+    private static final Map<Integer, Integer> conceptoIngresoLinks = new HashMap<>();
+    private static final Map<Integer, Integer> conceptoGastoLinks = new HashMap<>();
+
+    private static final IngresoRepository ingresoRepository = new IngresoRepository();
+    private static final GastoRepository gastoRepository = new GastoRepository();
+    private static final ConceptoIngresoRepository conceptoIngresoRepository = new ConceptoIngresoRepository();
+    private static final ConceptoGastoRepository conceptoGastoRepository = new ConceptoGastoRepository();
+
+    private static final DateTimeFormatter UI_DATE_FORMAT =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
+
+    private DataRepository() {
+        // No instances
+    }
+
+    public static List<Ingreso> getIngresos() {
+        return Collections.unmodifiableList(ingresos);
+    }
+
+    public static Ingreso getIngresoById(Integer id) {
+        if (id == null) {
+            return null;
+        }
+        for (Ingreso ingreso : ingresos) {
+            if (Objects.equals(ingreso.getId(), id)) {
+                return ingreso;
+            }
+        }
+        return null;
+    }
+
+    public static List<Ingreso> getIngresosHistorial() {
+        List<Ingreso> resultado = new ArrayList<>();
+        Map<Integer, Ingreso> porId = new LinkedHashMap<>();
+        agregarIngresosHistorial(ingresos, resultado, porId);
+        agregarIngresosHistorial(ingresosHistorial, resultado, porId);
+        resultado.addAll(porId.values());
+        return Collections.unmodifiableList(resultado);
+    }
+
+    public static List<Ingreso> getIngresosRecurrentes() {
+        return Collections.unmodifiableList(ingresosRecurrentes);
+    }
+
+    public static List<Gasto> getGastos() {
+        return Collections.unmodifiableList(gastos);
+    }
+
+    public static List<Gasto> getGastosRecurrentes() {
+        return Collections.unmodifiableList(gastosRecurrentes);
+    }
+
+    private static void refreshIngresosRecurrentes(Context context, RepositoryCallback<List<Ingreso>> callback) {
+        Integer userId = SessionManager.getUserId(context);
+        Set<Integer> ingresosIds = new HashSet<>();
+        if (userId != null) {
+            for (Ingreso ingreso : ingresos) {
+                if (ingreso.getId() != null) {
+                    ingresosIds.add(ingreso.getId());
+                }
+            }
+        }
+        conceptoIngresoRepository.obtenerConceptos(new Callback<List<ConceptoIngresoDto>>() {
+            @Override
+            public void onResponse(Call<List<ConceptoIngresoDto>> call, Response<List<ConceptoIngresoDto>> response) {
+                if (response.isSuccessful()) {
+                    List<Ingreso> nuevos = new ArrayList<>();
+                    Map<Integer, Integer> nuevosLinks = new HashMap<>();
+                    List<ConceptoIngresoDto> body = response.body();
+                    if (body != null) {
+                        for (ConceptoIngresoDto dto : body) {
+                            Integer ingresoId = dto.getIdIngresos();
+                            if (userId != null && (ingresoId == null || !ingresosIds.contains(ingresoId))) {
+                                continue;
+                            }
+                            Ingreso ingreso = fromConceptoDto(dto);
+                            if (ingreso != null) {
+                                nuevos.add(ingreso);
+                                if (dto.getIdConcepto() != null && ingresoId != null) {
+                                    nuevosLinks.put(dto.getIdConcepto(), ingresoId);
+                                }
+                            }
+                        }
+                    }
+                    replaceIngresosRecurrentes(nuevos);
+                    replaceConceptoIngresoLinks(nuevosLinks);
+                    notifySuccess(callback, getIngresos());
+                } else {
+                    notifyError(callback, "No se pudo obtener los ingresos recurrentes. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ConceptoIngresoDto>> call, Throwable t) {
+                notifyError(callback, "No se pudo conectar con el servidor de ingresos recurrentes.");
+            }
+        });
+    }
+
+    private static void refreshGastosRecurrentes(Context context, RepositoryCallback<List<Gasto>> callback) {
+        Integer userId = SessionManager.getUserId(context);
+        Set<Integer> gastosIds = new HashSet<>();
+        if (userId != null) {
+            for (Gasto gasto : gastos) {
+                if (gasto.getId() != null) {
+                    gastosIds.add(gasto.getId());
+                }
+            }
+        }
+        conceptoGastoRepository.obtenerConceptos(new Callback<List<ConceptoGastoDto>>() {
+            @Override
+            public void onResponse(Call<List<ConceptoGastoDto>> call, Response<List<ConceptoGastoDto>> response) {
+                if (response.isSuccessful()) {
+                    List<Gasto> nuevos = new ArrayList<>();
+                    Map<Integer, Integer> nuevosLinks = new HashMap<>();
+                    List<ConceptoGastoDto> body = response.body();
+                    if (body != null) {
+                        for (ConceptoGastoDto dto : body) {
+                            Integer gastoId = dto.getIdGastos();
+                            if (userId != null && (gastoId == null || !gastosIds.contains(gastoId))) {
+                                continue;
+                            }
+                            Gasto gasto = fromConceptoDto(dto);
+                            if (gasto != null) {
+                                nuevos.add(gasto);
+                                if (dto.getIdConcepto() != null && gastoId != null) {
+                                    nuevosLinks.put(dto.getIdConcepto(), gastoId);
+                                }
+                            }
+                        }
+                    }
+                    replaceGastosRecurrentes(nuevos);
+                    replaceConceptoGastoLinks(nuevosLinks);
+                    notifySuccess(callback, getGastos());
+                } else {
+                    notifyError(callback, "No se pudo obtener los gastos recurrentes. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ConceptoGastoDto>> call, Throwable t) {
+                notifyError(callback, "No se pudo conectar con el servidor de gastos recurrentes.");
+            }
+        });
+    }
+
+    public static void refreshIngresos(Context context, RepositoryCallback<List<Ingreso>> callback) {
+        Integer userId = SessionManager.getUserId(context);
+        ingresoRepository.obtenerIngresos(new Callback<List<IngresoDto>>() {
+            @Override
+            public void onResponse(Call<List<IngresoDto>> call, Response<List<IngresoDto>> response) {
+                if (response.isSuccessful()) {
+                    List<IngresoDto> body = response.body();
+                    List<Ingreso> nuevos = new ArrayList<>();
+                    List<Ingreso> historialNuevos = new ArrayList<>();
+                    if (body != null) {
+                        for (IngresoDto dto : body) {
+                            if (userId != null && !Objects.equals(dto.getIdUsuario(), userId)) {
+                                continue;
+                            }
+                            Ingreso ingreso = fromDto(dto);
+                            if (ingreso != null) {
+                                if (isIngresoAgotado(ingreso)) {
+                                    Ingreso historial = createIngresoHistorial(ingreso);
+                                    if (historial != null) {
+                                        historialNuevos.add(historial);
+                                    }
+                                    continue;
+                                }
+                                nuevos.add(ingreso);
+                            }
+                        }
+                    }
+                    replaceIngresos(nuevos);
+                    replaceIngresosHistorial(historialNuevos);
+                    registrarIngresosOriginales(nuevos);
+                    refreshIngresosRecurrentes(context, callback);
+                } else {
+                    notifyError(callback, "No se pudo obtener los ingresos. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<IngresoDto>> call, Throwable t) {
+                notifyError(callback, "No se pudo conectar con el servidor de ingresos.");
+            }
+        });
+    }
+
+    public static void refreshGastos(Context context, RepositoryCallback<List<Gasto>> callback) {
+        Integer userId = SessionManager.getUserId(context);
+        gastoRepository.obtenerGastos(new Callback<List<GastoDto>>() {
+            @Override
+            public void onResponse(Call<List<GastoDto>> call, Response<List<GastoDto>> response) {
+                if (response.isSuccessful()) {
+                    List<GastoDto> body = response.body();
+                    List<Gasto> nuevos = new ArrayList<>();
+                    if (body != null) {
+                        for (GastoDto dto : body) {
+                            if (userId != null && !Objects.equals(dto.getIdUsuario(), userId)) {
+                                continue;
+                            }
+                            Gasto gasto = fromDto(dto);
+                            if (gasto != null) {
+                                nuevos.add(gasto);
+                            }
+                        }
+                    }
+                    replaceGastos(nuevos);
+                    refreshGastosRecurrentes(context, callback);
+                } else {
+                    notifyError(callback, "No se pudo obtener los gastos. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GastoDto>> call, Throwable t) {
+                notifyError(callback, "No se pudo conectar con el servidor de gastos.");
+            }
+        });
+    }
+
+    public static void addIngreso(Context context, Ingreso ingreso, RepositoryCallback<Ingreso> callback) {
+        if (ingreso == null) {
+            notifyError(callback, "El ingreso es inválido.");
+            return;
+        }
+        IngresoDto dto = toDto(ingreso, context);
+        if (dto == null) {
+            notifyError(callback, "Debes iniciar sesión antes de crear ingresos.");
+            return;
+        }
+        ingresoRepository.guardarIngreso(dto, new Callback<IngresoDto>() {
+            @Override
+            public void onResponse(Call<IngresoDto> call, Response<IngresoDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Ingreso creado = fromDto(response.body());
+                    if (creado != null) {
+                        ingresos.add(creado);
+                        registrarIngresoOriginal(creado);
+                        if (ingreso.isRecurrente()) {
+                            Ingreso concepto = new Ingreso(null,
+                                    ingreso.getArticulo(),
+                                    ingreso.getDescripcion(),
+                                    "",
+                                    ingreso.getPeriodo(),
+                                    true);
+                            addIngresoRecurrenteConcepto(concepto, creado.getId());
+                        }
+                    }
+                    notifySuccess(callback, creado);
+                } else {
+                    notifyError(callback, "No se pudo guardar el ingreso. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<IngresoDto> call, Throwable t) {
+                notifyError(callback, "Error al conectar con el servidor de ingresos.");
+            }
+        });
+    }
+
+    private static void addIngresoRecurrenteConcepto(Ingreso ingreso, Integer ingresoId) {
+        ConceptoIngresoDto dto = toConceptoDto(ingreso, ingresoId);
+        if (dto == null) {
+            return;
+        }
+        conceptoIngresoRepository.guardarConcepto(dto, new Callback<ConceptoIngresoDto>() {
+            @Override
+            public void onResponse(Call<ConceptoIngresoDto> call, Response<ConceptoIngresoDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Ingreso creado = fromConceptoDto(response.body());
+                    if (creado != null) {
+                        ingresosRecurrentes.add(creado);
+                        if (response.body().getIdConcepto() != null && response.body().getIdIngresos() != null) {
+                            conceptoIngresoLinks.put(response.body().getIdConcepto(), response.body().getIdIngresos());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ConceptoIngresoDto> call, Throwable t) {
+                // Silent fail for recurrent template creation.
+            }
+        });
+    }
+
+    public static void addGasto(Context context, Gasto gasto, RepositoryCallback<Gasto> callback) {
+        if (gasto == null) {
+            notifyError(callback, "El gasto es inválido.");
+            return;
+        }
+        GastoDto dto = toDto(gasto, context);
+        if (dto == null) {
+            notifyError(callback, "Debes iniciar sesión antes de crear gastos.");
+            return;
+        }
+        gastoRepository.guardarGasto(dto, new Callback<GastoDto>() {
+            @Override
+            public void onResponse(Call<GastoDto> call, Response<GastoDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Gasto creado = fromDto(response.body());
+                    if (creado != null) {
+                        gastos.add(creado);
+                        if (gasto.isRecurrente()) {
+                            Gasto concepto = new Gasto(null,
+                                    gasto.getArticulo(),
+                                    gasto.getDescripcion(),
+                                    "",
+                                    gasto.getPeriodo(),
+                                    true);
+                            addGastoRecurrenteConcepto(concepto, creado.getId());
+                        }
+                    }
+                    notifySuccess(callback, creado);
+                } else {
+                    notifyError(callback, "No se pudo guardar el gasto. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GastoDto> call, Throwable t) {
+                notifyError(callback, "Error al conectar con el servidor de gastos.");
+            }
+        });
+    }
+
+    private static void addGastoRecurrenteConcepto(Gasto gasto, Integer gastoId) {
+        ConceptoGastoDto dto = toConceptoDto(gasto, gastoId);
+        if (dto == null) {
+            return;
+        }
+        conceptoGastoRepository.guardarConcepto(dto, new Callback<ConceptoGastoDto>() {
+            @Override
+            public void onResponse(Call<ConceptoGastoDto> call, Response<ConceptoGastoDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Gasto creado = fromConceptoDto(response.body());
+                    if (creado != null) {
+                        gastosRecurrentes.add(creado);
+                        if (response.body().getIdConcepto() != null && response.body().getIdGastos() != null) {
+                            conceptoGastoLinks.put(response.body().getIdConcepto(), response.body().getIdGastos());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ConceptoGastoDto> call, Throwable t) {
+                // Silent fail for recurrent template creation.
+            }
+        });
+    }
+
+    public static void removeLastIngreso(RepositoryCallback<Boolean> callback) {
+        if (ingresos.isEmpty()) {
+            notifySuccess(callback, false);
+            return;
+        }
+        Ingreso ultimo = ingresos.get(ingresos.size() - 1);
+        if (ultimo.getId() == null) {
+            notifyError(callback, "El último ingreso no tiene identificador remoto.");
+            return;
+        }
+        ingresoRepository.eliminarIngreso(ultimo.getId(), new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    eliminarIngresoPorId(ultimo.getId());
+                    notifySuccess(callback, true);
+                } else {
+                    notifyError(callback, "No se pudo eliminar el ingreso. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                notifyError(callback, "Error al eliminar el ingreso en el servidor.");
+            }
+        });
+    }
+
+    public static void removeIngresoById(Integer id, RepositoryCallback<Boolean> callback) {
+        if (id == null) {
+            notifyError(callback, "El ingreso no tiene identificador remoto.");
+            return;
+        }
+        ingresoRepository.eliminarIngreso(id, new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    eliminarIngresoPorId(id);
+                    notifySuccess(callback, true);
+                } else {
+                    notifyError(callback, "No se pudo eliminar el ingreso. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                notifyError(callback, "Error al eliminar el ingreso en el servidor.");
+            }
+        });
+    }
+
+    public static void removeLastGasto(RepositoryCallback<Boolean> callback) {
+        if (gastos.isEmpty()) {
+            notifySuccess(callback, false);
+            return;
+        }
+        Gasto ultimo = gastos.get(gastos.size() - 1);
+        if (ultimo.getId() == null) {
+            notifyError(callback, "El último gasto no tiene identificador remoto.");
+            return;
+        }
+        gastoRepository.eliminarGasto(ultimo.getId(), new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    eliminarGastoPorId(ultimo.getId());
+                    notifySuccess(callback, true);
+                } else {
+                    notifyError(callback, "No se pudo eliminar el gasto. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                notifyError(callback, "Error al eliminar el gasto en el servidor.");
+            }
+        });
+    }
+
+    public static void removeGastoById(Integer id, RepositoryCallback<Boolean> callback) {
+        if (id == null) {
+            notifyError(callback, "El gasto no tiene identificador remoto.");
+            return;
+        }
+        gastoRepository.eliminarGasto(id, new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    eliminarGastoPorId(id);
+                    notifySuccess(callback, true);
+                } else {
+                    notifyError(callback, "No se pudo eliminar el gasto. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                notifyError(callback, "Error al eliminar el gasto en el servidor.");
+            }
+        });
+    }
+
+    public static void updateIngreso(Context context, Ingreso ingreso, RepositoryCallback<Ingreso> callback) {
+        if (ingreso == null || ingreso.getId() == null) {
+            notifyError(callback, "El ingreso no es válido para actualizar.");
+            return;
+        }
+        if (ingreso.isRecurrente()) {
+            updateIngresoRecurrente(ingreso, callback);
+            return;
+        }
+        IngresoDto dto = toDto(ingreso, context);
+        if (dto == null) {
+            notifyError(callback, "Debes iniciar sesión antes de actualizar ingresos.");
+            return;
+        }
+        ingresoRepository.actualizarIngreso(ingreso.getId(), dto, new Callback<IngresoDto>() {
+            @Override
+            public void onResponse(Call<IngresoDto> call, Response<IngresoDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Ingreso actualizado = fromDto(response.body());
+                    if (actualizado != null) {
+                        reemplazarIngreso(actualizado);
+                        registrarIngresoOriginal(actualizado);
+                    }
+                    notifySuccess(callback, actualizado);
+                } else {
+                    notifyError(callback, "No se pudo actualizar el ingreso. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<IngresoDto> call, Throwable t) {
+                notifyError(callback, "Error al actualizar el ingreso en el servidor.");
+            }
+        });
+    }
+
+    private static void updateIngresoRecurrente(Ingreso ingreso, RepositoryCallback<Ingreso> callback) {
+        ConceptoIngresoDto dto = toConceptoDto(ingreso, conceptoIngresoLinks.get(ingreso.getId()));
+        if (dto == null || ingreso.getId() == null) {
+            notifyError(callback, "El ingreso recurrente no es válido para actualizar.");
+            return;
+        }
+        conceptoIngresoRepository.actualizarConcepto(ingreso.getId(), dto, new Callback<ConceptoIngresoDto>() {
+            @Override
+            public void onResponse(Call<ConceptoIngresoDto> call, Response<ConceptoIngresoDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Ingreso actualizado = fromConceptoDto(response.body());
+                    if (actualizado != null) {
+                        reemplazarIngresoRecurrente(actualizado);
+                    }
+                    notifySuccess(callback, actualizado);
+                } else {
+                    notifyError(callback, "No se pudo actualizar el ingreso recurrente. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ConceptoIngresoDto> call, Throwable t) {
+                notifyError(callback, "Error al actualizar el ingreso recurrente en el servidor.");
+            }
+        });
+    }
+
+    public static void updateGasto(Context context, Gasto gasto, RepositoryCallback<Gasto> callback) {
+        if (gasto == null || gasto.getId() == null) {
+            notifyError(callback, "El gasto no es válido para actualizar.");
+            return;
+        }
+        if (gasto.isRecurrente()) {
+            updateGastoRecurrente(gasto, callback);
+            return;
+        }
+        GastoDto dto = toDto(gasto, context);
+        if (dto == null) {
+            notifyError(callback, "Debes iniciar sesión antes de actualizar gastos.");
+            return;
+        }
+        gastoRepository.actualizarGasto(gasto.getId(), dto, new Callback<GastoDto>() {
+            @Override
+            public void onResponse(Call<GastoDto> call, Response<GastoDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Gasto actualizado = fromDto(response.body());
+                    if (actualizado != null) {
+                        reemplazarGasto(actualizado);
+                    }
+                    notifySuccess(callback, actualizado);
+                } else {
+                    notifyError(callback, "No se pudo actualizar el gasto. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GastoDto> call, Throwable t) {
+                notifyError(callback, "Error al actualizar el gasto en el servidor.");
+            }
+        });
+    }
+
+    private static void updateGastoRecurrente(Gasto gasto, RepositoryCallback<Gasto> callback) {
+        ConceptoGastoDto dto = toConceptoDto(gasto, conceptoGastoLinks.get(gasto.getId()));
+        if (dto == null || gasto.getId() == null) {
+            notifyError(callback, "El gasto recurrente no es válido para actualizar.");
+            return;
+        }
+        conceptoGastoRepository.actualizarConcepto(gasto.getId(), dto, new Callback<ConceptoGastoDto>() {
+            @Override
+            public void onResponse(Call<ConceptoGastoDto> call, Response<ConceptoGastoDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Gasto actualizado = fromConceptoDto(response.body());
+                    if (actualizado != null) {
+                        reemplazarGastoRecurrente(actualizado);
+                    }
+                    notifySuccess(callback, actualizado);
+                } else {
+                    notifyError(callback, "No se pudo actualizar el gasto recurrente. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ConceptoGastoDto> call, Throwable t) {
+                notifyError(callback, "Error al actualizar el gasto recurrente en el servidor.");
+            }
+        });
+    }
+
+    public static void removeIngresoRecurrenteById(Integer id, RepositoryCallback<Boolean> callback) {
+        if (id == null) {
+            notifyError(callback, "El ingreso recurrente no tiene identificador remoto.");
+            return;
+        }
+        conceptoIngresoRepository.eliminarConcepto(id, new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    eliminarIngresoRecurrentePorId(id);
+                    notifySuccess(callback, true);
+                } else {
+                    notifyError(callback, "No se pudo eliminar el ingreso recurrente. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                notifyError(callback, "Error al eliminar el ingreso recurrente en el servidor.");
+            }
+        });
+    }
+
+    public static void removeGastoRecurrenteById(Integer id, RepositoryCallback<Boolean> callback) {
+        if (id == null) {
+            notifyError(callback, "El gasto recurrente no tiene identificador remoto.");
+            return;
+        }
+        conceptoGastoRepository.eliminarConcepto(id, new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    eliminarGastoRecurrentePorId(id);
+                    notifySuccess(callback, true);
+                } else {
+                    notifyError(callback, "No se pudo eliminar el gasto recurrente. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                notifyError(callback, "Error al eliminar el gasto recurrente en el servidor.");
+            }
+        });
+    }
+
+    public static void updateIngresoMonto(Context context, Ingreso ingreso, BigDecimal nuevoMonto,
+                                          RepositoryCallback<Ingreso> callback) {
+        if (ingreso == null || ingreso.getId() == null) {
+            notifyError(callback, "El ingreso no es válido para actualizar.");
+            return;
+        }
+        if (nuevoMonto == null) {
+            notifyError(callback, "El monto actualizado es inválido.");
+            return;
+        }
+        String montoNormalizado = nuevoMonto.stripTrailingZeros().toPlainString();
+        Ingreso actualizado = new Ingreso(ingreso.getId(),
+                ingreso.getArticulo(),
+                montoNormalizado,
+                ingreso.getFecha(),
+                ingreso.getPeriodo(),
+                ingreso.isRecurrente());
+        IngresoDto dto = toDto(actualizado, context);
+        if (dto == null) {
+            notifyError(callback, "Debes iniciar sesión antes de actualizar ingresos.");
+            return;
+        }
+        ingresoRepository.actualizarIngreso(ingreso.getId(), dto, new Callback<IngresoDto>() {
+            @Override
+            public void onResponse(Call<IngresoDto> call, Response<IngresoDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Ingreso actualizadoRemoto = fromDto(response.body());
+                    if (actualizadoRemoto != null) {
+                        reemplazarIngreso(actualizadoRemoto);
+                        if (isIngresoAgotado(actualizadoRemoto)) {
+                            moverIngresoAHistorial(actualizadoRemoto);
+                        }
+                    }
+                    notifySuccess(callback, actualizadoRemoto);
+                } else {
+                    notifyError(callback, "No se pudo actualizar el ingreso. Código: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<IngresoDto> call, Throwable t) {
+                notifyError(callback, "Error al actualizar el ingreso en el servidor.");
+            }
+        });
+    }
+
+    private static void replaceIngresos(List<Ingreso> nuevos) {
+        ingresos.clear();
+        ingresos.addAll(nuevos);
+        pruneIngresosOriginales(nuevos, ingresosHistorial);
+    }
+
+    private static void replaceIngresosRecurrentes(List<Ingreso> nuevos) {
+        ingresosRecurrentes.clear();
+        ingresosRecurrentes.addAll(nuevos);
+    }
+
+    private static void replaceIngresosHistorial(List<Ingreso> nuevos) {
+        ingresosHistorial.clear();
+        ingresosHistorial.addAll(nuevos);
+    }
+
+    private static void replaceGastos(List<Gasto> nuevos) {
+        gastos.clear();
+        gastos.addAll(nuevos);
+    }
+
+    private static void replaceGastosRecurrentes(List<Gasto> nuevos) {
+        gastosRecurrentes.clear();
+        gastosRecurrentes.addAll(nuevos);
+    }
+
+    private static void replaceConceptoIngresoLinks(Map<Integer, Integer> nuevos) {
+        conceptoIngresoLinks.clear();
+        conceptoIngresoLinks.putAll(nuevos);
+    }
+
+    private static void replaceConceptoGastoLinks(Map<Integer, Integer> nuevos) {
+        conceptoGastoLinks.clear();
+        conceptoGastoLinks.putAll(nuevos);
+    }
+
+    private static void eliminarIngresoPorId(Integer id) {
+        ingresos.removeIf(ingreso -> Objects.equals(ingreso.getId(), id));
+        ingresosOriginales.remove(id);
+        ingresosHistorial.removeIf(ingreso -> Objects.equals(ingreso.getId(), id));
+    }
+
+    private static void eliminarIngresoRecurrentePorId(Integer id) {
+        ingresosRecurrentes.removeIf(ingreso -> Objects.equals(ingreso.getId(), id));
+    }
+
+    private static void reemplazarIngreso(Ingreso actualizado) {
+        if (actualizado == null) {
+            return;
+        }
+        for (int i = 0; i < ingresos.size(); i++) {
+            if (Objects.equals(ingresos.get(i).getId(), actualizado.getId())) {
+                ingresos.set(i, actualizado);
+                break;
+            }
+        }
+    }
+
+    private static void reemplazarIngresoRecurrente(Ingreso actualizado) {
+        if (actualizado == null) {
+            return;
+        }
+        for (int i = 0; i < ingresosRecurrentes.size(); i++) {
+            if (Objects.equals(ingresosRecurrentes.get(i).getId(), actualizado.getId())) {
+                ingresosRecurrentes.set(i, actualizado);
+                return;
+            }
+        }
+        ingresosRecurrentes.add(actualizado);
+    }
+
+    private static void reemplazarGasto(Gasto actualizado) {
+        if (actualizado == null) {
+            return;
+        }
+        for (int i = 0; i < gastos.size(); i++) {
+            if (Objects.equals(gastos.get(i).getId(), actualizado.getId())) {
+                gastos.set(i, actualizado);
+                break;
+            }
+        }
+    }
+
+    private static void reemplazarGastoRecurrente(Gasto actualizado) {
+        if (actualizado == null) {
+            return;
+        }
+        for (int i = 0; i < gastosRecurrentes.size(); i++) {
+            if (Objects.equals(gastosRecurrentes.get(i).getId(), actualizado.getId())) {
+                gastosRecurrentes.set(i, actualizado);
+                return;
+            }
+        }
+        gastosRecurrentes.add(actualizado);
+    }
+
+    private static void eliminarGastoPorId(Integer id) {
+        gastos.removeIf(gasto -> Objects.equals(gasto.getId(), id));
+    }
+
+    private static void eliminarGastoRecurrentePorId(Integer id) {
+        gastosRecurrentes.removeIf(gasto -> Objects.equals(gasto.getId(), id));
+    }
+
+    private static Gasto getGastoById(Integer id) {
+        if (id == null) {
+            return null;
+        }
+        for (Gasto gasto : gastos) {
+            if (Objects.equals(gasto.getId(), id)) {
+                return gasto;
+            }
+        }
+        return null;
+    }
+
+    private static Ingreso fromDto(IngresoDto dto) {
+        if (dto == null) {
+            return null;
+        }
+        String articulo = dto.getDescripcionIngreso();
+        String monto = montoToString(dto.getMontoIngreso());
+        String fecha = formatDate(dto.getFechaIngresos());
+        String periodo = dto.getPeriodicidadIngreso();
+        return new Ingreso(dto.getIdIngresos(), articulo, monto, fecha, periodo, false);
+    }
+
+    private static Gasto fromDto(GastoDto dto) {
+        if (dto == null) {
+            return null;
+        }
+        String articulo = dto.getArticuloGasto() != null ? dto.getArticuloGasto() : dto.getDescripcionGasto();
+        String monto = montoToString(dto.getMontoGasto());
+        String fecha = formatDate(dto.getFechaGastos());
+        String periodo = dto.getPeriodoGastos();
+        return new Gasto(dto.getIdGastos(), articulo, monto, fecha, periodo, false);
+    }
+
+    private static Ingreso fromConceptoDto(ConceptoIngresoDto dto) {
+        if (dto == null) {
+            return null;
+        }
+        String articulo = dto.getNombreConcepto();
+        String monto = montoToString(dto.getPrecioConcepto());
+        String periodo = dto.getDescripcionConcepto();
+        return new Ingreso(dto.getIdConcepto(), articulo, monto, "", periodo, true);
+    }
+
+    private static Gasto fromConceptoDto(ConceptoGastoDto dto) {
+        if (dto == null) {
+            return null;
+        }
+        String articulo = dto.getNombreConcepto();
+        String monto = montoToString(dto.getPrecioConcepto());
+        String periodo = dto.getDescripcionConcepto();
+        return new Gasto(dto.getIdConcepto(), articulo, monto, "", periodo, true);
+    }
+
+    private static IngresoDto toDto(Ingreso ingreso, Context context) {
+        Integer userId = SessionManager.getUserId(context);
+        if (userId == null) {
+            return null;
+        }
+        return IngresoDto.builder()
+                .idIngresos(ingreso.getId())
+                .idUsuario(userId)
+                .montoIngreso(parseMonto(ingreso.getDescripcion()))
+                .periodicidadIngreso(ingreso.getPeriodo())
+                .fechaIngresos(parseDate(ingreso.getFecha()))
+                .descripcionIngreso(ingreso.getArticulo())
+                .build();
+    }
+
+    private static GastoDto toDto(Gasto gasto, Context context) {
+        Integer userId = SessionManager.getUserId(context);
+        if (userId == null) {
+            return null;
+        }
+        return GastoDto.builder()
+                .idGastos(gasto.getId())
+                .idUsuario(userId)
+                .descripcionGasto(gasto.getArticulo())
+                .articuloGasto(gasto.getArticulo())
+                .montoGasto(parseMonto(gasto.getDescripcion()))
+                .fechaGastos(parseDate(gasto.getFecha()))
+                .periodoGastos(gasto.getPeriodo())
+                .build();
+    }
+
+    private static ConceptoIngresoDto toConceptoDto(Ingreso ingreso, Integer ingresoId) {
+        if (ingreso == null) {
+            return null;
+        }
+        return ConceptoIngresoDto.builder()
+                .idConcepto(ingreso.getId())
+                .nombreConcepto(ingreso.getArticulo())
+                .descripcionConcepto(ingreso.getPeriodo())
+                .precioConcepto(parseMonto(ingreso.getDescripcion()))
+                .idIngresos(ingresoId)
+                .build();
+    }
+
+    private static ConceptoGastoDto toConceptoDto(Gasto gasto, Integer gastoId) {
+        if (gasto == null) {
+            return null;
+        }
+        return ConceptoGastoDto.builder()
+                .idConcepto(gasto.getId())
+                .nombreConcepto(gasto.getArticulo())
+                .descripcionConcepto(gasto.getPeriodo())
+                .precioConcepto(parseMonto(gasto.getDescripcion()))
+                .idGastos(gastoId)
+                .build();
+    }
+
+    private static void registrarIngresosOriginales(List<Ingreso> nuevos) {
+        for (Ingreso ingreso : nuevos) {
+            registrarIngresoOriginal(ingreso);
+        }
+    }
+
+    private static void registrarIngresoOriginal(Ingreso ingreso) {
+        if (ingreso == null || ingreso.getId() == null) {
+            return;
+        }
+        BigDecimal monto = parseMonto(ingreso.getDescripcion());
+        BigDecimal previo = ingresosOriginales.get(ingreso.getId());
+        if (previo == null || monto.compareTo(previo) > 0) {
+            ingresosOriginales.put(ingreso.getId(), monto);
+        }
+    }
+
+    private static void pruneIngresosOriginales(List<Ingreso> nuevos, List<Ingreso> historial) {
+        Set<Integer> ids = new HashSet<>();
+        for (Ingreso ingreso : nuevos) {
+            if (ingreso.getId() != null) {
+                ids.add(ingreso.getId());
+            }
+        }
+        for (Ingreso ingreso : historial) {
+            if (ingreso.getId() != null) {
+                ids.add(ingreso.getId());
+            }
+        }
+        ingresosOriginales.keySet().retainAll(ids);
+    }
+
+    private static void agregarIngresosHistorial(List<Ingreso> ingresos,
+                                                  List<Ingreso> resultado,
+                                                  Map<Integer, Ingreso> porId) {
+        for (Ingreso ingreso : ingresos) {
+            Ingreso historial = createIngresoHistorial(ingreso);
+            if (historial == null) {
+                continue;
+            }
+            Integer id = historial.getId();
+            if (id == null) {
+                resultado.add(historial);
+            } else {
+                porId.put(id, historial);
+            }
+        }
+    }
+
+    private static boolean isIngresoAgotado(Ingreso ingreso) {
+        if (ingreso == null) {
+            return false;
+        }
+        BigDecimal monto = parseMonto(ingreso.getDescripcion());
+        return monto.compareTo(BigDecimal.ZERO) <= 0;
+    }
+
+    private static void moverIngresoAHistorial(Ingreso ingreso) {
+        if (ingreso == null || ingreso.getId() == null) {
+            return;
+        }
+        eliminarIngresoActivoPorId(ingreso.getId());
+        addIngresoHistorial(ingreso);
+    }
+
+    private static void eliminarIngresoActivoPorId(Integer id) {
+        ingresos.removeIf(ingreso -> Objects.equals(ingreso.getId(), id));
+    }
+
+    private static void addIngresoHistorial(Ingreso ingreso) {
+        Ingreso historial = createIngresoHistorial(ingreso);
+        if (historial != null) {
+            reemplazarIngresoHistorial(historial);
+        }
+    }
+
+    private static Ingreso createIngresoHistorial(Ingreso ingreso) {
+        if (ingreso == null) {
+            return null;
+        }
+        String monto = ingreso.getDescripcion();
+        if (ingreso.getId() != null) {
+            BigDecimal original = ingresosOriginales.get(ingreso.getId());
+            if (original != null) {
+                monto = original.stripTrailingZeros().toPlainString();
+            }
+        }
+        return new Ingreso(ingreso.getId(),
+                ingreso.getArticulo(),
+                monto,
+                ingreso.getFecha(),
+                ingreso.getPeriodo(),
+                ingreso.isRecurrente());
+    }
+
+    private static void reemplazarIngresoHistorial(Ingreso ingreso) {
+        if (ingreso == null || ingreso.getId() == null) {
+            return;
+        }
+        for (int i = 0; i < ingresosHistorial.size(); i++) {
+            if (Objects.equals(ingresosHistorial.get(i).getId(), ingreso.getId())) {
+                ingresosHistorial.set(i, ingreso);
+                return;
+            }
+        }
+        ingresosHistorial.add(ingreso);
+    }
+
+    private static String formatDate(LocalDate date) {
+        if (date == null) {
+            return "";
+        }
+        return date.format(UI_DATE_FORMAT);
+    }
+
+    private static LocalDate parseDate(String date) {
+        if (date == null || date.trim().isEmpty()) {
+            return LocalDate.now();
+        }
+        try {
+            return LocalDate.parse(date, UI_DATE_FORMAT);
+        } catch (DateTimeParseException ex) {
+            try {
+                return LocalDate.parse(date);
+            } catch (DateTimeParseException ignored) {
+                return LocalDate.now();
+            }
+        }
+    }
+
+    private static BigDecimal parseMonto(String valor) {
+        if (valor == null || valor.trim().isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+        String normalizado = RegistroFinanciero.normalizarMonto(valor);
+        try {
+            return new BigDecimal(normalizado);
+        } catch (NumberFormatException ex) {
+            return BigDecimal.ZERO;
+        }
+    }
+
+    private static String montoToString(BigDecimal monto) {
+        if (monto == null) {
+            return "0";
+        }
+        BigDecimal normalizado = monto.stripTrailingZeros();
+        return normalizado.toPlainString();
+    }
+
+    private static <T> void notifySuccess(RepositoryCallback<T> callback, T data) {
+        if (callback != null) {
+            callback.onSuccess(data);
+        }
+    }
+
+    private static void notifyError(RepositoryCallback<?> callback, String message) {
+        if (callback != null) {
+            callback.onError(message);
+        }
+    }
+
+    public static void clearAll() {
+        ingresos.clear();
+        ingresosRecurrentes.clear();
+        ingresosHistorial.clear();
+        gastos.clear();
+        gastosRecurrentes.clear();
+        ingresosOriginales.clear();
+        conceptoIngresoLinks.clear();
+        conceptoGastoLinks.clear();
+    }
+}
