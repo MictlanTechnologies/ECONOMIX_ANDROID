@@ -22,6 +22,8 @@ import com.example.economix_android.databinding.FragmentGastosBinding;
 import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.Model.data.Gasto;
 import com.example.economix_android.Model.data.Ingreso;
+import com.example.economix_android.util.AlertEngine;
+import com.example.economix_android.util.AlertModalHelper;
 import com.example.economix_android.util.ProfileImageUtils;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -178,6 +180,7 @@ public class gastosFragment extends Fragment {
                     return;
                 }
                 Toast.makeText(requireContext(), R.string.mensaje_gasto_guardado, Toast.LENGTH_SHORT).show();
+                mostrarAlertasGasto(result, AlertEngine.ExpenseEventType.CREATED);
                 limpiarCampos();
                 cargarIngresos();
                 setGastoButtonsEnabled(true);
@@ -298,6 +301,7 @@ public class gastosFragment extends Fragment {
                     return;
                 }
                 Toast.makeText(requireContext(), R.string.mensaje_gasto_actualizado, Toast.LENGTH_SHORT).show();
+                mostrarAlertasGasto(result, AlertEngine.ExpenseEventType.UPDATED);
                 limpiarCampos();
                 setGastoButtonsEnabled(true);
             }
@@ -328,6 +332,12 @@ public class gastosFragment extends Fragment {
 
     private void ejecutarEliminacionSeleccionada() {
         setGastoButtonsEnabled(false);
+        Gasto gastoEliminado = new Gasto(gastoEnEdicionId,
+                obtenerTexto(binding.etArticuloGas),
+                obtenerTexto(binding.etDescripcionGas),
+                obtenerTexto(binding.etFechaGas),
+                obtenerTexto(binding.etPeriodoGas),
+                gastoEnEdicionRecurrente);
         DataRepository.RepositoryCallback<Boolean> callback = new DataRepository.RepositoryCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean eliminado) {
@@ -338,6 +348,9 @@ public class gastosFragment extends Fragment {
                         ? R.string.mensaje_gasto_eliminado_seleccionado
                         : R.string.error_sin_gastos;
                 Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show();
+                if (Boolean.TRUE.equals(eliminado)) {
+                    mostrarAlertasGasto(gastoEliminado, AlertEngine.ExpenseEventType.DELETED);
+                }
                 limpiarCampos();
                 setGastoButtonsEnabled(true);
             }
@@ -545,6 +558,24 @@ public class gastosFragment extends Fragment {
         if (disponible.compareTo(BigDecimal.ZERO) <= 0) {
             Toast.makeText(requireContext(), R.string.mensaje_ingreso_agotado, Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void mostrarAlertasGasto(Gasto gasto, AlertEngine.ExpenseEventType eventType) {
+        List<AlertEngine.AlertData> alerts = AlertEngine.evaluateExpenseAlerts(requireContext(), gasto, eventType);
+        mostrarSiguienteAlerta(alerts, 0);
+    }
+
+    private void mostrarSiguienteAlerta(List<AlertEngine.AlertData> alerts, int index) {
+        if (!isAdded() || alerts == null || index >= alerts.size()) {
+            return;
+        }
+        AlertEngine.AlertData alert = alerts.get(index);
+        AlertModalHelper.show(this, alert, destinationId -> {
+            View root = getView();
+            if (root != null) {
+                navigateSafely(root, destinationId);
+            }
+        }, () -> mostrarSiguienteAlerta(alerts, index + 1));
     }
 
     @Override

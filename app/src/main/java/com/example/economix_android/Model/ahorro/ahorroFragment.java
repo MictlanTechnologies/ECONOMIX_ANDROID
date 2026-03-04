@@ -31,6 +31,8 @@ import com.example.economix_android.Model.data.RegistroFinanciero;
 import com.example.economix_android.databinding.FragmentAhorroBinding;
 import com.example.economix_android.network.dto.AhorroDto;
 import com.example.economix_android.network.repository.AhorroRepository;
+import com.example.economix_android.util.AlertEngine;
+import com.example.economix_android.util.AlertModalHelper;
 import com.example.economix_android.util.ProfileImageUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
@@ -410,6 +412,7 @@ public class ahorroFragment extends Fragment {
                     cargarAhorros();
                     if (objetivo.compareTo(BigDecimal.ZERO) > 0
                             && totalActualMeta.add(aporte).compareTo(objetivo) >= 0) {
+                        mostrarAlertaMetaAhorro(meta, totalActualMeta, totalActualMeta.add(aporte), objetivo);
                         mostrarMetaCompletada(meta, totalActualMeta.add(aporte), objetivo);
                     } else {
                         limpiarCampos();
@@ -569,6 +572,25 @@ public class ahorroFragment extends Fragment {
         ahorroEditId = null;
         ahorroEditIngresoId = null;
     }
+
+    private void mostrarAlertaMetaAhorro(String meta, BigDecimal totalAntes, BigDecimal totalDespues, BigDecimal objetivo) {
+        AlertEngine.AlertData alertData = AlertEngine.evaluateSavingsGoalAlert(
+                requireContext(),
+                meta,
+                totalAntes,
+                totalDespues,
+                objetivo);
+        if (alertData == null) {
+            return;
+        }
+        AlertModalHelper.show(this, alertData, destinationId -> {
+            View root = getView();
+            if (root != null) {
+                navigateSafely(root, destinationId);
+            }
+        }, () -> { });
+    }
+
     private void setupDatePicker(TextInputEditText editText) {
         editText.setShowSoftInputOnFocus(false);
         editText.setOnClickListener(v -> showDatePicker(editText));

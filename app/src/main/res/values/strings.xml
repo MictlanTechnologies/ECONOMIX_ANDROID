@@ -170,4 +170,18 @@
     <string name="titulo_seleccionar_periodo">Selecciona un periodo</string>
     <string name="desc_filtrar_fechas">Filtrar por fechas</string>
     <string name="mensaje_usuario_actualizado">Cuenta de usuario actualizada correctamente.</string>
+    <string name="alert_title_budget_exceeded">Presupuesto sobrepasado</string>
+    <string name="alert_message_budget_exceeded">Sobrepasaste el presupuesto de %1$s por %2$s. Presupuesto: %3$s, Gastado: %4$s.</string>
+    <string name="alert_title_saving_goal_reached">Meta de ahorro alcanzada</string>
+    <string name="alert_message_saving_goal_reached">¡Felicidades! Alcanzaste tu meta de ahorro: %1$s. Total ahorrado: %2$s.</string>
+    <string name="alert_title_large_expense">Gasto grande detectado</string>
+    <string name="alert_message_large_expense">Registraste %1$s en %2$s. ¿Seguro que está correcto?</string>
+    <string name="alert_title_spending_streak">Racha de gastos</string>
+    <string name="alert_message_spending_streak">Llevas %1$d días seguidos gastando en %2$s. ¿Quieres revisar tu presupuesto?</string>
+    <string name="alert_acknowledge">Entendido</string>
+    <string name="alert_view_details">Ver detalles</string>
+    <string name="alert_view_savings">Ver ahorro</string>
+    <string name="alert_edit_expense">Editar gasto</string>
+    <string name="alert_go_budget">Ir a Presupuesto</string>
+
 </resources>
