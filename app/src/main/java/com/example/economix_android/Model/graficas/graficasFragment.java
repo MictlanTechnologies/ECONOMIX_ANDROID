@@ -1,4 +1,4 @@
-package com.example.economix_android.Model.ahorro;
+package com.example.economix_android.Model.graficas;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.economix_android.databinding.FragmentAhorroBinding;
+import com.example.economix_android.databinding.FragmentGraficasBinding;
 
-public class ahorroFragment extends Fragment {
+public class graficasFragment extends Fragment {
 
-    private FragmentAhorroBinding binding;
+    private FragmentGraficasBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        ahorroViewModel ahorroViewModel =
-                new ViewModelProvider(this).get(ahorroViewModel.class);
+        graficasViewModel graficasViewModel =
+                new ViewModelProvider(this).get(graficasViewModel.class);
 
-        binding = FragmentAhorroBinding.inflate(inflater, container, false);
+        binding = FragmentGraficasBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textAhorro;
-        ahorroViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textGraficas;
+        graficasViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
