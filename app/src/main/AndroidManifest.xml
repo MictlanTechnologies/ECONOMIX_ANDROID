@@ -25,6 +25,15 @@
             android:name=".Vista.menu"
             android:exported="false" />
         <activity
+            android:name=".Model.presupuestos.ConfiguracionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Model.presupuestos.PresupuestosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Model.presupuestos.ElegirCategoriasActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.login.LoginActivity"
             android:exported="false"
             android:label="@string/title_activity_login" />

@@ -8,6 +8,7 @@ import com.example.economix_android.network.api.DomicilioApi;
 import com.example.economix_android.network.api.GastoApi;
 import com.example.economix_android.network.api.IngresoApi;
 import com.example.economix_android.network.api.PersonaApi;
+import com.example.economix_android.network.api.PresupuestoApi;
 import com.example.economix_android.network.api.UsuarioApi;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -105,6 +106,10 @@ public final class ApiClient {
 
     public static PersonaApi getPersonaApi() {
         return retrofit.create(PersonaApi.class);
+    }
+
+    public static PresupuestoApi getPresupuestoApi() {
+        return retrofit.create(PresupuestoApi.class);
     }
 
     public static UsuarioApi getUsuarioApi() {

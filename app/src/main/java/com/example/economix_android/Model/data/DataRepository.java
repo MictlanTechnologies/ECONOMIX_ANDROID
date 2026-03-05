@@ -362,7 +362,11 @@ public final class DataRepository {
                     }
                     notifySuccess(callback, creado);
                 } else {
-                    notifyError(callback, "No se pudo guardar el gasto. Código: " + response.code());
+                    String error = "No se pudo guardar el gasto. Código: " + response.code();
+                    if (response.code() == 400) {
+                        error = "Presupuesto insuficiente";
+                    }
+                    notifyError(callback, error);
                 }
             }
 
@@ -853,7 +857,7 @@ public final class DataRepository {
         String monto = montoToString(dto.getMontoGasto());
         String fecha = formatDate(dto.getFechaGastos());
         String periodo = dto.getPeriodoGastos();
-        return new Gasto(dto.getIdGastos(), articulo, monto, fecha, periodo, false);
+        return new Gasto(dto.getIdGastos(), articulo, monto, fecha, periodo, false, dto.getCategoriaId());
     }
 
     private static Ingreso fromConceptoDto(ConceptoIngresoDto dto) {
@@ -904,6 +908,7 @@ public final class DataRepository {
                 .montoGasto(parseMonto(gasto.getDescripcion()))
                 .fechaGastos(parseDate(gasto.getFecha()))
                 .periodoGastos(gasto.getPeriodo())
+                .categoriaId(gasto.getCategoriaId())
                 .build();
     }
 
