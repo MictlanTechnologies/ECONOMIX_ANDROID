@@ -71,7 +71,7 @@
     <string name="titulo_ayuda_gastos_info">Resumen de gastos</string>
     <string name="mensaje_ayuda_gastos_info">Visualiza gastos normales y recurrentes en listas separadas. Filtra con la lupa por concepto y ajusta el periodo con el calendario.</string>
     <string name="mensaje_lista_vacia">Sin registros para mostrar.</string>
-    <string name="accion_cerrar_sesion">CERRAR SESION</string>
+    <string name="accion_cerrar_sesion">Salir de la sesión</string>
     <string name="titulo_ayuda_menu">¿Cómo navegar en el menú?</string>
     <string name="mensaje_ayuda_menu">Usa los accesos rápidos para registrar gastos o ingresos, gestionar tus ahorros y abrir las gráficas comparativas.</string>
     <string name="titulo_ayuda_ahorro">Panel de ahorro</string>
