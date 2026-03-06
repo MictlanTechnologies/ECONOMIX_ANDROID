@@ -16,7 +16,7 @@ import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 
 import com.example.economix_android.R;
-import com.example.economix_android.auth.ui.LoginActivity;
+import com.example.economix_android.Inicio.Inicio;
 import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.databinding.FragmentUsuarioBinding;
@@ -55,6 +55,8 @@ public class usuario extends Fragment {
         binding.btnInfo.setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.usuario_info));
+        binding.btnSeguridad.setOnClickListener(v ->
+                Navigation.findNavController(v).navigate(R.id.action_usuario_to_seguridad2faFragment));
         binding.btnAyudaUs.setOnClickListener(v -> mostrarAyuda());
         binding.btnGuardar.setOnClickListener(v -> cerrarSesion());
 
@@ -138,7 +140,8 @@ public class usuario extends Fragment {
     private void finalizarSesionLocal() {
         DataRepository.clearAll();
         SessionManager.clearSession(requireContext());
-        Intent intent = new Intent(requireContext(), LoginActivity.class);
+        Intent intent = new Intent(requireContext(), Inicio.class);
+        intent.putExtra(Inicio.EXTRA_MOSTRAR_LOGIN, true);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         requireActivity().finish();

@@ -11,15 +11,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
+import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.R;
 import com.example.economix_android.Vista.menu;
-import com.example.economix_android.Model.data.DataRepository;
-import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.databinding.FragmentInicioSesionBinding;
-import com.example.economix_android.network.dto.LoginRequest;
-import com.example.economix_android.network.dto.UsuarioDto;
-import com.example.economix_android.network.repository.UsuarioRepository;
+import com.example.economix_android.network.auth.dto.LoginRequest;
+import com.example.economix_android.network.auth.dto.LoginResponse;
+import com.example.economix_android.network.repository.auth.AuthRepository;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,7 +28,8 @@ import retrofit2.Response;
 public class inicio_sesionFragment extends Fragment {
 
     private FragmentInicioSesionBinding binding;
-    private final UsuarioRepository usuarioRepository = new UsuarioRepository();
+    private AuthRepository authRepository;
+    private SessionManager sessionManager;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -40,6 +41,9 @@ public class inicio_sesionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        authRepository = new AuthRepository(requireContext());
+        sessionManager = new SessionManager(requireContext());
+
         binding.btnBack.setOnClickListener(v -> requireActivity()
                 .getOnBackPressedDispatcher()
                 .onBackPressed());
@@ -69,39 +73,47 @@ public class inicio_sesionFragment extends Fragment {
         }
 
         binding.btnSignIn.setEnabled(false);
-        final String perfilNormalizado = perfil.trim();
-        final String contrasenaFinal = contrasena;
-
-        LoginRequest request = LoginRequest.builder()
-                .perfilUsuario(perfilNormalizado)
-                .contrasenaUsuario(contrasenaFinal)
-                .build();
-
-        usuarioRepository.login(request, new Callback<UsuarioDto>() {
+        authRepository.login(new LoginRequest(perfil.trim(), contrasena), new Callback<>() {
             @Override
-            public void onResponse(Call<UsuarioDto> call, Response<UsuarioDto> response) {
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (binding != null) {
                     binding.btnSignIn.setEnabled(true);
                 }
                 if (!isAdded()) {
                     return;
                 }
-                if (response.isSuccessful() && response.body() != null) {
-                    UsuarioDto usuario = response.body();
-                    DataRepository.clearAll();
-                    SessionManager.saveSession(requireContext(), usuario);
-                    Intent menuIntent = new Intent(requireContext(), menu.class);
-                    startActivity(menuIntent);
-                    requireActivity().finish();
-                } else if (response.code() == 401) {
-                    Toast.makeText(requireContext(), getString(R.string.error_credenciales_invalidas), Toast.LENGTH_SHORT).show();
-                } else {
-                    mostrarMensajeError(null);
+
+                if (!response.isSuccessful() || response.body() == null) {
+                    if (response.code() == 401) {
+                        Toast.makeText(requireContext(), getString(R.string.error_credenciales_invalidas), Toast.LENGTH_SHORT).show();
+                    } else {
+                        mostrarMensajeError(null);
+                    }
+                    return;
                 }
+
+                LoginResponse loginResponse = response.body();
+                if (loginResponse.isRequires2fa()) {
+                    Bundle args = new Bundle();
+                    args.putString("challengeId", loginResponse.getChallengeId());
+                    args.putString("challengeExpiresAt", loginResponse.getChallengeExpiresAt());
+                    NavHostFragment.findNavController(inicio_sesionFragment.this)
+                            .navigate(R.id.action_inicio_sesionFragment_to_twoFactorFragment, args);
+                    return;
+                }
+
+                DataRepository.clearAll();
+                sessionManager.saveAuthSession(
+                        loginResponse.getAccessToken(),
+                        loginResponse.getRefreshToken(),
+                        loginResponse.getUserInfo(),
+                        loginResponse.getChallengeExpiresAt()
+                );
+                abrirMenu();
             }
 
             @Override
-            public void onFailure(Call<UsuarioDto> call, Throwable t) {
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
                 if (binding != null) {
                     binding.btnSignIn.setEnabled(true);
                 }
@@ -111,6 +123,13 @@ public class inicio_sesionFragment extends Fragment {
                 mostrarMensajeError(null);
             }
         });
+    }
+
+    private void abrirMenu() {
+        Intent menuIntent = new Intent(requireContext(), menu.class);
+        menuIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(menuIntent);
+        requireActivity().finish();
     }
 
     private void limpiarErrores() {

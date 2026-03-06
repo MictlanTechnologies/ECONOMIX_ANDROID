@@ -7,8 +7,10 @@ import com.example.economix_android.network.auth.AuthServiceFactory;
 import com.example.economix_android.network.auth.dto.LoginRequest;
 import com.example.economix_android.network.auth.dto.LoginResponse;
 import com.example.economix_android.network.auth.dto.LogoutRequest;
+import com.example.economix_android.network.auth.dto.OtpCodeRequest;
 import com.example.economix_android.network.auth.dto.RefreshRequest;
 import com.example.economix_android.network.auth.dto.RefreshResponse;
+import com.example.economix_android.network.auth.dto.TwoFaSetupResponse;
 import com.example.economix_android.network.auth.dto.Verify2faRequest;
 import com.example.economix_android.network.auth.dto.Verify2faResponse;
 
@@ -37,6 +39,18 @@ public class AuthRepository {
 
     public void logout(LogoutRequest request, Callback<Void> callback) {
         authApi.logout(request).enqueue(callback);
+    }
+
+    public void setup2fa(Callback<TwoFaSetupResponse> callback) {
+        authApi.setup2fa().enqueue(callback);
+    }
+
+    public void enable2fa(OtpCodeRequest request, Callback<Void> callback) {
+        authApi.enable2fa(request).enqueue(callback);
+    }
+
+    public void disable2fa(OtpCodeRequest request, Callback<Void> callback) {
+        authApi.disable2fa(request).enqueue(callback);
     }
 
     public Call<RefreshResponse> refreshSync(RefreshRequest request) {
