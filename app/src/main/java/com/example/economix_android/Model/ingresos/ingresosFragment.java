@@ -1,6 +1,7 @@
 package com.example.economix_android.Model.ingresos;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.example.economix_android.Model.data.RegistroFinanciero;
+import com.example.economix_android.Model.presupuestos.PresupuestosActivity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -62,6 +64,7 @@ public class ingresosFragment extends Fragment {
         binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaIng.setOnClickListener(v -> mostrarAyuda());
+        binding.btnPresupuestosIng.setOnClickListener(v -> startActivity(new Intent(requireContext(), PresupuestosActivity.class)));
 
         binding.btnGuardarIng.setOnClickListener(v -> guardarIngreso());
         binding.btnEliminarIng.setOnClickListener(v -> eliminarIngreso());
