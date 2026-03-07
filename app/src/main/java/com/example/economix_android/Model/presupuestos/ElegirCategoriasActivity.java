@@ -59,7 +59,7 @@ public class ElegirCategoriasActivity extends AppCompatActivity {
     private void showAddDialog() {
         EditText input = new EditText(this);
         input.setHint("Nombre de categoría");
-        new AlertDialog.Builder(this, R.style.ThemeOverlay_Material3_MaterialAlertDialog)
+        new AlertDialog.Builder(this)
                 .setTitle("Añadir categoría")
                 .setView(input)
                 .setNegativeButton(android.R.string.cancel, null)

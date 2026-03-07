@@ -58,7 +58,7 @@ public class DialogAddAsignacion extends DialogFragment {
             tvDisponible.setText("Disponible en este ingreso: $" + selected[0].getDisponible());
         });
 
-        return new AlertDialog.Builder(requireContext(), R.style.ThemeOverlay_Material3_MaterialAlertDialog)
+        return new AlertDialog.Builder(requireContext())
                 .setTitle("Añadir dinero")
                 .setView(view)
                 .setNegativeButton(android.R.string.cancel, null)

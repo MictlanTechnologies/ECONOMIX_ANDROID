@@ -129,7 +129,7 @@ public class PresupuestosActivity extends AppCompatActivity {
     }
 
     public void mostrarErrorCentrado(String message) {
-        AlertDialog dialog = new AlertDialog.Builder(this, R.style.ThemeOverlay_Material3_MaterialAlertDialog)
+        AlertDialog dialog = new AlertDialog.Builder(this)
                 .setMessage(message)
                 .setPositiveButton(android.R.string.ok, null)
                 .create();
