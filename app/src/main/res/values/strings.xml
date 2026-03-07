@@ -170,4 +170,5 @@
     <string name="titulo_seleccionar_periodo">Selecciona un periodo</string>
     <string name="desc_filtrar_fechas">Filtrar por fechas</string>
     <string name="mensaje_usuario_actualizado">Cuenta de usuario actualizada correctamente.</string>
+    <string name="error_monto_asignacion">No puedes asignar más dinero del ingreso disponible.</string>
 </resources>

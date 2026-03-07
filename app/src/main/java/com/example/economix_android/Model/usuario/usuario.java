@@ -17,6 +17,7 @@ import androidx.navigation.Navigation;
 
 import com.example.economix_android.R;
 import com.example.economix_android.activity_inicio;
+import com.example.economix_android.Model.presupuestos.ConfiguracionActivity;
 import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.databinding.FragmentUsuarioBinding;
@@ -50,6 +51,7 @@ public class usuario extends Fragment {
         binding.btnInfo.setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.usuario_info));
+        binding.btnConfig.setOnClickListener(v -> startActivity(new Intent(requireContext(), ConfiguracionActivity.class)));
         binding.btnAyudaUs.setOnClickListener(v -> mostrarAyuda());
         binding.btnGuardar.setOnClickListener(v -> cerrarSesion());
 

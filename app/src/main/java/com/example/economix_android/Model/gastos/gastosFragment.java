@@ -1,6 +1,7 @@
 package com.example.economix_android.Model.gastos;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -9,7 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
+import com.example.economix_android.network.dto.CategoriaPresupuestoDto;
+import com.example.economix_android.network.repository.PresupuestoRepository;
 import com.example.economix_android.Model.data.RegistroFinanciero;
+import com.example.economix_android.Model.presupuestos.PresupuestosActivity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -49,7 +53,11 @@ public class gastosFragment extends Fragment {
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
     private ArrayAdapter<String> ingresosAdapter;
     private final List<Ingreso> ingresosDisponibles = new ArrayList<>();
+    private final List<CategoriaPresupuestoDto> categoriasDisponibles = new ArrayList<>();
     private Ingreso ingresoSeleccionado;
+    private CategoriaPresupuestoDto categoriaSeleccionada;
+    private ArrayAdapter<String> categoriasAdapter;
+    private final PresupuestoRepository presupuestoRepository = new PresupuestoRepository();
     private Integer gastoEnEdicionId;
     private boolean gastoEnEdicionRecurrente;
     private boolean enModoPlantilla;
@@ -71,6 +79,7 @@ public class gastosFragment extends Fragment {
         binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaGas.setOnClickListener(v -> mostrarAyuda());
+        binding.btnPresupuestosGas.setOnClickListener(v -> startActivity(new Intent(requireContext(), PresupuestosActivity.class)));
 
         binding.btnGuardarGas.setOnClickListener(v -> guardarGasto());
         binding.btnEliminarGas.setOnClickListener(v -> eliminarGasto());
@@ -96,7 +105,9 @@ public class gastosFragment extends Fragment {
 
         setupDatePicker(binding.etFechaGas);
         configurarIngresos();
+        configurarCategorias();
         cargarIngresos();
+        cargarCategorias();
         cargarDatosEdicion();
     }
 
@@ -137,6 +148,10 @@ public class gastosFragment extends Fragment {
             binding.tilIngresoSeleccionGasto.setError(getString(R.string.error_ingreso_obligatorio));
             return;
         }
+        if (categoriaSeleccionada == null) {
+            binding.tilCategoriaGasto.setError("Selecciona una categoría");
+            return;
+        }
 
         BigDecimal disponible = parseMontoSeguro(ingresoSeleccionado.getDescripcion());
         if (montoGasto.compareTo(disponible) > 0) {
@@ -144,7 +159,7 @@ public class gastosFragment extends Fragment {
             return;
         }
 
-        Gasto gasto = new Gasto(null, articulo, montoNormalizado, fecha, periodo, recurrente);
+        Gasto gasto = new Gasto(null, articulo, montoNormalizado, fecha, periodo, recurrente, categoriaSeleccionada.getId());
         setGastoButtonsEnabled(false);
         BigDecimal nuevoMontoIngreso = disponible.subtract(montoGasto);
         BigDecimal montoOriginal = disponible;
@@ -216,7 +231,9 @@ public class gastosFragment extends Fragment {
         binding.rbRecurrenteGas.setChecked(false);
         binding.rbRecurrenteGas.setEnabled(true);
         binding.etIngresoSeleccionGasto.setText("");
+        binding.etCategoriaGasto.setText("");
         ingresoSeleccionado = null;
+        categoriaSeleccionada = null;
         actualizarIngresoDisponible();
         enModoPlantilla = false;
         establecerModoEdicion(false, null, false);
@@ -364,6 +381,7 @@ public class gastosFragment extends Fragment {
     private void limpiarErrores() {
         binding.tilMontoGasto.setError(null);
         binding.tilIngresoSeleccionGasto.setError(null);
+        binding.tilCategoriaGasto.setError(null);
     }
 
     private String obtenerTexto(TextInputEditText editText) {
@@ -380,6 +398,7 @@ public class gastosFragment extends Fragment {
             if (position >= 0 && position < ingresosDisponibles.size()) {
                 ingresoSeleccionado = ingresosDisponibles.get(position);
                 binding.tilIngresoSeleccionGasto.setError(null);
+        binding.tilCategoriaGasto.setError(null);
                 actualizarIngresoDisponible();
             }
         });
@@ -388,6 +407,41 @@ public class gastosFragment extends Fragment {
             if (hasFocus) {
                 ingresoView.showDropDown();
             }
+        });
+    }
+
+
+    private void configurarCategorias() {
+        AutoCompleteTextView categoriaView = (AutoCompleteTextView) binding.etCategoriaGasto;
+        categoriasAdapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_dropdown_item_1line, new ArrayList<>());
+        categoriaView.setAdapter(categoriasAdapter);
+        categoriaView.setThreshold(0);
+        categoriaView.setOnItemClickListener((parent, view, position, id) -> {
+            if (position >= 0 && position < categoriasDisponibles.size()) {
+                categoriaSeleccionada = categoriasDisponibles.get(position);
+                binding.tilCategoriaGasto.setError(null);
+            }
+        });
+        categoriaView.setOnClickListener(v -> categoriaView.showDropDown());
+    }
+
+    private void cargarCategorias() {
+        presupuestoRepository.obtenerCategorias(new retrofit2.Callback<List<CategoriaPresupuestoDto>>() {
+            @Override
+            public void onResponse(retrofit2.Call<List<CategoriaPresupuestoDto>> call, retrofit2.Response<List<CategoriaPresupuestoDto>> response) {
+                if (!isAdded()) return;
+                categoriasDisponibles.clear();
+                if (response.body() != null) categoriasDisponibles.addAll(response.body());
+                categoriasAdapter.clear();
+                for (CategoriaPresupuestoDto dto : categoriasDisponibles) {
+                    categoriasAdapter.add(dto.getNombre());
+                }
+                categoriasAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<List<CategoriaPresupuestoDto>> call, Throwable t) { }
         });
     }
 
@@ -534,6 +588,13 @@ public class gastosFragment extends Fragment {
 
     private void mostrarMensajeError(String message) {
         String texto = message != null ? message : getString(R.string.mensaje_error_operacion);
+        if (texto.toLowerCase().contains("presupuesto")) {
+            new MaterialAlertDialogBuilder(requireContext())
+                    .setMessage(texto)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
+            return;
+        }
         Toast.makeText(requireContext(), texto, Toast.LENGTH_SHORT).show();
     }
 

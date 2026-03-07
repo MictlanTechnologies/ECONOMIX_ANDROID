@@ -130,6 +130,22 @@
             app:backgroundTint="@color/tealLight"
             app:cornerRadius="24dp" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnConfig"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:text="CONFIG"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:paddingHorizontal="0dp"
+            android:paddingVertical="0dp"
+            app:backgroundTint="@color/tealSurface"
+            app:cornerRadius="24dp" />
+
     </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView
