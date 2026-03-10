@@ -60,7 +60,11 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 binding.btnSignIn.setEnabled(true);
                 if (!response.isSuccessful() || response.body() == null) {
-                    Toast.makeText(LoginActivity.this, "Credenciales inválidas", Toast.LENGTH_SHORT).show();
+                    if (response.code() == 401) {
+                        Toast.makeText(LoginActivity.this, "Credenciales inválidas", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Error de autenticación", Toast.LENGTH_SHORT).show();
+                    }
                     return;
                 }
 
@@ -76,8 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                 sessionManager.saveAuthSession(
                         body.getAccessToken(),
                         body.getRefreshToken(),
-                        body.getUserInfo(),
-                        body.getChallengeExpiresAt()
+                        body.getUserInfo()
                 );
                 openHome();
             }
@@ -85,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
                 binding.btnSignIn.setEnabled(true);
-                Toast.makeText(LoginActivity.this, "No se pudo iniciar sesión", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Error de red", Toast.LENGTH_SHORT).show();
             }
         });
     }

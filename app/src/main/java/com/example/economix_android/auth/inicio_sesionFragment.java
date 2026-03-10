@@ -106,8 +106,7 @@ public class inicio_sesionFragment extends Fragment {
                 sessionManager.saveAuthSession(
                         loginResponse.getAccessToken(),
                         loginResponse.getRefreshToken(),
-                        loginResponse.getUserInfo(),
-                        loginResponse.getChallengeExpiresAt()
+                        loginResponse.getUserInfo()
                 );
                 abrirMenu();
             }

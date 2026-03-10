@@ -11,6 +11,7 @@ import com.example.economix_android.network.auth.dto.OtpCodeRequest;
 import com.example.economix_android.network.auth.dto.RefreshRequest;
 import com.example.economix_android.network.auth.dto.RefreshResponse;
 import com.example.economix_android.network.auth.dto.TwoFaSetupResponse;
+import com.example.economix_android.network.auth.dto.TwoFactorToggleResponse;
 import com.example.economix_android.network.auth.dto.Verify2faRequest;
 import com.example.economix_android.network.auth.dto.Verify2faResponse;
 
@@ -45,11 +46,11 @@ public class AuthRepository {
         authApi.setup2fa().enqueue(callback);
     }
 
-    public void enable2fa(OtpCodeRequest request, Callback<Void> callback) {
+    public void enable2fa(OtpCodeRequest request, Callback<TwoFactorToggleResponse> callback) {
         authApi.enable2fa(request).enqueue(callback);
     }
 
-    public void disable2fa(OtpCodeRequest request, Callback<Void> callback) {
+    public void disable2fa(OtpCodeRequest request, Callback<TwoFactorToggleResponse> callback) {
         authApi.disable2fa(request).enqueue(callback);
     }
 

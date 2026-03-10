@@ -78,7 +78,7 @@ public class TwoFactorFragment extends Fragment {
                 binding.btnVerify.setEnabled(true);
                 if (response.isSuccessful() && response.body() != null) {
                     Verify2faResponse body = response.body();
-                    sessionManager.saveAuthSession(body.getAccessToken(), body.getRefreshToken(), body.getUserInfo(), challengeExpiresAt);
+                    sessionManager.saveAuthSession(body.getAccessToken(), body.getRefreshToken(), body.getUserInfo());
                     Intent intent = new Intent(requireContext(), menu.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);

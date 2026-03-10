@@ -49,6 +49,7 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<RefreshResponse> call, Throwable t) {
+                sessionManager.clearSession();
                 openLogin();
             }
         });

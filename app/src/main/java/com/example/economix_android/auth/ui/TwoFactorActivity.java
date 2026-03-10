@@ -29,7 +29,6 @@ public class TwoFactorActivity extends AppCompatActivity {
     private AuthRepository authRepository;
     private SessionManager sessionManager;
     private String challengeId;
-    private String challengeExpiresAt;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,7 +41,6 @@ public class TwoFactorActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
 
         challengeId = getIntent().getStringExtra(EXTRA_CHALLENGE_ID);
-        challengeExpiresAt = getIntent().getStringExtra(EXTRA_CHALLENGE_EXPIRES_AT);
 
         binding.btnVerify.setOnClickListener(v -> verifyOtp());
     }
@@ -52,8 +50,8 @@ public class TwoFactorActivity extends AppCompatActivity {
         binding.tilOtpCode.setError(null);
 
         if (TextUtils.isEmpty(challengeId)) {
-            Toast.makeText(this, "Sesión expirada, vuelve a iniciar sesión", Toast.LENGTH_SHORT).show();
-            finish();
+            Toast.makeText(this, "Challenge expirado o inválido", Toast.LENGTH_SHORT).show();
+            openLogin();
             return;
         }
 
@@ -69,7 +67,7 @@ public class TwoFactorActivity extends AppCompatActivity {
                 binding.btnVerify.setEnabled(true);
                 if (response.isSuccessful() && response.body() != null) {
                     Verify2faResponse body = response.body();
-                    sessionManager.saveAuthSession(body.getAccessToken(), body.getRefreshToken(), body.getUserInfo(), challengeExpiresAt);
+                    sessionManager.saveAuthSession(body.getAccessToken(), body.getRefreshToken(), body.getUserInfo());
                     Intent intent = new Intent(TwoFactorActivity.this, menu.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
@@ -80,10 +78,13 @@ public class TwoFactorActivity extends AppCompatActivity {
                 if (response.code() == 400) {
                     Toast.makeText(TwoFactorActivity.this, "Código inválido", Toast.LENGTH_SHORT).show();
                 } else if (response.code() == 410) {
-                    Toast.makeText(TwoFactorActivity.this, "Código expiró, vuelve a iniciar sesión", Toast.LENGTH_SHORT).show();
-                    finish();
+                    Toast.makeText(TwoFactorActivity.this, "Challenge expirado, vuelve a iniciar sesión", Toast.LENGTH_SHORT).show();
+                    openLogin();
                 } else if (response.code() == 429) {
                     Toast.makeText(TwoFactorActivity.this, "Demasiados intentos, espera…", Toast.LENGTH_SHORT).show();
+                } else if (response.code() == 401) {
+                    Toast.makeText(TwoFactorActivity.this, "No autorizado para verificar este challenge", Toast.LENGTH_SHORT).show();
+                    openLogin();
                 } else {
                     Toast.makeText(TwoFactorActivity.this, "Error verificando código", Toast.LENGTH_SHORT).show();
                 }
@@ -92,8 +93,15 @@ public class TwoFactorActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Verify2faResponse> call, Throwable t) {
                 binding.btnVerify.setEnabled(true);
-                Toast.makeText(TwoFactorActivity.this, "Sin conexión con el servidor", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TwoFactorActivity.this, "Error de red", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void openLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

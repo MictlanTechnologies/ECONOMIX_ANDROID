@@ -27,19 +27,25 @@ public class TokenAuthenticator implements Authenticator {
 
     @Override
     public Request authenticate(Route route, @NonNull Response response) throws IOException {
-        if (responseCount(response) >= 2) {
+        Request failedRequest = response.request();
+        String path = failedRequest.url().encodedPath();
+
+        if (isAuthEndpoint(path) || responseCount(response) >= 2) {
             return null;
         }
 
         synchronized (refreshLock) {
             String refreshToken = sessionManager.getRefreshToken();
             if (refreshToken == null || refreshToken.isEmpty()) {
+                sessionManager.clearSession();
                 return null;
             }
 
             Call<RefreshResponse> refreshCall = authApi.refresh(new RefreshRequest(refreshToken));
             retrofit2.Response<RefreshResponse> refreshResponse = refreshCall.execute();
-            if (!refreshResponse.isSuccessful() || refreshResponse.body() == null) {
+            if (!refreshResponse.isSuccessful() || refreshResponse.body() == null
+                    || refreshResponse.body().getAccessToken() == null
+                    || refreshResponse.body().getAccessToken().isEmpty()) {
                 sessionManager.clearSession();
                 return null;
             }
@@ -49,10 +55,16 @@ public class TokenAuthenticator implements Authenticator {
             String newRefreshToken = body.getRefreshToken() != null ? body.getRefreshToken() : refreshToken;
             sessionManager.updateTokens(newAccessToken, newRefreshToken);
 
-            return response.request().newBuilder()
+            return failedRequest.newBuilder()
                     .header("Authorization", "Bearer " + newAccessToken)
                     .build();
         }
+    }
+
+    private boolean isAuthEndpoint(String path) {
+        return path.endsWith("/auth/login")
+                || path.endsWith("/auth/2fa/verify")
+                || path.endsWith("/auth/refresh");
     }
 
     private int responseCount(Response response) {

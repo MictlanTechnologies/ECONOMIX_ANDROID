@@ -3,6 +3,7 @@ package com.example.economix_android.network.auth;
 import android.content.Context;
 
 import com.example.economix_android.auth.SessionManager;
+import com.example.economix_android.network.NetworkConfig;
 import com.google.gson.Gson;
 
 import okhttp3.OkHttpClient;
@@ -12,7 +13,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public final class AuthServiceFactory {
 
-    private static final String BASE_URL = "http://192.168.1.159:8080/";
     private static volatile AuthApi authApi;
 
     private AuthServiceFactory() {
@@ -28,7 +28,7 @@ public final class AuthServiceFactory {
                     loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
 
                     Retrofit refreshRetrofit = new Retrofit.Builder()
-                            .baseUrl(BASE_URL)
+                            .baseUrl(NetworkConfig.BASE_URL)
                             .addConverterFactory(GsonConverterFactory.create(new Gson()))
                             .build();
                     AuthApi refreshAuthApi = refreshRetrofit.create(AuthApi.class);
@@ -40,7 +40,7 @@ public final class AuthServiceFactory {
                             .build();
 
                     Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl(BASE_URL)
+                            .baseUrl(NetworkConfig.BASE_URL)
                             .client(okHttpClient)
                             .addConverterFactory(GsonConverterFactory.create(new Gson()))
                             .build();

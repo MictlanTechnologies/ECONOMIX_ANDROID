@@ -7,6 +7,7 @@ import com.example.economix_android.network.auth.dto.OtpCodeRequest;
 import com.example.economix_android.network.auth.dto.RefreshRequest;
 import com.example.economix_android.network.auth.dto.RefreshResponse;
 import com.example.economix_android.network.auth.dto.TwoFaSetupResponse;
+import com.example.economix_android.network.auth.dto.TwoFactorToggleResponse;
 import com.example.economix_android.network.auth.dto.Verify2faRequest;
 import com.example.economix_android.network.auth.dto.Verify2faResponse;
 
@@ -31,8 +32,8 @@ public interface AuthApi {
     Call<TwoFaSetupResponse> setup2fa();
 
     @POST("users/2fa/enable")
-    Call<Void> enable2fa(@Body OtpCodeRequest request);
+    Call<TwoFactorToggleResponse> enable2fa(@Body OtpCodeRequest request);
 
     @POST("users/2fa/disable")
-    Call<Void> disable2fa(@Body OtpCodeRequest request);
+    Call<TwoFactorToggleResponse> disable2fa(@Body OtpCodeRequest request);
 }

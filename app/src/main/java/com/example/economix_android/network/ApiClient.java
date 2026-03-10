@@ -12,6 +12,7 @@ import com.example.economix_android.network.api.IngresoApi;
 import com.example.economix_android.network.api.PersonaApi;
 import com.example.economix_android.network.api.UsuarioApi;
 import com.example.economix_android.network.auth.AuthApi;
+import com.example.economix_android.network.NetworkConfig;
 import com.example.economix_android.network.auth.AuthServiceFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -34,8 +35,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public final class ApiClient {
 
     // IMPORTANTE: la URL base debe terminar con "/" para Retrofit
-    private static final String BASE_URL = "http://192.168.1.159" +
-            ":8080/";
     private static final Retrofit retrofit;
     private static Context appContext;
 
@@ -72,7 +71,7 @@ public final class ApiClient {
                 .create();
 
         retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(NetworkConfig.BASE_URL)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();

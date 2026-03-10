@@ -56,13 +56,20 @@ public class SessionManager {
                 .putString(KEY_ACCESS_EXPIRATION, accessExpiration);
 
         if (userInfo != null) {
-            if (userInfo.getId() != null) {
-                editor.putInt(KEY_USER_ID, userInfo.getId());
+            if (userInfo.getUserId() != null) {
+                editor.putInt(KEY_USER_ID, userInfo.getUserId());
             }
-            editor.putString(KEY_USER_NAME, userInfo.getNombre());
-            editor.putString(KEY_PERFIL, userInfo.getNombre());
+            String visibleName = userInfo.getUsername();
+            editor.putString(KEY_USER_NAME, visibleName);
+            editor.putString(KEY_PERFIL, visibleName);
         }
         editor.apply();
+    }
+
+    public void saveAuthSession(String accessToken,
+                                String refreshToken,
+                                UserInfo userInfo) {
+        saveAuthSession(accessToken, refreshToken, userInfo, null);
     }
 
     public void updateTokens(String accessToken, String refreshToken) {
