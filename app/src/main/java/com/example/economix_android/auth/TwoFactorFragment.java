@@ -93,6 +93,9 @@ public class TwoFactorFragment extends Fragment {
                     requireActivity().getOnBackPressedDispatcher().onBackPressed();
                 } else if (response.code() == 429) {
                     Toast.makeText(requireContext(), "Demasiados intentos, espera…", Toast.LENGTH_SHORT).show();
+                } else if (response.code() == 401) {
+                    Toast.makeText(requireContext(), "Challenge no autorizado, inicia sesión de nuevo", Toast.LENGTH_SHORT).show();
+                    requireActivity().getOnBackPressedDispatcher().onBackPressed();
                 } else {
                     Toast.makeText(requireContext(), getString(R.string.mensaje_error_servidor), Toast.LENGTH_SHORT).show();
                 }

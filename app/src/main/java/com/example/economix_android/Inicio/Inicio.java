@@ -73,12 +73,8 @@ public class Inicio extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<RefreshResponse> call, Throwable t) {
-                if (!TextUtils.isEmpty(sessionManager.getAccessToken())) {
-                    Intent menuIntent = new Intent(Inicio.this, menu.class);
-                    menuIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(menuIntent);
-                    finish();
-                }
+                sessionManager.clearSession();
+                irAInicioSesion();
             }
         });
     }
