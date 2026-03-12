@@ -1,5 +1,7 @@
 package com.example.economix_android.network;
 
+import static com.example.economix_android.network.NetworkConfig.BASE_URL;
+
 import android.content.Context;
 
 import com.example.economix_android.network.api.AhorroApi;
@@ -12,7 +14,6 @@ import com.example.economix_android.network.api.IngresoApi;
 import com.example.economix_android.network.api.PersonaApi;
 import com.example.economix_android.network.api.UsuarioApi;
 import com.example.economix_android.network.auth.AuthApi;
-import com.example.economix_android.network.NetworkConfig;
 import com.example.economix_android.network.auth.AuthServiceFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -71,7 +72,7 @@ public final class ApiClient {
                 .create();
 
         retrofit = new Retrofit.Builder()
-                .baseUrl(NetworkConfig.BASE_URL)
+                .baseUrl(BASE_URL)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
