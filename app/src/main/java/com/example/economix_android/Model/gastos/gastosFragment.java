@@ -24,6 +24,7 @@ import com.example.economix_android.Model.data.Gasto;
 import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.util.ProfileImageUtils;
 
+import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -32,8 +33,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class gastosFragment extends Fragment {
 
@@ -55,6 +58,8 @@ public class gastosFragment extends Fragment {
     private boolean enModoPlantilla;
     private boolean enModoEdicion;
 
+    private final Map<Integer, String> chipCategoryMap = new HashMap<>();
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentGastosBinding.inflate(inflater, container, false);
@@ -64,6 +69,8 @@ public class gastosFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        initChipCategoryMap();
 
         binding.btnVerGas.setOnClickListener(v ->
                 Navigation.findNavController(v)
@@ -95,9 +102,52 @@ public class gastosFragment extends Fragment {
         binding.navGraficas.setOnClickListener(bottomNavListener);
 
         setupDatePicker(binding.etFechaGas);
+        setupChipGroupSync();
         configurarIngresos();
         cargarIngresos();
         cargarDatosEdicion();
+    }
+
+    private void initChipCategoryMap() {
+        chipCategoryMap.put(R.id.chipAlimentacion, getString(R.string.cat_alimentacion));
+        chipCategoryMap.put(R.id.chipTransporte, getString(R.string.cat_transporte));
+        chipCategoryMap.put(R.id.chipEntretenimiento, getString(R.string.cat_entretenimiento));
+        chipCategoryMap.put(R.id.chipSalud, getString(R.string.cat_salud));
+        chipCategoryMap.put(R.id.chipEducacion, getString(R.string.cat_educacion));
+        chipCategoryMap.put(R.id.chipServicios, getString(R.string.cat_servicios));
+        chipCategoryMap.put(R.id.chipHogar, getString(R.string.cat_hogar));
+        chipCategoryMap.put(R.id.chipOtroGas, getString(R.string.cat_otro));
+    }
+
+    private void setupChipGroupSync() {
+        binding.chipGroupCategoriaGas.setOnCheckedStateChangeListener((group, checkedIds) -> {
+            if (!checkedIds.isEmpty()) {
+                String category = chipCategoryMap.get(checkedIds.get(0));
+                if (category != null) {
+                    binding.etPeriodoGas.setText(category);
+                }
+            } else {
+                binding.etPeriodoGas.setText("");
+            }
+        });
+    }
+
+    private void selectChipForCategory(String category) {
+        if (TextUtils.isEmpty(category)) return;
+        for (Map.Entry<Integer, String> entry : chipCategoryMap.entrySet()) {
+            if (entry.getValue().equalsIgnoreCase(category)) {
+                Chip chip = binding.getRoot().findViewById(entry.getKey());
+                if (chip != null) {
+                    chip.setChecked(true);
+                }
+                return;
+            }
+        }
+        Chip otroChip = binding.getRoot().findViewById(R.id.chipOtroGas);
+        if (otroChip != null) {
+            otroChip.setChecked(true);
+        }
+        binding.etPeriodoGas.setText(category);
     }
 
     private void mostrarAyuda() {
@@ -216,6 +266,7 @@ public class gastosFragment extends Fragment {
         binding.rbRecurrenteGas.setChecked(false);
         binding.rbRecurrenteGas.setEnabled(true);
         binding.etIngresoSeleccionGasto.setText("");
+        binding.chipGroupCategoriaGas.clearCheck();
         ingresoSeleccionado = null;
         actualizarIngresoDisponible();
         enModoPlantilla = false;
@@ -238,6 +289,7 @@ public class gastosFragment extends Fragment {
         binding.etDescripcionGas.setText(monto);
         binding.etFechaGas.setText(fecha);
         binding.etPeriodoGas.setText(periodo);
+        selectChipForCategory(periodo);
         if (esPlantilla) {
             enModoPlantilla = true;
             binding.rbRecurrenteGas.setChecked(false);
@@ -458,13 +510,7 @@ public class gastosFragment extends Fragment {
     }
 
     private void setupDatePicker(TextInputEditText editText) {
-        editText.setShowSoftInputOnFocus(false);
         editText.setOnClickListener(v -> showDatePicker(editText));
-        editText.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                showDatePicker(editText);
-            }
-        });
     }
 
     private void showDatePicker(TextInputEditText editText) {

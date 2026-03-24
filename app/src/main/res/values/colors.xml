@@ -22,4 +22,20 @@
     <color name="economix_bar_2">#4CCAF6</color>
     <color name="economix_bar_3">#3B8DF0</color>
     <color name="economix_bar_4">#2E4FCF</color>
+
+    <!-- Redesign colors matching reference image -->
+    <color name="menuTealDark">#1B6B6B</color>
+    <color name="menuSilver">#8FA7A8</color>
+    <color name="menuBackground">#1A6B6B</color>
+    <color name="menuHeaderBg">#1B7A7A</color>
+    <color name="menuCardDark">#1B6B6B</color>
+    <color name="menuCardLight">#9DB8B9</color>
+    <color name="recentActivityBg">#E8EDED</color>
+    <color name="recentActivityText">#3A5A5A</color>
+    <color name="bottomNavActiveBg">#FFFFFF</color>
+    <color name="bottomNavInactiveTint">#8ABCBD</color>
+    <color name="bottomNavDarkBg">#0D4B4B</color>
+    <color name="fieldIconTint">#1B6B6B</color>
+    <color name="stepIndicatorActive">#1B6B6B</color>
+    <color name="stepIndicatorInactive">#B0BEC5</color>
 </resources>

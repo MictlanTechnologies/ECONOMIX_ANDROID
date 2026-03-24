@@ -171,4 +171,53 @@
     <string name="titulo_seleccionar_periodo">Selecciona un periodo</string>
     <string name="desc_filtrar_fechas">Filtrar por fechas</string>
     <string name="mensaje_usuario_actualizado">Cuenta de usuario actualizada correctamente.</string>
+
+    <!-- Redesigned menu -->
+    <string name="title_inicio">Inicio</string>
+    <string name="title_movimientos">Movimientos</string>
+    <string name="title_presupuestos">Presupuestos</string>
+    <string name="title_mas">Más</string>
+    <string name="label_recent_activity">Actividad Reciente</string>
+    <string name="label_no_recent_activity">No hay actividad reciente</string>
+
+    <!-- Presupuestos -->
+    <string name="titulo_nuevo_presupuesto">Nuevo Presupuesto</string>
+    <string name="subtitulo_presupuesto">Define límites de gasto por categoría</string>
+    <string name="hint_categoria_presupuesto">Categoría</string>
+    <string name="hint_monto_maximo">Monto máximo</string>
+    <string name="hint_mes">Mes</string>
+    <string name="hint_anio">Año</string>
+    <string name="label_paso_1">Categoría</string>
+    <string name="label_paso_2">Monto</string>
+    <string name="label_paso_3">Periodo</string>
+    <string name="mensaje_presupuesto_guardado">Presupuesto guardado correctamente.</string>
+    <string name="error_campos_presupuesto">Completa todos los campos para guardar.</string>
+    <string name="error_monto_presupuesto">Ingresa un monto válido.</string>
+    <string name="titulo_ayuda_presupuestos">Presupuestos</string>
+    <string name="mensaje_ayuda_presupuestos">Define un presupuesto máximo por categoría y mes. Así podrás controlar tus gastos y recibir alertas cuando te acerques al límite.</string>
+
+    <!-- Improved form labels -->
+    <string name="hint_articulo_descriptivo">¿En qué gastaste?</string>
+    <string name="hint_monto_descriptivo">$ Monto</string>
+    <string name="hint_fecha_descriptivo">Seleccionar fecha</string>
+    <string name="hint_categoria_descriptivo">Categoría</string>
+    <string name="hint_ingreso_articulo">¿De dónde proviene?</string>
+
+    <!-- Category options -->
+    <string name="cat_alimentacion">Alimentación</string>
+    <string name="cat_transporte">Transporte</string>
+    <string name="cat_entretenimiento">Entretenimiento</string>
+    <string name="cat_salud">Salud</string>
+    <string name="cat_educacion">Educación</string>
+    <string name="cat_servicios">Servicios</string>
+    <string name="cat_ropa">Ropa</string>
+    <string name="cat_hogar">Hogar</string>
+    <string name="cat_otro">Otro</string>
+
+    <string name="cat_ing_salario">Salario</string>
+    <string name="cat_ing_freelance">Freelance</string>
+    <string name="cat_ing_negocio">Negocio</string>
+    <string name="cat_ing_inversiones">Inversiones</string>
+    <string name="cat_ing_venta">Venta</string>
+    <string name="cat_ing_otro">Otro</string>
 </resources>
