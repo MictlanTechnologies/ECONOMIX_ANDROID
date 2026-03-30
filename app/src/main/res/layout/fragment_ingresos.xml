@@ -524,14 +524,13 @@
 
                 <ImageButton
                     android:id="@+id/navGastos"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Gastos"
                     android:padding="12dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/gastosop2texto"
-                    android:tint="@color/economix_text_primary"
+                    android:src="@drawable/gastosop2texto2"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
 
@@ -551,14 +550,13 @@
 
                 <ImageButton
                     android:id="@+id/navIngresos"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Ingresos"
                     android:padding="12dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/ingresosconletras"
-                    android:tint="@color/economix_text_primary"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
 
@@ -578,14 +576,13 @@
 
                 <ImageButton
                     android:id="@+id/navAhorro"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Ahorro"
                     android:padding="12dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ahorrotexto"
-                    android:tint="@color/economix_text_primary"
+                    android:src="@drawable/ahorrotexto2"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
 
@@ -605,14 +602,13 @@
 
                 <ImageButton
                     android:id="@+id/navGraficas"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Gráficas"
                     android:padding="12dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/graficastexto1"
-                    android:tint="@color/economix_text_primary"
+                    android:src="@drawable/graficastexto2"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
         </LinearLayout>
