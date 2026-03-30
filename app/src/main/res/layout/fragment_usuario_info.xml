@@ -429,7 +429,7 @@
             app:autoSizeMaxTextSize="16sp"
             app:autoSizeMinTextSize="12sp"
             app:autoSizeStepGranularity="1sp"
-            app:backgroundTint="@color/tealSurfaceVariant"
+            app:backgroundTint="@color/module_gastos"
             app:cornerRadius="24dp" />
 
         <com.google.android.material.button.MaterialButton
