@@ -1,6 +1,7 @@
 package com.example.economix_android.Model.ingresos;
 
 import android.app.DatePickerDialog;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 import com.example.economix_android.Model.data.RegistroFinanciero;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
@@ -29,8 +31,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public class ingresosFragment extends Fragment {
 
@@ -94,6 +98,7 @@ public class ingresosFragment extends Fragment {
 
         setupDatePicker(binding.etFechaIng);
         setupChipGroupSync();
+        configurarEntradasDinamicas();
         cargarDatosEdicion();
     }
 
@@ -117,6 +122,96 @@ public class ingresosFragment extends Fragment {
                 binding.etPeriodoIng.setText("");
             }
         });
+    }
+
+    private void configurarEntradasDinamicas() {
+        binding.btnAgregarCategoriaIng.setOnClickListener(v -> agregarCategoriaPersonalizada());
+        binding.btnAgregarEtiquetaIng.setOnClickListener(v -> agregarEtiquetaPersonalizada());
+    }
+
+    private void agregarCategoriaPersonalizada() {
+        String categoria = obtenerTexto(binding.etNuevaCategoriaIng);
+        if (TextUtils.isEmpty(categoria)) {
+            Toast.makeText(requireContext(), R.string.error_categoria_vacia, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Chip chip = new Chip(requireContext());
+        chip.setId(View.generateViewId());
+        chip.setText(categoria);
+        chip.setCheckable(true);
+        chip.setCheckedIconVisible(true);
+        chip.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+        chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.tealSurfaceVariant)));
+        chip.setChipStrokeColor(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.tealLight)));
+        chip.setChipStrokeWidth(getResources().getDisplayMetrics().density);
+        binding.chipGroupCategoriaIng.addView(chip);
+        chipCategoryMap.put(chip.getId(), categoria);
+        chip.setChecked(true);
+        binding.etNuevaCategoriaIng.setText("");
+    }
+
+    private void agregarEtiquetaPersonalizada() {
+        String etiqueta = normalizarEtiqueta(obtenerTexto(binding.etNuevaEtiquetaIng));
+        if (TextUtils.isEmpty(etiqueta)) {
+            Toast.makeText(requireContext(), R.string.error_etiqueta_vacia, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (existeEtiqueta(etiqueta)) {
+            binding.etNuevaEtiquetaIng.setText("");
+            return;
+        }
+        Chip chip = new Chip(requireContext());
+        chip.setId(View.generateViewId());
+        chip.setText(etiqueta);
+        chip.setCheckable(false);
+        chip.setCloseIconVisible(true);
+        chip.setOnCloseIconClickListener(v -> {
+            binding.chipGroupEtiquetasIng.removeView(chip);
+            sincronizarEtiquetasOcultas();
+        });
+        chip.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+        chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.tealAccent)));
+        chip.setChipStrokeColor(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.tealLight)));
+        chip.setChipStrokeWidth(getResources().getDisplayMetrics().density);
+        binding.chipGroupEtiquetasIng.addView(chip);
+        binding.etNuevaEtiquetaIng.setText("");
+        sincronizarEtiquetasOcultas();
+    }
+
+    private boolean existeEtiqueta(String etiqueta) {
+        for (int i = 0; i < binding.chipGroupEtiquetasIng.getChildCount(); i++) {
+            View child = binding.chipGroupEtiquetasIng.getChildAt(i);
+            if (child instanceof Chip) {
+                Chip chip = (Chip) child;
+                if (etiqueta.equalsIgnoreCase(chip.getText().toString())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void sincronizarEtiquetasOcultas() {
+        Set<String> etiquetas = new LinkedHashSet<>();
+        for (int i = 0; i < binding.chipGroupEtiquetasIng.getChildCount(); i++) {
+            View child = binding.chipGroupEtiquetasIng.getChildAt(i);
+            if (child instanceof Chip) {
+                etiquetas.add(((Chip) child).getText().toString());
+            }
+        }
+        binding.etEtiquetasIng.setText(TextUtils.join(",", etiquetas));
+    }
+
+    private String normalizarEtiqueta(String valor) {
+        if (valor == null) {
+            return "";
+        }
+        String limpia = valor.trim().replace(" ", "");
+        limpia = limpia.replaceAll("[^\\p{L}\\p{N}_-]", "");
+        if (limpia.isEmpty()) {
+            return "";
+        }
+        return limpia.startsWith("#") ? limpia : "#" + limpia;
     }
 
     private void selectChipForCategory(String category) {
@@ -216,6 +311,10 @@ public class ingresosFragment extends Fragment {
         binding.rbRecurrenteIng.setChecked(false);
         binding.rbRecurrenteIng.setEnabled(true);
         binding.chipGroupCategoriaIng.clearCheck();
+        binding.chipGroupEtiquetasIng.removeAllViews();
+        binding.etEtiquetasIng.setText("");
+        binding.etNuevaEtiquetaIng.setText("");
+        binding.etNuevaCategoriaIng.setText("");
         enModoPlantilla = false;
         establecerModoEdicion(false, null, false);
     }
