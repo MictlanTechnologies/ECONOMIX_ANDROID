@@ -37,7 +37,7 @@ public class menu extends Fragment implements View.OnClickListener {
         ProfileImageUtils.applyProfileImage(requireContext(), perfilButton);
         String perfil = SessionManager.getPerfil(requireContext());
         String nombreVisible = (perfil != null && !perfil.trim().isEmpty()) ? perfil : "Usuario";
-        String saludo = getString(R.string.label_hola_usuario, nombreVisible);
+        String saludo = "Hola, " + nombreVisible;
         saludoUsuario.setText(saludo);
 
         tileGastos.setOnClickListener(this);

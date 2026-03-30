@@ -4,5 +4,5 @@
     <corners android:radius="24dp" />
     <stroke
         android:width="2dp"
-        android:color="@color/menuBackground" />
+        android:color="@color/menuBackgroundOutline" />
 </shape>

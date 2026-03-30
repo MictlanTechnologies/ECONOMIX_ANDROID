@@ -38,6 +38,7 @@
     <color name="menuTealDark">#2563EB</color>
     <color name="menuSilver">#E2E8F0</color>
     <color name="menuBackground">#1E40AF</color>
+    <color name="menuBackgroundOutline">#991E40AF</color>
     <color name="menuHeaderBg">#1D4ED8</color>
     <color name="menuHeaderText">#FFFFFF</color>
     <color name="menuCardDark">#1E3A8A</color>
