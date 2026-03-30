@@ -393,7 +393,7 @@
                             android:textAllCaps="false"
                             android:textColor="@color/white"
                             android:textSize="12sp"
-                            app:backgroundTint="@color/tealSurfaceVariant"
+                            app:backgroundTint="@color/tealPrimary"
                             app:cornerRadius="12dp" />
                     </LinearLayout>
 
@@ -491,7 +491,7 @@
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="15sp"
-                app:backgroundTint="@color/tealSurfaceVariant"
+                app:backgroundTint="@color/tealPrimary"
                 app:cornerRadius="16dp"
                 app:icon="@drawable/ic_search_24"
                 app:iconGravity="textStart"
@@ -537,7 +537,7 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="13sp"
-            app:backgroundTint="@color/tealSurfaceVariant"
+            app:backgroundTint="@color/module_gastos"
             app:cornerRadius="14dp" />
 
         <com.google.android.material.button.MaterialButton
@@ -550,7 +550,7 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="13sp"
-            app:backgroundTint="@color/tealLight"
+            app:backgroundTint="@color/tealPrimary"
             app:cornerRadius="14dp" />
     </LinearLayout>
 
