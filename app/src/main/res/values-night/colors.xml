@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Core semantic palette (Dark: premium oscura) -->
+    <color name="economix_background">#0F172A</color>
+    <color name="economix_surface_dark">#1E293B</color>
+    <color name="economix_surface_light">#243447</color>
+    <color name="economix_accent">#60A5FA</color>
+    <color name="economix_text_primary">#F8FAFC</color>
+    <color name="economix_text_secondary">#CBD5E1</color>
+
+    <!-- Compatibility aliases used across legacy layouts -->
+    <color name="tealPrimary">#60A5FA</color>
+    <color name="tealDark">#0F172A</color>
+    <color name="tealLight">#93C5FD</color>
+    <color name="tealAccent">#A78BFA</color>
+    <color name="teal_200">#93C5FD</color>
+    <color name="teal_700">#60A5FA</color>
+    <color name="tealSurface">#1E293B</color>
+    <color name="tealSurfaceVariant">#243447</color>
+    <color name="goldAccent">#A78BFA</color>
+    <color name="softWhite">#1E293B</color>
+
+    <color name="economix_bar_1">#60A5FA</color>
+    <color name="economix_bar_2">#93C5FD</color>
+    <color name="economix_bar_3">#A78BFA</color>
+    <color name="economix_bar_4">#CBD5E1</color>
+
+    <color name="module_gastos">#F87171</color>
+    <color name="module_ingresos">#CBD5E1</color>
+    <color name="module_ahorro">#10B981</color>
+    <color name="module_graficas">#93C5FD</color>
+
+    <color name="menuTealDark">#1E293B</color>
+    <color name="menuSilver">#243447</color>
+    <color name="menuBackground">#0F172A</color>
+    <color name="menuHeaderBg">#1E293B</color>
+    <color name="menuCardDark">#1E293B</color>
+    <color name="menuCardLight">#243447</color>
+    <color name="recentActivityBg">#1E293B</color>
+    <color name="recentActivityText">#CBD5E1</color>
+    <color name="bottomNavActiveBg">#1E293B</color>
+    <color name="bottomNavInactiveTint">#94A3B8</color>
+    <color name="bottomNavDarkBg">#0F172A</color>
+    <color name="fieldIconTint">#93C5FD</color>
+    <color name="stepIndicatorActive">#93C5FD</color>
+    <color name="stepIndicatorInactive">#334155</color>
+
+    <color name="strokeSubtle">#334155</color>
+</resources>

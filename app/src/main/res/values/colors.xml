@@ -2,40 +2,53 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="economix_background">#0A1C33</color>
-    <color name="economix_surface_dark">#183B63</color>
-    <color name="economix_surface_light">#2B5B87</color>
-    <color name="economix_accent">#AFC4D9</color>
-    <color name="economix_text_primary">#FFFFFFFF</color>
-    <color name="economix_text_secondary">#D4DEEA</color>
-    <color name="tealPrimary">#1A3F66</color>
-    <color name="tealDark">#0A213D</color>
-    <color name="tealLight">#B8C7D8</color>
-    <color name="tealAccent">#5E8FBF</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="tealSurface">#244D73</color>
-    <color name="tealSurfaceVariant">#6E829B</color>
-    <color name="goldAccent">#C7D3E3</color>
-    <color name="softWhite">#EEF3F8</color>
-    <color name="economix_bar_1">#4EDBE5</color>
-    <color name="economix_bar_2">#4CCAF6</color>
-    <color name="economix_bar_3">#3B8DF0</color>
-    <color name="economix_bar_4">#2E4FCF</color>
 
-    <!-- Redesign colors matching reference image -->
-    <color name="menuTealDark">#214B78</color>
-    <color name="menuSilver">#B9C5D3</color>
-    <color name="menuBackground">#173A60</color>
-    <color name="menuHeaderBg">#5F7FA2</color>
-    <color name="menuCardDark">#2C5D8F</color>
-    <color name="menuCardLight">#C6D1DE</color>
-    <color name="recentActivityBg">#E7ECF2</color>
-    <color name="recentActivityText">#2D4A66</color>
-    <color name="bottomNavActiveBg">#FFFFFF</color>
-    <color name="bottomNavInactiveTint">#B6C4D4</color>
-    <color name="bottomNavDarkBg">#143455</color>
-    <color name="fieldIconTint">#2A5B86</color>
-    <color name="stepIndicatorActive">#2A5B86</color>
-    <color name="stepIndicatorInactive">#CBD6E2</color>
+    <!-- Core semantic palette (Light: joven tecnológica) -->
+    <color name="economix_background">#F8FAFC</color>
+    <color name="economix_surface_dark">#FFFFFF</color>
+    <color name="economix_surface_light">#FFFFFF</color>
+    <color name="economix_accent">#2563EB</color>
+    <color name="economix_text_primary">#111827</color>
+    <color name="economix_text_secondary">#6B7280</color>
+
+    <!-- Compatibility aliases used across legacy layouts -->
+    <color name="tealPrimary">#2563EB</color>
+    <color name="tealDark">#E2E8F0</color>
+    <color name="tealLight">#93C5FD</color>
+    <color name="tealAccent">#7C3AED</color>
+    <color name="teal_200">#93C5FD</color>
+    <color name="teal_700">#1D4ED8</color>
+    <color name="tealSurface">#FFFFFF</color>
+    <color name="tealSurfaceVariant">#F1F5F9</color>
+    <color name="goldAccent">#A78BFA</color>
+    <color name="softWhite">#FFFFFF</color>
+
+    <color name="economix_bar_1">#2563EB</color>
+    <color name="economix_bar_2">#3B82F6</color>
+    <color name="economix_bar_3">#60A5FA</color>
+    <color name="economix_bar_4">#93C5FD</color>
+
+    <!-- Dashboard semantic module colors -->
+    <color name="module_gastos">#EF4444</color>
+    <color name="module_ingresos">#2563EB</color>
+    <color name="module_ahorro">#22C55E</color>
+    <color name="module_graficas">#3B82F6</color>
+
+    <!-- Existing menu aliases remapped to modern palette -->
+    <color name="menuTealDark">#2563EB</color>
+    <color name="menuSilver">#E2E8F0</color>
+    <color name="menuBackground">#F8FAFC</color>
+    <color name="menuHeaderBg">#FFFFFF</color>
+    <color name="menuCardDark">#FFFFFF</color>
+    <color name="menuCardLight">#FFFFFF</color>
+    <color name="recentActivityBg">#FFFFFF</color>
+    <color name="recentActivityText">#334155</color>
+    <color name="bottomNavActiveBg">#EEF2FF</color>
+    <color name="bottomNavInactiveTint">#64748B</color>
+    <color name="bottomNavDarkBg">#FFFFFF</color>
+    <color name="fieldIconTint">#2563EB</color>
+    <color name="stepIndicatorActive">#2563EB</color>
+    <color name="stepIndicatorInactive">#CBD5E1</color>
+
+    <color name="strokeSubtle">#E5E7EB</color>
 </resources>

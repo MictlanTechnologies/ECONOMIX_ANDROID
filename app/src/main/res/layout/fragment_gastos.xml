@@ -17,7 +17,7 @@
         android:contentDescription="Ayuda"
         android:padding="8dp"
         android:src="@drawable/ayuda"
-        android:tint="@color/white"
+        android:tint="@color/economix_text_primary"
         tools:ignore="UseAppTint"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,7 +32,7 @@
         android:contentDescription="Perfil"
         android:padding="8dp"
         android:src="@drawable/usuario"
-        android:tint="@color/white"
+        android:tint="@color/economix_text_primary"
         tools:ignore="UseAppTint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -44,7 +44,7 @@
         android:layout_marginTop="8dp"
         android:fontFamily="sans-serif-medium"
         android:text="Nuevo gasto"
-        android:textColor="@color/white"
+        android:textColor="@color/economix_text_primary"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Registra tus egresos para mantener el control"
-        android:textColor="#B0D8D8"
+        android:textColor="@color/economix_text_secondary"
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -119,8 +119,8 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_articulo_descriptivo"
                             android:inputType="textCapSentences"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray"
+                            android:textColor="@color/economix_text_primary"
+                            android:textColorHint="@color/economix_text_secondary"
                             android:textSize="15sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -147,8 +147,8 @@
                             android:hint="Monto"
                             android:digits="0123456789.,"
                             android:inputType="numberDecimal"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray"
+                            android:textColor="@color/economix_text_primary"
+                            android:textColorHint="@color/economix_text_secondary"
                             android:textSize="15sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -175,8 +175,8 @@
                             android:inputType="none"
                             android:focusable="false"
                             android:clickable="true"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray"
+                            android:textColor="@color/economix_text_primary"
+                            android:textColorHint="@color/economix_text_secondary"
                             android:textSize="15sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -187,7 +187,7 @@
                         android:layout_marginTop="18dp"
                         android:layout_marginBottom="8dp"
                         android:text="Categoría"
-                        android:textColor="@color/white"
+                        android:textColor="@color/economix_text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
@@ -204,10 +204,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/cat_alimentacion"
-                            android:textColor="@color/white"
+                            android:textColor="@color/economix_text_primary"
                             app:chipBackgroundColor="@color/tealSurfaceVariant"
                             app:checkedIconVisible="true"
-                            app:checkedIconTint="@color/white"
+                            app:checkedIconTint="@color/tealPrimary"
                             app:chipStrokeColor="@color/tealLight"
                             app:chipStrokeWidth="1dp" />
 
@@ -217,10 +217,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/cat_transporte"
-                            android:textColor="@color/white"
+                            android:textColor="@color/economix_text_primary"
                             app:chipBackgroundColor="@color/tealSurfaceVariant"
                             app:checkedIconVisible="true"
-                            app:checkedIconTint="@color/white"
+                            app:checkedIconTint="@color/tealPrimary"
                             app:chipStrokeColor="@color/tealLight"
                             app:chipStrokeWidth="1dp" />
 
@@ -230,10 +230,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/cat_entretenimiento"
-                            android:textColor="@color/white"
+                            android:textColor="@color/economix_text_primary"
                             app:chipBackgroundColor="@color/tealSurfaceVariant"
                             app:checkedIconVisible="true"
-                            app:checkedIconTint="@color/white"
+                            app:checkedIconTint="@color/tealPrimary"
                             app:chipStrokeColor="@color/tealLight"
                             app:chipStrokeWidth="1dp" />
 
@@ -243,10 +243,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/cat_salud"
-                            android:textColor="@color/white"
+                            android:textColor="@color/economix_text_primary"
                             app:chipBackgroundColor="@color/tealSurfaceVariant"
                             app:checkedIconVisible="true"
-                            app:checkedIconTint="@color/white"
+                            app:checkedIconTint="@color/tealPrimary"
                             app:chipStrokeColor="@color/tealLight"
                             app:chipStrokeWidth="1dp" />
 
@@ -256,10 +256,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/cat_educacion"
-                            android:textColor="@color/white"
+                            android:textColor="@color/economix_text_primary"
                             app:chipBackgroundColor="@color/tealSurfaceVariant"
                             app:checkedIconVisible="true"
-                            app:checkedIconTint="@color/white"
+                            app:checkedIconTint="@color/tealPrimary"
                             app:chipStrokeColor="@color/tealLight"
                             app:chipStrokeWidth="1dp" />
 
@@ -269,10 +269,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/cat_servicios"
-                            android:textColor="@color/white"
+                            android:textColor="@color/economix_text_primary"
                             app:chipBackgroundColor="@color/tealSurfaceVariant"
                             app:checkedIconVisible="true"
-                            app:checkedIconTint="@color/white"
+                            app:checkedIconTint="@color/tealPrimary"
                             app:chipStrokeColor="@color/tealLight"
                             app:chipStrokeWidth="1dp" />
 
@@ -282,10 +282,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/cat_hogar"
-                            android:textColor="@color/white"
+                            android:textColor="@color/economix_text_primary"
                             app:chipBackgroundColor="@color/tealSurfaceVariant"
                             app:checkedIconVisible="true"
-                            app:checkedIconTint="@color/white"
+                            app:checkedIconTint="@color/tealPrimary"
                             app:chipStrokeColor="@color/tealLight"
                             app:chipStrokeWidth="1dp" />
 
@@ -295,10 +295,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/cat_otro"
-                            android:textColor="@color/white"
+                            android:textColor="@color/economix_text_primary"
                             app:chipBackgroundColor="@color/tealSurfaceVariant"
                             app:checkedIconVisible="true"
-                            app:checkedIconTint="@color/white"
+                            app:checkedIconTint="@color/tealPrimary"
                             app:chipStrokeColor="@color/tealLight"
                             app:chipStrokeWidth="1dp" />
 
@@ -329,7 +329,7 @@
                                 android:layout_height="wrap_content"
                                 android:hint="@string/hint_nueva_categoria"
                                 android:inputType="textCapWords"
-                                android:textColor="@android:color/black"
+                                android:textColor="@color/economix_text_primary"
                                 android:textSize="14sp" />
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -352,7 +352,7 @@
                         android:layout_marginTop="18dp"
                         android:layout_marginBottom="8dp"
                         android:text="@string/label_etiquetas"
-                        android:textColor="@color/white"
+                        android:textColor="@color/economix_text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
@@ -380,7 +380,7 @@
                                 android:layout_height="wrap_content"
                                 android:hint="@string/hint_nueva_etiqueta"
                                 android:inputType="textNoSuggestions"
-                                android:textColor="@android:color/black"
+                                android:textColor="@color/economix_text_primary"
                                 android:textSize="14sp" />
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -451,8 +451,8 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/label_selecciona_ingreso"
                             android:inputType="none"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray"
+                            android:textColor="@color/economix_text_primary"
+                            android:textColorHint="@color/economix_text_secondary"
                             android:textSize="15sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -462,7 +462,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:text="@string/label_disponible_ingreso"
-                        android:textColor="@color/tealLight"
+                        android:textColor="@color/economix_text_secondary"
                         android:textSize="13sp"
                         android:textStyle="bold" />
 
@@ -473,7 +473,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="18dp"
                         android:text="Gasto recurrente"
-                        android:textColor="@color/white"
+                        android:textColor="@color/economix_text_primary"
                         android:textSize="14sp"
                         app:thumbTint="@color/goldAccent"
                         app:trackTint="@color/tealSurfaceVariant" />
@@ -593,7 +593,7 @@
                     android:padding="12dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/gastosop2texto"
-                    android:tint="@color/white"
+                    android:tint="@color/economix_text_primary"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
 
@@ -619,7 +619,7 @@
                     android:padding="12dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/ingresosconletras"
-                    android:tint="@color/white"
+                    android:tint="@color/economix_text_primary"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
 
@@ -645,7 +645,7 @@
                     android:padding="12dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/ahorrotexto"
-                    android:tint="@color/white"
+                    android:tint="@color/economix_text_primary"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
 
@@ -671,7 +671,7 @@
                     android:padding="12dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/graficastexto1"
-                    android:tint="@color/white"
+                    android:tint="@color/economix_text_primary"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
         </LinearLayout>
