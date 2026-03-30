@@ -65,7 +65,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/label_hola"
-                            android:textColor="@color/white"
+                            android:textColor="@color/menuHeaderText"
                             android:textSize="15sp" />
 
                         <TextView
@@ -74,7 +74,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:fontFamily="sans-serif-medium"
-                            android:textColor="@color/white"
+                            android:textColor="@color/menuHeaderText"
                             android:textSize="31sp"
                             tools:text="Diego" />
                     </LinearLayout>
@@ -104,7 +104,7 @@
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackground"
                         app:cardBackgroundColor="@android:color/transparent"
-                        app:cardElevation="0dp"
+                        app:cardElevation="3dp"
                         app:strokeWidth="0dp">
 
                         <LinearLayout
@@ -128,7 +128,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
                                 android:text="GASTOS"
-                                android:textColor="@color/economix_text_primary"
+                                android:textColor="@color/menuCardText"
                                 android:textSize="22sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -144,7 +144,7 @@
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackground"
                         app:cardBackgroundColor="@android:color/transparent"
-                        app:cardElevation="0dp"
+                        app:cardElevation="3dp"
                         app:strokeWidth="0dp">
 
                         <LinearLayout
@@ -168,7 +168,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
                                 android:text="INGRESOS"
-                                android:textColor="@color/economix_text_primary"
+                                android:textColor="@color/menuCardText"
                                 android:textSize="22sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -192,7 +192,7 @@
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackground"
                         app:cardBackgroundColor="@android:color/transparent"
-                        app:cardElevation="0dp"
+                        app:cardElevation="3dp"
                         app:strokeWidth="0dp">
 
                         <LinearLayout
@@ -216,7 +216,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
                                 android:text="AHORRO"
-                                android:textColor="@color/economix_text_primary"
+                                android:textColor="@color/menuCardText"
                                 android:textSize="22sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -232,7 +232,7 @@
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackground"
                         app:cardBackgroundColor="@android:color/transparent"
-                        app:cardElevation="0dp"
+                        app:cardElevation="3dp"
                         app:strokeWidth="0dp">
 
                         <LinearLayout
@@ -256,7 +256,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
                                 android:text="GRÁFICOS"
-                                android:textColor="@color/economix_text_primary"
+                                android:textColor="@color/menuCardText"
                                 android:textSize="22sp"
                                 android:textStyle="bold" />
                         </LinearLayout>

@@ -37,8 +37,10 @@
     <color name="menuSilver">#243447</color>
     <color name="menuBackground">#0F172A</color>
     <color name="menuHeaderBg">#1E293B</color>
+    <color name="menuHeaderText">#F8FAFC</color>
     <color name="menuCardDark">#1E293B</color>
     <color name="menuCardLight">#243447</color>
+    <color name="menuCardText">#F8FAFC</color>
     <color name="recentActivityBg">#1E293B</color>
     <color name="recentActivityText">#CBD5E1</color>
     <color name="bottomNavActiveBg">#1E293B</color>
