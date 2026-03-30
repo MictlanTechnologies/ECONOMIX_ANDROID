@@ -15,7 +15,7 @@
         android:contentDescription="Ayuda"
         android:padding="4dp"
         android:src="@drawable/ayuda"
-        android:tint="@color/white"
+        android:tint="@color/economix_text_primary"
         tools:ignore="UseAppTint"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -490,7 +490,7 @@
                     android:padding="14dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/gastosop2texto"
-                    android:tint="@color/white"
+                    android:tint="@color/economix_text_primary"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
 
@@ -517,7 +517,7 @@
                     android:padding="14dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/ingresosconletras"
-                    android:tint="@color/white"
+                    android:tint="@color/economix_text_primary"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
 
@@ -544,7 +544,7 @@
                     android:padding="14dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/ahorrotexto"
-                    android:tint="@color/white"
+                    android:tint="@color/economix_text_primary"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
 
@@ -571,7 +571,7 @@
                     android:padding="14dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/graficastexto1"
-                    android:tint="@color/white"
+                    android:tint="@color/economix_text_primary"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
         </LinearLayout>

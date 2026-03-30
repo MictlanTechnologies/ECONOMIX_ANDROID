@@ -327,8 +327,8 @@
 
     <ImageButton
         android:id="@+id/btnAyuda"
-        android:layout_width="1dp"
-        android:layout_height="1dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:contentDescription="Ayuda"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"

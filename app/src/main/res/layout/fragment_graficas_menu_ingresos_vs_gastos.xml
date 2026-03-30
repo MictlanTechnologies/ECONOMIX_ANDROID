@@ -15,7 +15,7 @@
         android:contentDescription="Ayuda"
         android:padding="4dp"
         android:src="@drawable/ayuda"
-        android:tint="@color/white"
+        android:tint="@color/economix_text_primary"
         tools:ignore="UseAppTint"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,7 +28,7 @@
         android:contentDescription="Perfil"
         android:padding="4dp"
         android:src="@drawable/usuario"
-        android:tint="@color/white"
+        android:tint="@color/economix_text_primary"
         tools:ignore="UseAppTint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
