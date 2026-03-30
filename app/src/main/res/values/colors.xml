@@ -9,7 +9,7 @@
     <color name="economix_surface_light">#2563EB</color>
     <color name="economix_accent">#2563EB</color>
     <color name="economix_text_primary">#FFFFFF</color>
-    <color name="economix_text_secondary">#DBEAFE</color>
+    <color name="economix_text_secondary">#FFFFFF</color>
 
     <!-- Compatibility aliases used across legacy layouts -->
     <color name="tealPrimary">#2563EB</color>
@@ -21,7 +21,7 @@
     <color name="tealSurface">#1D4ED8</color>
     <color name="tealSurfaceVariant">#1E3A8A</color>
     <color name="goldAccent">#A78BFA</color>
-    <color name="softWhite">#2E4FAE</color>
+    <color name="softWhite">#FFFFFF</color>
 
     <color name="economix_bar_1">#2563EB</color>
     <color name="economix_bar_2">#3B82F6</color>
@@ -44,11 +44,11 @@
     <color name="menuCardLight">#1E3A8A</color>
     <color name="menuCardText">#FFFFFF</color>
     <color name="recentActivityBg">#1E3A8A</color>
-    <color name="recentActivityText">#DBEAFE</color>
+    <color name="recentActivityText">#FFFFFF</color>
     <color name="bottomNavActiveBg">#2563EB</color>
-    <color name="bottomNavInactiveTint">#BFDBFE</color>
+    <color name="bottomNavInactiveTint">#FFFFFF</color>
     <color name="bottomNavDarkBg">#1E3A8A</color>
-    <color name="fieldIconTint">#DBEAFE</color>
+    <color name="fieldIconTint">#FFFFFF</color>
     <color name="stepIndicatorActive">#2563EB</color>
     <color name="stepIndicatorInactive">#CBD5E1</color>
 
