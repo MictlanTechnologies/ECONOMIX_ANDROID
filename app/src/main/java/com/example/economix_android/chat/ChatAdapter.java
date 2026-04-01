@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.economix_android.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHolder> {
@@ -17,10 +18,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
     private static final int VIEW_TYPE_USER = 1;
     private static final int VIEW_TYPE_IA = 2;
 
-    private final List<ChatMessage> messages;
+    private final List<ChatMessage> messages = new ArrayList<>();
 
-    public ChatAdapter(List<ChatMessage> messages) {
-        this.messages = messages;
+    public void setMessages(List<ChatMessage> newMessages) {
+        messages.clear();
+        if (newMessages != null) {
+            messages.addAll(newMessages);
+        }
+        notifyDataSetChanged();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.example.economix_android.ai;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.economix_android.auth.SessionManager;
+import com.example.economix_android.auth.ui.LoginActivity;
 import com.example.economix_android.databinding.FragmentPredictionsBinding;
 
 import java.math.BigDecimal;
@@ -49,10 +51,10 @@ public class PredictionsFragment extends Fragment {
         setupDatePicker(binding.etToB);
 
         LocalDate now = LocalDate.now();
-        binding.etToA.setText(now.format(formatter));
-        binding.etFromA.setText(now.minusDays(7).format(formatter));
-        binding.etToB.setText(now.minusDays(8).format(formatter));
-        binding.etFromB.setText(now.minusDays(15).format(formatter));
+        binding.etToA.setText(now.minusDays(30).format(formatter));
+        binding.etFromA.setText(now.minusDays(60).format(formatter));
+        binding.etToB.setText(now.format(formatter));
+        binding.etFromB.setText(now.minusDays(30).format(formatter));
 
         binding.btnAnalizar.setOnClickListener(v -> analizar());
 
@@ -62,19 +64,14 @@ public class PredictionsFragment extends Fragment {
             binding.btnAnalizar.setEnabled(!isLoading);
         });
 
-        viewModel.getError().observe(getViewLifecycleOwner(), error -> {
-            if (error != null && !error.trim().isEmpty()) {
-                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
-            }
-        });
-
         viewModel.getData().observe(getViewLifecycleOwner(), this::renderData);
+        viewModel.getStatus().observe(getViewLifecycleOwner(), this::renderStatus);
     }
 
     private void analizar() {
-        Integer userId = SessionManager.getUserId(requireContext());
-        if (userId == null) {
+        if (SessionManager.getUserId(requireContext()) == null) {
             Toast.makeText(requireContext(), "Sesión no disponible", Toast.LENGTH_SHORT).show();
+            redirectToLogin();
             return;
         }
 
@@ -92,17 +89,51 @@ public class PredictionsFragment extends Fragment {
         LocalDate fromRange = LocalDate.now().minusDays(horizon);
         LocalDate toRange = LocalDate.now();
 
-        viewModel.analyze(userId, horizon, fromRange, toRange, fromA, toA, fromB, toB);
+        binding.tvAnalysisStatus.setText("Consultando backend IA...");
+        viewModel.analyze(horizon, fromRange, toRange, fromA, toA, fromB, toB);
+    }
+
+    private void renderStatus(AiViewModel.AnalysisStatus status) {
+        if (status == null) return;
+        switch (status) {
+            case LOADING:
+                binding.tvAnalysisStatus.setText("Consultando backend IA...");
+                break;
+            case SUCCESS:
+                binding.tvAnalysisStatus.setText("Análisis listo para el rango principal y comparación A/B.");
+                break;
+            case INSUFFICIENT_DATA:
+                binding.tvAnalysisStatus.setText("Datos insuficientes para algunos cálculos (INSUFFICIENT_DATA). Registra más movimientos en el rango seleccionado.");
+                break;
+            case UNAUTHORIZED:
+                binding.tvAnalysisStatus.setText("Tu sesión expiró (401). Inicia sesión nuevamente.");
+                redirectToLogin();
+                break;
+            case PROVIDER_UNAVAILABLE:
+                binding.tvAnalysisStatus.setText("Proveedor de IA no disponible temporalmente (503).");
+                break;
+            case NETWORK_ERROR:
+                binding.tvAnalysisStatus.setText("Error de red al consultar IA. Verifica tu conexión.");
+                break;
+            case PARTIAL_ERROR:
+                binding.tvAnalysisStatus.setText("El análisis regresó parcialmente; revisa cada sección para detalle.");
+                break;
+            default:
+                binding.tvAnalysisStatus.setText("");
+                break;
+        }
     }
 
     private void renderData(AiViewModel.AnalysisData data) {
         if (data == null) return;
 
         if (data.spendForecast != null) {
-            binding.tvForecast.setText("Predicción gasto: "
+            String explanation = data.spendForecast.getExplanation() != null ? data.spendForecast.getExplanation() : "Sin explicación";
+            binding.tvForecast.setText("Predicción gasto (rango principal): "
                     + money(data.spendForecast.getExpectedSpend())
                     + " (IC95% " + money(data.spendForecast.getLower95())
-                    + " - " + money(data.spendForecast.getUpper95()) + ")");
+                    + " - " + money(data.spendForecast.getUpper95()) + ")\n"
+                    + "Estado=" + safeStatus(data.spendForecast.getStatus()) + " | " + explanation);
         }
 
         List<String> budgetItems = new ArrayList<>();
@@ -114,6 +145,7 @@ public class PredictionsFragment extends Fragment {
                         + " | riesgo=" + (item.getRiesgo() != null ? item.getRiesgo() : "N/A"));
             }
         }
+        if (budgetItems.isEmpty()) budgetItems.add("Sin datos de riesgo de presupuesto para el periodo actual.");
         binding.lvBudgetRisk.setAdapter(new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, budgetItems));
 
         List<String> anomalyItems = new ArrayList<>();
@@ -125,20 +157,41 @@ public class PredictionsFragment extends Fragment {
                         + " | z=" + money(anomaly.getRobustZScore()));
             }
         }
+        if (anomalyItems.isEmpty()) anomalyItems.add("Sin anomalías detectadas o sin datos suficientes.");
         binding.lvAnomalies.setAdapter(new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, anomalyItems));
 
         if (data.confidenceInterval != null) {
-            binding.tvConfidenceInterval.setText("IC media (" + data.confidenceInterval.getMetricDefinition() + "): "
+            binding.tvConfidenceInterval.setText("IC media (rango principal): "
                     + money(data.confidenceInterval.getMean()) + " ["
                     + money(data.confidenceInterval.getLower()) + " - "
-                    + money(data.confidenceInterval.getUpper()) + "]");
+                    + money(data.confidenceInterval.getUpper()) + "]"
+                    + " | estado=" + safeStatus(data.confidenceInterval.getStatus()));
         }
 
         if (data.hypothesisTest != null) {
-            binding.tvHypothesis.setText("Prueba Welch p-value="
+            binding.tvHypothesis.setText("Comparación A/B (Welch): p-value="
                     + money(data.hypothesisTest.getPValue())
+                    + " | estado=" + safeStatus(data.hypothesisTest.getStatus())
                     + "\n" + (data.hypothesisTest.getConclusion() != null ? data.hypothesisTest.getConclusion() : "Sin conclusión"));
         }
+
+        List<String> recommendations = data.recommendations();
+        if (!recommendations.isEmpty()) {
+            binding.tvRecommendations.setText("Recomendaciones IA:\n- " + String.join("\n- ", recommendations));
+        } else {
+            binding.tvRecommendations.setText("Recomendaciones IA: sin recomendaciones adicionales.");
+        }
+    }
+
+    private void redirectToLogin() {
+        SessionManager.clearSession(requireContext());
+        Intent intent = new Intent(requireContext(), LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    private String safeStatus(String value) {
+        return value != null ? value : "N/A";
     }
 
     private LocalDate parseDate(String text) {

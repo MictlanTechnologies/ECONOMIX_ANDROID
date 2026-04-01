@@ -102,7 +102,6 @@ public class AiModels {
 
     @Data
     public static class CompareMeansRequest {
-        private Integer userId;
         private LocalDate fromA;
         private LocalDate toA;
         private LocalDate fromB;
@@ -124,5 +123,30 @@ public class AiModels {
         private BigDecimal df;
         private BigDecimal pValue;
         private String conclusion;
+    }
+
+    @Data
+    public static class AiChatRequest {
+        private String message;
+        private LocalDate from;
+        private LocalDate to;
+        private LocalDate fromA;
+        private LocalDate toA;
+        private LocalDate fromB;
+        private LocalDate toB;
+        private Integer horizonDays;
+    }
+
+    @Data
+    public static class AiChatResponse {
+        private String status;
+        private String message;
+        private List<String> recommendations;
+        private AISummaryResponse summary;
+        private SpendForecastResponse spendForecast;
+        private BudgetRiskResponse budgetRisk;
+        private AnomalyResponse anomalies;
+        private ConfidenceIntervalResponse confidenceInterval;
+        private HypothesisTestResponse hypothesisTest;
     }
 }
