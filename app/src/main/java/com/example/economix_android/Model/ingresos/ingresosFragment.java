@@ -22,6 +22,7 @@ import com.example.economix_android.databinding.FragmentIngresosBinding;
 import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.util.ProfileImageUtils;
+import com.example.economix_android.util.UsuarioAnimationNavigator;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputEditText;
@@ -70,7 +71,7 @@ public class ingresosFragment extends Fragment {
         binding.btnVerIng.setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.action_navigation_ingresos_to_ingresosInfo));
-        binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
+        binding.btnPerfil.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaIng.setOnClickListener(v -> mostrarAyuda());
 

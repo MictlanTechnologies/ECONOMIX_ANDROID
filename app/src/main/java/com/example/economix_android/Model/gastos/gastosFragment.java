@@ -25,6 +25,7 @@ import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.Model.data.Gasto;
 import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.util.ProfileImageUtils;
+import com.example.economix_android.util.UsuarioAnimationNavigator;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputEditText;
@@ -79,7 +80,7 @@ public class gastosFragment extends Fragment {
         binding.btnVerGas.setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.action_navigation_gastos_to_gastosInfo));
-        binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
+        binding.btnPerfil.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaGas.setOnClickListener(v -> mostrarAyuda());
 

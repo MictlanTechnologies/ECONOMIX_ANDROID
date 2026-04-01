@@ -15,6 +15,7 @@ import androidx.navigation.Navigation;
 
 import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.util.ProfileImageUtils;
+import com.example.economix_android.util.UsuarioAnimationNavigator;
 
 public class menu extends Fragment implements View.OnClickListener {
 
@@ -67,7 +68,7 @@ public class menu extends Fragment implements View.OnClickListener {
         } else if (viewId == R.id.tileGraficas) {
             Navigation.findNavController(v).navigate(R.id.action_menu_to_navigation_graficas);
         } else if (viewId == R.id.btnPerfil) {
-            Navigation.findNavController(v).navigate(R.id.action_menu_to_usuario);
+            UsuarioAnimationNavigator.playAndNavigate(v, R.id.action_menu_to_usuario);
         } else if (viewId == R.id.recentActivityCard) {
             Navigation.findNavController(v).navigate(R.id.action_menu_to_recentActivity);
         }

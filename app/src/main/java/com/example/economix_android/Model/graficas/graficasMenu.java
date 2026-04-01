@@ -15,6 +15,7 @@ import androidx.navigation.Navigation;
 import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentGraficasMenuBinding;
 import com.example.economix_android.util.ProfileImageUtils;
+import com.example.economix_android.util.UsuarioAnimationNavigator;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class graficasMenu extends Fragment {
@@ -32,7 +33,7 @@ public class graficasMenu extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
+        binding.btnPerfil.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyuda.setOnClickListener(v -> mostrarAyuda());
         binding.btnGastosCategoria.setOnClickListener(v ->
