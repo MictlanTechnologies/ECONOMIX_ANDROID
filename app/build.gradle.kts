@@ -28,7 +28,7 @@ android {
             (project.findProperty("GEMINI_API_KEY") as String?)?.takeIf { it.isNotBlank() }
                 ?: localProperties.getProperty("GEMINI_API_KEY")?.takeIf { it.isNotBlank() }
                 ?: System.getenv("GEMINI_API_KEY")?.takeIf { it.isNotBlank() }
-                ?: "YOUR_GEMINI_API_KEY"
+                ?: "AIzaSyCogijC91bX28lq0s4lNWxXjYVKu-kdgtU"
         buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
     }
 
