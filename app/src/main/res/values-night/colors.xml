@@ -51,5 +51,8 @@
     <color name="stepIndicatorActive">#93C5FD</color>
     <color name="stepIndicatorInactive">#334155</color>
 
+    <color name="menuHeaderSurface">#1A0F172A</color>
+    <color name="menuHeaderOutline">#4D93C5FD</color>
+
     <color name="strokeSubtle">#334155</color>
 </resources>

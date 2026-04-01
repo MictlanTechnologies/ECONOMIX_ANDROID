@@ -5,130 +5,138 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_app_gradient"
-    android:padding="32dp"
+    android:background="@drawable/bg_inicio_animated"
     tools:context=".Inicio.Inicio">
 
-    <TextView
-        android:id="@+id/tvBienvenida"
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
-        android:text="Bienvenido a Economix"
-        android:textColor="@color/softWhite"
-        android:textSize="30sp"
-        android:textStyle="bold"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvBienvenida"/>
-
-    <TextView
-        android:id="@+id/tvMensaje"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text=""
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvBienvenida" />
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/logoContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:cardBackgroundColor="@color/tealSurface"
-        app:cardCornerRadius="28dp"
-        app:cardElevation="6dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvMensaje">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:orientation="vertical"
-            android:padding="24dp">
-
-            <ImageView
-                android:id="@+id/ECONOMIX_LOGO"
-                android:layout_width="220dp"
-                android:layout_height="220dp"
-                android:contentDescription="Logotipo de EconomiX"
-                android:src="@drawable/economix_logo"
-                android:scaleType="fitCenter" />
+            android:paddingHorizontal="24dp"
+            android:paddingTop="30dp"
+            android:paddingBottom="24dp">
 
             <TextView
-                android:id="@+id/tvTagline"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvBienvenida"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:text="@string/inicio_bienvenida"
+                android:textColor="@color/economix_text_primary"
+                android:textSize="32sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/logoContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                app:cardBackgroundColor="@color/menuHeaderSurface"
+                app:cardCornerRadius="28dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/menuHeaderOutline"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="24dp">
+
+                    <ImageView
+                        android:id="@+id/ECONOMIX_LOGO"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:contentDescription="@string/inicio_logo_desc"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/economix_logo" />
+
+                    <TextView
+                        android:id="@+id/tvTagline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/inicio_tagline"
+                        android:textColor="@color/economix_text_primary"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/ctaContainerCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:cardBackgroundColor="@color/menuHeaderSurface"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/menuHeaderOutline"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:id="@+id/ctaContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/inicioSesion"
+                        style="@style/Widget.Material3.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="12dp"
+                        android:text="@string/inicio_cta_login"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="17sp"
+                        app:backgroundTint="@color/tealAccent"
+                        app:cornerRadius="22dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/registrarse"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:paddingVertical="12dp"
+                        android:text="@string/inicio_cta_signup"
+                        android:textAllCaps="false"
+                        android:textColor="@color/economix_text_primary"
+                        android:textSize="17sp"
+                        app:backgroundTint="@android:color/transparent"
+                        app:cornerRadius="22dp"
+                        app:strokeColor="@color/menuHeaderOutline"
+                        app:strokeWidth="1dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/tvFooter"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="Haz la diferencia en cada decisión"
-                android:textColor="@color/softWhite"
-                android:textSize="16sp" />
+                android:gravity="center"
+                android:text="@string/inicio_footer"
+                android:textColor="@color/economix_text_secondary"
+                android:textSize="13sp" />
+
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <LinearLayout
-        android:id="@+id/ctaContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/logoContainer">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/inicioSesion"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:paddingVertical="12dp"
-            android:text="Iniciar sesión"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            app:backgroundTint="@color/tealAccent"
-            app:cornerRadius="24dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/registrarse"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:paddingVertical="12dp"
-            android:text="Crear cuenta"
-            android:textAllCaps="false"
-            android:textColor="@color/softWhite"
-            android:textSize="18sp"
-            app:backgroundTint="@android:color/transparent"
-            app:cornerRadius="24dp"
-            app:strokeColor="@color/goldAccent"
-            app:strokeWidth="2dp" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/tvFooter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text=""
-        android:textColor="@color/goldAccent"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ctaContainer" />
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

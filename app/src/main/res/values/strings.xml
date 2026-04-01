@@ -176,9 +176,15 @@
     <string name="title_inicio">Inicio</string>
     <string name="title_movimientos">Movimientos</string>
     <string name="title_presupuestos">Presupuestos</string>
-    <string name="title_mas">Más</string>
+    <string name="title_mas">Análisis IA</string>
     <string name="label_recent_activity">Actividad Reciente</string>
     <string name="label_no_recent_activity">No hay actividad reciente</string>
+    <string name="label_usuario_generico">Usuario</string>
+    <string name="label_accesos_rapidos">Accesos rápidos</string>
+    <string name="desc_acceso_gastos">Acceso a gastos</string>
+    <string name="desc_acceso_ingresos">Acceso a ingresos</string>
+    <string name="desc_acceso_ahorro">Acceso al ahorro</string>
+    <string name="desc_acceso_graficas">Acceso a gráficas</string>
 
     <!-- Presupuestos -->
     <string name="titulo_nuevo_presupuesto">Nuevo Presupuesto</string>
@@ -228,4 +234,19 @@
     <string name="label_agregar_etiqueta">Agregar etiqueta</string>
     <string name="error_categoria_vacia">Escribe un nombre de categoría.</string>
     <string name="error_etiqueta_vacia">Escribe una etiqueta válida.</string>
+
+    <string name="inicio_bienvenida">Bienvenido a ECONOMIX</string>
+    <string name="inicio_mensaje">Controla tus finanzas personales con claridad, orden y decisiones inteligentes.</string>
+    <string name="inicio_tagline">Haz la diferencia en cada decisión</string>
+    <string name="inicio_cta_login">Iniciar sesión</string>
+    <string name="inicio_cta_signup">Crear cuenta</string>
+    <string name="inicio_footer">Tu control financiero empieza hoy.</string>
+    <string name="inicio_logo_desc">Logotipo de ECONOMIX</string>
+    <string name="title_recent_activity">Actividad reciente</string>
+    <string name="label_last_ingreso">Último ingreso</string>
+    <string name="label_last_gasto">Último gasto</string>
+    <string name="label_recent_ingreso_format">Monto: %1$s
+Fecha: %2$s</string>
+    <string name="label_recent_gasto_format">Monto: %1$s
+Fecha: %2$s</string>
 </resources>

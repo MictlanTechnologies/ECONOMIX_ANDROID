@@ -109,6 +109,9 @@
         <action
             android:id="@+id/action_menu_to_usuario2"
             app:destination="@id/usuario" />
+        <action
+            android:id="@+id/action_menu_to_recentActivity"
+            app:destination="@id/recentActivityFragment" />
     </fragment>
     <fragment
         android:id="@+id/gastosInfo"
@@ -248,6 +251,12 @@
             android:id="@+id/action_usuario_info_to_usuario"
             app:destination="@id/usuario" />
     </fragment>
+
+    <fragment
+        android:id="@+id/recentActivityFragment"
+        android:name="com.example.economix_android.Model.data.RecentActivityFragment"
+        android:label="@string/title_recent_activity"
+        tools:layout="@layout/fragment_recent_activity" />
 
     <fragment
         android:id="@+id/navigation_predictions"

@@ -381,6 +381,10 @@ public class usuario_info extends Fragment {
                 setBotonesEnabled(true);
                 if (response.isSuccessful() && response.body() != null) {
                     personaActual = response.body();
+                    SessionManager.saveDisplayName(requireContext(), construirNombreCompleto(
+                            personaActual.getNombrePersona(),
+                            personaActual.getApellidoP(),
+                            personaActual.getApellidoM()));
                     actualizarContactoYDomicilio();
                     mostrarMensaje(getString(R.string.mensaje_persona_guardada));
                 } else {
@@ -620,6 +624,13 @@ public class usuario_info extends Fragment {
         String apellidoP = partes[0];
         String apellidoM = partes.length > 1 ? partes[1] : "";
         return new String[]{apellidoP, apellidoM};
+    }
+
+    private String construirNombreCompleto(String nombre, String apellidoP, String apellidoM) {
+        String nombreSeguro = nombre != null ? nombre.trim() : "";
+        String apellidos = construirApellidos(apellidoP, apellidoM);
+        String nombreCompleto = (nombreSeguro + " " + apellidos).trim();
+        return nombreCompleto.isEmpty() ? null : nombreCompleto;
     }
 
     private String construirApellidos(String apellidoP, String apellidoM) {

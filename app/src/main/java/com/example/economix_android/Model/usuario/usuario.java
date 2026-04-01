@@ -39,8 +39,11 @@ public class usuario extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        String perfil = SessionManager.getPerfil(requireContext());
-        binding.tvNombre.setText(perfil != null ? perfil : getString(R.string.app_name));
+        String nombreVisible = SessionManager.getDisplayName(requireContext());
+        if (nombreVisible == null || nombreVisible.trim().isEmpty()) {
+            nombreVisible = SessionManager.getPerfil(requireContext());
+        }
+        binding.tvNombre.setText(nombreVisible != null ? nombreVisible : getString(R.string.app_name));
 
         ProfileImageUtils.applyProfileImage(requireContext(), binding.imgAvatar, R.drawable.usuariog);
 
