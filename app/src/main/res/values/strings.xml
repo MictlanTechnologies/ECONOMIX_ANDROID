@@ -220,4 +220,12 @@
     <string name="cat_ing_inversiones">Inversiones</string>
     <string name="cat_ing_venta">Venta</string>
     <string name="cat_ing_otro">Otro</string>
+
+    <string name="label_agregar_categoria">Agregar categoría</string>
+    <string name="hint_nueva_categoria">Nueva categoría</string>
+    <string name="label_etiquetas">Etiquetas</string>
+    <string name="hint_nueva_etiqueta">Nueva etiqueta</string>
+    <string name="label_agregar_etiqueta">Agregar etiqueta</string>
+    <string name="error_categoria_vacia">Escribe un nombre de categoría.</string>
+    <string name="error_etiqueta_vacia">Escribe una etiqueta válida.</string>
 </resources>
