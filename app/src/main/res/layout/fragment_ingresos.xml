@@ -59,7 +59,7 @@
         android:layout_marginTop="4dp"
         android:text="Registra tus ingresos y mantén tu balance"
         android:textColor="@color/economix_text_secondary"
-        android:textSize="13sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtTitulo" />
@@ -455,44 +455,61 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGuardarIng"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="54dp"
             android:layout_marginEnd="4dp"
             android:layout_weight="1"
             android:text="Guardar"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="13sp"
+            android:textSize="14sp"
             app:backgroundTint="@color/tealAccent"
-            app:cornerRadius="14dp" />
+            app:cornerRadius="18dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEliminarIng"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="54dp"
             android:layout_marginHorizontal="4dp"
             android:layout_weight="1"
             android:text="Eliminar"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="13sp"
+            android:textSize="14sp"
             app:backgroundTint="@color/module_gastos"
-            app:cornerRadius="14dp" />
+            app:cornerRadius="18dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLimpiarIng"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="54dp"
             android:layout_marginStart="4dp"
             android:layout_weight="1"
             android:text="Limpiar"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="13sp"
+            android:textSize="14sp"
             app:backgroundTint="@color/tealPrimary"
-            app:cornerRadius="14dp" />
+            app:cornerRadius="18dp" />
     </LinearLayout>
 
     <!-- Bottom nav bar -->
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/navMenuMini"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="Ir al menú"
+        android:elevation="10dp"
+        app:backgroundTint="@color/tealAccent"
+        app:fabCustomSize="40dp"
+        app:maxImageSize="20dp"
+        app:srcCompat="@drawable/ic_home_filled"
+        app:tint="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/bottomBarContainer"
+        app:layout_constraintEnd_toEndOf="@id/bottomBarContainer" />
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/bottomBarContainer"
         android:layout_width="0dp"
