@@ -61,30 +61,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvSubtitle">
 
-        <FrameLayout
+        <ImageView
+            android:id="@+id/imgAvatar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:id="@+id/imgAvatar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="Avatar del usuario"
-                android:padding="12dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/usuariog"
-                android:tint="@color/economix_text_primary"
-                tools:ignore="UseAppTint" />
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lottieUsuario"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                app:lottie_autoPlay="false"
-                app:lottie_rawRes="@raw/usuario"
-                app:lottie_loop="false" />
-        </FrameLayout>
+            android:layout_height="match_parent"
+            android:contentDescription="Avatar del usuario"
+            android:padding="12dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/usuariog"
+            android:tint="@color/economix_text_primary"
+            tools:ignore="UseAppTint" />
     </com.google.android.material.card.MaterialCardView>
 
     <LinearLayout
