@@ -109,8 +109,8 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/label_meta_ahorro"
                             android:inputType="text"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white" />
+                            android:textColor="@color/economix_text_primary"
+                            android:textColorHint="@color/economix_text_secondary" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -132,8 +132,8 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/label_precio_objetivo"
                             android:inputType="numberDecimal"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white" />
+                            android:textColor="@color/economix_text_primary"
+                            android:textColorHint="@color/economix_text_secondary" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -155,8 +155,8 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/label_selecciona_ingreso"
                             android:inputType="none"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white" />
+                            android:textColor="@color/economix_text_primary"
+                            android:textColorHint="@color/economix_text_secondary" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <TextView
@@ -187,8 +187,8 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/label_fecha_ahorro"
                             android:inputType="date"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white" />
+                            android:textColor="@color/economix_text_primary"
+                            android:textColorHint="@color/economix_text_secondary" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -210,8 +210,8 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/label_monto_aporte"
                             android:inputType="numberDecimal"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white" />
+                            android:textColor="@color/economix_text_primary"
+                            android:textColorHint="@color/economix_text_secondary" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
