@@ -234,4 +234,12 @@
     <string name="label_agregar_etiqueta">Agregar etiqueta</string>
     <string name="error_categoria_vacia">Escribe un nombre de categoría.</string>
     <string name="error_etiqueta_vacia">Escribe una etiqueta válida.</string>
+
+    <string name="inicio_bienvenida">Bienvenido a ECONOMIX</string>
+    <string name="inicio_mensaje">Controla tus finanzas personales con claridad, orden y decisiones inteligentes.</string>
+    <string name="inicio_tagline">Haz la diferencia en cada decisión</string>
+    <string name="inicio_cta_login">Iniciar sesión</string>
+    <string name="inicio_cta_signup">Crear cuenta</string>
+    <string name="inicio_footer">Tu control financiero empieza hoy.</string>
+    <string name="inicio_logo_desc">Logotipo de ECONOMIX</string>
 </resources>
