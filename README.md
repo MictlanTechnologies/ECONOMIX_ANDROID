@@ -77,6 +77,43 @@ Si todo va bien, el backend queda en:
 
 ---
 
+
+## 4.1) Configurar secreto JWT (obligatorio en tu backend)
+
+Si al arrancar ves este error:
+
+`Missing required property economix.jwt.secret (env: ECONOMIX_JWT_SECRET)`
+
+debes definir la variable de entorno **ECONOMIX_JWT_SECRET** antes de iniciar Spring Boot.
+
+### Windows (PowerShell, solo sesión actual)
+
+```powershell
+$env:ECONOMIX_JWT_SECRET = "pon-aqui-un-secreto-largo-de-32+caracteres"
+```
+
+### Windows (persistente en tu usuario)
+
+```powershell
+setx ECONOMIX_JWT_SECRET "pon-aqui-un-secreto-largo-de-32+caracteres"
+```
+
+Luego cierra y vuelve a abrir la terminal/IDE.
+
+### IntelliJ IDEA (recomendado)
+
+Run/Debug Configurations → tu configuración de Spring Boot → **Environment variables**:
+
+```
+ECONOMIX_JWT_SECRET=pon-aqui-un-secreto-largo-de-32+caracteres
+```
+
+Después reinicia la app.
+
+> Nota: los warnings de `MySQL8Dialect` en logs no son el fallo que tumba el servidor; el bloqueo real es la ausencia del secret JWT.
+
+---
+
 ## 5) Configurar BASE_URL del Android
 
 En `gradle.properties` ya existen estas propiedades:
