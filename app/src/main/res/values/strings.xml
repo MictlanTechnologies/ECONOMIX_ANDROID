@@ -242,4 +242,11 @@
     <string name="inicio_cta_signup">Crear cuenta</string>
     <string name="inicio_footer">Tu control financiero empieza hoy.</string>
     <string name="inicio_logo_desc">Logotipo de ECONOMIX</string>
+    <string name="title_recent_activity">Actividad reciente</string>
+    <string name="label_last_ingreso">Último ingreso</string>
+    <string name="label_last_gasto">Último gasto</string>
+    <string name="label_recent_ingreso_format">Monto: %1$s
+Fecha: %2$s</string>
+    <string name="label_recent_gasto_format">Monto: %1$s
+Fecha: %2$s</string>
 </resources>

@@ -32,6 +32,7 @@ public class menu extends Fragment implements View.OnClickListener {
         View tileIngresos = view.findViewById(R.id.tileIngresos);
         View tileAhorro = view.findViewById(R.id.tileAhorro);
         View tileGraficas = view.findViewById(R.id.tileGraficas);
+        View recentActivityCard = view.findViewById(R.id.recentActivityCard);
         ImageView perfilButton = view.findViewById(R.id.btnPerfil);
         TextView saludoUsuario = view.findViewById(R.id.txtHolaUsuario);
 
@@ -50,6 +51,7 @@ public class menu extends Fragment implements View.OnClickListener {
         tileIngresos.setOnClickListener(this);
         tileAhorro.setOnClickListener(this);
         tileGraficas.setOnClickListener(this);
+        recentActivityCard.setOnClickListener(this);
         perfilButton.setOnClickListener(this);
     }
 
@@ -66,6 +68,8 @@ public class menu extends Fragment implements View.OnClickListener {
             Navigation.findNavController(v).navigate(R.id.action_menu_to_navigation_graficas);
         } else if (viewId == R.id.btnPerfil) {
             Navigation.findNavController(v).navigate(R.id.action_menu_to_usuario);
+        } else if (viewId == R.id.recentActivityCard) {
+            Navigation.findNavController(v).navigate(R.id.action_menu_to_recentActivity);
         }
     }
 }

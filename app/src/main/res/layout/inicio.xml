@@ -38,21 +38,11 @@
                 android:textSize="32sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tvMensaje"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
-                android:text="@string/inicio_mensaje"
-                android:textColor="@color/economix_text_secondary"
-                android:textSize="16sp" />
-
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/logoContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="18dp"
                 app:cardBackgroundColor="@color/menuHeaderSurface"
                 app:cardCornerRadius="28dp"
                 app:cardElevation="0dp"
