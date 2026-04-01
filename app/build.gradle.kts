@@ -82,5 +82,6 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("com.airbnb.android:lottie:6.7.1")
     implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
 }
