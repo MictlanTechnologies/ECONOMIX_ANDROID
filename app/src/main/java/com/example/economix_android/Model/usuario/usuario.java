@@ -154,7 +154,7 @@ public class usuario extends Fragment {
         }
 
         float duracionMs = composition.getDuration();
-        float inicioMs = 5000f;
+        float inicioMs = 6000f;
         float finMs = 9000f;
 
         if (duracionMs <= 0f) {

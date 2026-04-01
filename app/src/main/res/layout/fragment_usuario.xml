@@ -61,29 +61,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvSubtitle">
 
-        <ImageView
-            android:id="@+id/imgAvatar"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="Avatar del usuario"
-            android:padding="12dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/usuariog"
-            android:tint="@color/economix_text_primary"
-            tools:ignore="UseAppTint" />
-    </com.google.android.material.card.MaterialCardView>
+            android:layout_height="match_parent">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottieUsuario"
-        android:layout_width="220dp"
-        android:layout_height="220dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/avatarContainer"
-        app:layout_constraintStart_toStartOf="@id/avatarContainer"
-        app:layout_constraintTop_toTopOf="@id/avatarContainer"
-        app:lottie_autoPlay="false"
-        app:lottie_rawRes="@raw/usuario"
-        app:lottie_loop="false" />
+            <ImageView
+                android:id="@+id/imgAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="Avatar del usuario"
+                android:padding="12dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/usuariog"
+                android:tint="@color/economix_text_primary"
+                tools:ignore="UseAppTint" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottieUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:lottie_autoPlay="false"
+                app:lottie_rawRes="@raw/usuario"
+                app:lottie_loop="false" />
+        </FrameLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <LinearLayout
         android:id="@+id/actionRow"
