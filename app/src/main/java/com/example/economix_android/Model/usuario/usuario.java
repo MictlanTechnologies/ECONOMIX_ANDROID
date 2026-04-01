@@ -16,10 +16,12 @@ import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 
 import com.example.economix_android.R;
-import com.example.economix_android.activity_inicio;
+import com.example.economix_android.Inicio.Inicio;
 import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.databinding.FragmentUsuarioBinding;
+import com.example.economix_android.network.auth.dto.LogoutRequest;
+import com.example.economix_android.network.repository.auth.AuthRepository;
 import com.example.economix_android.util.ProfileImageUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -27,6 +29,7 @@ public class usuario extends Fragment {
 
     private FragmentUsuarioBinding binding;
     private ActivityResultLauncher<String[]> seleccionFotoLauncher;
+    private AuthRepository authRepository;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -39,6 +42,8 @@ public class usuario extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        authRepository = new AuthRepository(requireContext());
+
         String perfil = SessionManager.getPerfil(requireContext());
         binding.tvNombre.setText(perfil != null ? perfil : getString(R.string.app_name));
 
@@ -50,6 +55,8 @@ public class usuario extends Fragment {
         binding.btnInfo.setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.usuario_info));
+        binding.btnSeguridad.setOnClickListener(v ->
+                Navigation.findNavController(v).navigate(R.id.action_usuario_to_seguridad2faFragment));
         binding.btnAyudaUs.setOnClickListener(v -> mostrarAyuda());
         binding.btnGuardar.setOnClickListener(v -> cerrarSesion());
 
@@ -109,10 +116,33 @@ public class usuario extends Fragment {
     }
 
     private void cerrarSesion() {
+        SessionManager sessionManager = new SessionManager(requireContext());
+        String refreshToken = sessionManager.getRefreshToken();
+
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            finalizarSesionLocal();
+            return;
+        }
+
+        authRepository.logout(new LogoutRequest(refreshToken), new retrofit2.Callback<>() {
+            @Override
+            public void onResponse(retrofit2.Call<Void> call, retrofit2.Response<Void> response) {
+                finalizarSesionLocal();
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<Void> call, Throwable t) {
+                finalizarSesionLocal();
+            }
+        });
+    }
+
+    private void finalizarSesionLocal() {
         DataRepository.clearAll();
         SessionManager.clearSession(requireContext());
-        Intent intent = new Intent(requireContext(), activity_inicio.class);
-        intent.putExtra(activity_inicio.EXTRA_MOSTRAR_LOGIN, true);
+        Intent intent = new Intent(requireContext(), Inicio.class);
+        intent.putExtra(Inicio.EXTRA_MOSTRAR_LOGIN, true);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         requireActivity().finish();
     }

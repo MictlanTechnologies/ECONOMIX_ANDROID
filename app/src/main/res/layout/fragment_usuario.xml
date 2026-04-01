@@ -130,6 +130,28 @@
             app:backgroundTint="@color/tealLight"
             app:cornerRadius="24dp" />
 
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSeguridad"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:text="SEGURIDAD"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:paddingHorizontal="0dp"
+            android:paddingVertical="0dp"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeStepGranularity="1sp"
+            app:backgroundTint="@color/tealSurfaceVariant"
+            app:cornerRadius="24dp" />
     </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView
