@@ -75,6 +75,8 @@ public class usuario extends Fragment {
         binding.navIngresos.setOnClickListener(bottomNavListener);
         binding.navAhorro.setOnClickListener(bottomNavListener);
         binding.navGraficas.setOnClickListener(bottomNavListener);
+
+        binding.lottieUsuario.setAnimation(R.raw.usuario);
         binding.lottieUsuario.addLottieOnCompositionLoadedListener(this::reproducirSegmentoDeTiempo);
         binding.lottieUsuario.setFailureListener(error -> binding.lottieUsuario.setVisibility(View.GONE));
     }
@@ -155,20 +157,24 @@ public class usuario extends Fragment {
         float inicioMs = 5000f;
         float finMs = 9000f;
 
-        if (duracionMs <= 0f || inicioMs >= duracionMs) {
+        if (duracionMs <= 0f) {
             binding.lottieUsuario.setVisibility(View.GONE);
             return;
         }
 
-        float finAjustadoMs = Math.min(finMs, duracionMs);
-        if (finAjustadoMs <= inicioMs) {
-            binding.lottieUsuario.setVisibility(View.GONE);
-            return;
+        float frameInicial;
+        float frameFinal;
+
+        if (inicioMs >= duracionMs) {
+            frameInicial = composition.getStartFrame();
+            frameFinal = composition.getEndFrame();
+        } else {
+            float finAjustadoMs = Math.min(finMs, duracionMs);
+            frameInicial = composition.getFrameForProgress(inicioMs / duracionMs);
+            frameFinal = composition.getFrameForProgress(finAjustadoMs / duracionMs);
         }
 
-        float frameInicial = composition.getFrameForProgress(inicioMs / duracionMs);
-        float frameFinal = composition.getFrameForProgress(finAjustadoMs / duracionMs);
-
+        binding.lottieUsuario.bringToFront();
         binding.lottieUsuario.setMinAndMaxFrame(Math.round(frameInicial), Math.round(frameFinal));
         binding.lottieUsuario.setFrame(Math.round(frameInicial));
         binding.lottieUsuario.playAnimation();
