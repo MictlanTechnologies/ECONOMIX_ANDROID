@@ -70,7 +70,7 @@ public class menu extends Fragment implements View.OnClickListener {
         } else if (viewId == R.id.btnPerfil) {
             UsuarioAnimationNavigator.playAndNavigate(v, R.id.action_menu_to_usuario);
         } else if (viewId == R.id.recentActivityCard) {
-            Navigation.findNavController(v).navigate(R.id.action_menu_to_recentActivity);
+            UsuarioAnimationNavigator.playAndNavigate(v, R.id.action_menu_to_recentActivity, R.raw.act_reci);
         }
     }
 }

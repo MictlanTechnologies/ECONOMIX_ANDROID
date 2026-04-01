@@ -10,6 +10,8 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RawRes;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -26,6 +28,20 @@ public final class UsuarioAnimationNavigator {
     }
 
     public static void playAndNavigate(@NonNull View originView, @IdRes int navId) {
+        playAndNavigate(originView, navId, R.raw.usuario, 6000f, 9000f);
+    }
+
+    public static void playAndNavigate(@NonNull View originView,
+                                       @IdRes int navId,
+                                       @RawRes int animationRes) {
+        playAndNavigate(originView, navId, animationRes, null, null);
+    }
+
+    public static void playAndNavigate(@NonNull View originView,
+                                       @IdRes int navId,
+                                       @RawRes int animationRes,
+                                       @Nullable Float startMs,
+                                       @Nullable Float endMs) {
         NavController navController = Navigation.findNavController(originView);
         Context context = originView.getContext();
 
@@ -38,7 +54,7 @@ public final class UsuarioAnimationNavigator {
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(size, size);
         params.gravity = Gravity.CENTER;
         lottie.setLayoutParams(params);
-        lottie.setAnimation(R.raw.usuario);
+        lottie.setAnimation(animationRes);
         lottie.setRepeatCount(0);
         lottie.setRepeatMode(LottieDrawable.RESTART);
 
@@ -48,7 +64,7 @@ public final class UsuarioAnimationNavigator {
 
         AtomicBoolean handled = new AtomicBoolean(false);
 
-        lottie.addLottieOnCompositionLoadedListener(composition -> playSegment(lottie, composition));
+        lottie.addLottieOnCompositionLoadedListener(composition -> playSegment(lottie, composition, startMs, endMs));
         lottie.setFailureListener(error -> {
             if (dialog.isShowing()) {
                 dialog.dismiss();
@@ -76,19 +92,26 @@ public final class UsuarioAnimationNavigator {
         dialog.show();
         LottieComposition composition = lottie.getComposition();
         if (composition != null) {
-            playSegment(lottie, composition);
+            playSegment(lottie, composition, startMs, endMs);
         }
     }
 
-    private static void playSegment(@NonNull LottieAnimationView lottie, @NonNull LottieComposition composition) {
+    private static void playSegment(@NonNull LottieAnimationView lottie,
+                                    @NonNull LottieComposition composition,
+                                    @Nullable Float startMs,
+                                    @Nullable Float endMs) {
         float durationMs = composition.getDuration();
         if (durationMs <= 0f) {
             lottie.playAnimation();
             return;
         }
 
-        float startMs = 6000f;
-        float endMs = 9000f;
+        if (startMs == null || endMs == null || startMs < 0 || endMs <= startMs) {
+            lottie.setMinAndMaxFrame(Math.round(composition.getStartFrame()), Math.round(composition.getEndFrame()));
+            lottie.setFrame(Math.round(composition.getStartFrame()));
+            lottie.playAnimation();
+            return;
+        }
 
         float startFrame;
         float endFrame;
