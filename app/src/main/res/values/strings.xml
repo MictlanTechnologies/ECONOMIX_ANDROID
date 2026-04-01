@@ -242,4 +242,9 @@
     <string name="inicio_cta_signup">Crear cuenta</string>
     <string name="inicio_footer">Tu control financiero empieza hoy.</string>
     <string name="inicio_logo_desc">Logotipo de ECONOMIX</string>
+    <string name="inicio_badge">FINANZAS INTELIGENTES</string>
+    <string name="inicio_features_title">¿Qué puedes hacer con ECONOMIX?</string>
+    <string name="inicio_feature_1">• Registrar tus ingresos y gastos de forma rápida.</string>
+    <string name="inicio_feature_2">• Dar seguimiento a metas de ahorro y presupuestos.</string>
+    <string name="inicio_feature_3">• Visualizar tendencias con gráficas claras.</string>
 </resources>
