@@ -1,34 +1,31 @@
 package com.example.economix_android.network;
 
-import static com.example.economix_android.network.NetworkConfig.BASE_URL;
-
 import android.content.Context;
 
+import com.example.economix_android.ai.AiApi;
+import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.network.api.AhorroApi;
+import com.example.economix_android.network.api.CategoriaGastoApi;
 import com.example.economix_android.network.api.ConceptoGastoApi;
 import com.example.economix_android.network.api.ConceptoIngresoApi;
 import com.example.economix_android.network.api.ContactoApi;
-import com.example.economix_android.network.api.CategoriaGastoApi;
 import com.example.economix_android.network.api.DomicilioApi;
 import com.example.economix_android.network.api.GastoApi;
 import com.example.economix_android.network.api.IngresoApi;
 import com.example.economix_android.network.api.MovimientoAhorroApi;
-import com.example.economix_android.network.api.PresupuestoApi;
 import com.example.economix_android.network.api.PersonaApi;
+import com.example.economix_android.network.api.PresupuestoApi;
 import com.example.economix_android.network.api.UsuarioApi;
 import com.example.economix_android.network.auth.AuthApi;
-import com.example.economix_android.ai.AiApi;
-import com.example.economix_android.network.auth.AuthServiceFactory;
+import com.example.economix_android.network.auth.AuthInterceptor;
+import com.example.economix_android.network.auth.TokenAuthenticator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -39,21 +36,53 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public final class ApiClient {
 
-    // IMPORTANTE: la URL base debe terminar con "/" para Retrofit
-    private static final Retrofit retrofit;
-    private static Context appContext;
+    private static volatile boolean initialized = false;
+    private static Retrofit publicRetrofit;
+    private static Retrofit authenticatedRetrofit;
 
-    static {
+    private ApiClient() {
+    }
+
+    public static synchronized void init(Context context) {
+        if (initialized) {
+            return;
+        }
+
+        SessionManager sessionManager = new SessionManager(context.getApplicationContext());
+        Gson gson = createGson();
+
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
 
-        OkHttpClient client = new OkHttpClient.Builder()
+        OkHttpClient publicClient = new OkHttpClient.Builder()
                 .addInterceptor(logging)
                 .build();
 
-        // Configuración de Gson con adaptadores para LocalDate y LocalDateTime
-        Gson gson = new GsonBuilder()
-                // LocalDate: se serializa/deserializa como "yyyy-MM-dd"
+        publicRetrofit = new Retrofit.Builder()
+                .baseUrl(NetworkConfig.BASE_URL)
+                .client(publicClient)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        AuthApi refreshApi = publicRetrofit.create(AuthApi.class);
+
+        OkHttpClient authenticatedClient = new OkHttpClient.Builder()
+                .addInterceptor(new AuthInterceptor(sessionManager))
+                .authenticator(new TokenAuthenticator(sessionManager, refreshApi))
+                .addInterceptor(logging)
+                .build();
+
+        authenticatedRetrofit = new Retrofit.Builder()
+                .baseUrl(NetworkConfig.BASE_URL)
+                .client(authenticatedClient)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        initialized = true;
+    }
+
+    private static Gson createGson() {
+        return new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, (JsonSerializer<LocalDate>) (src, typeOfSrc, context) ->
                         new JsonPrimitive(src.toString()))
                 .registerTypeAdapter(LocalDate.class, (JsonDeserializer<LocalDate>) (json, typeOfT, context) -> {
@@ -63,7 +92,6 @@ public final class ApiClient {
                         throw new JsonParseException(e);
                     }
                 })
-                // LocalDateTime: se serializa/deserializa como "yyyy-MM-dd'T'HH:mm:ss"
                 .registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (src, typeOfSrc, context) ->
                         new JsonPrimitive(src.toString()))
                 .registerTypeAdapter(LocalDateTime.class, (JsonDeserializer<LocalDateTime>) (json, typeOfT, context) -> {
@@ -74,87 +102,71 @@ public final class ApiClient {
                     }
                 })
                 .create();
-
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-    }
-    private ApiClient() {
     }
 
-
-    /**
-     * Inicializa dependencias que requieren Context de aplicación.
-     * Mantiene compatibilidad con código existente que invoca ApiClient.init(...).
-     */
-    public static void init(Context context) {
-        if (context != null) {
-            appContext = context.getApplicationContext();
+    private static Retrofit authRequiredRetrofit() {
+        if (!initialized || authenticatedRetrofit == null) {
+            throw new IllegalStateException("ApiClient no inicializado. Registra EconomixApp en AndroidManifest.");
         }
+        return authenticatedRetrofit;
     }
 
-    /**
-     * Punto de acceso de compatibilidad para AuthApi sin parámetro Context.
-     */
     public static AuthApi getAuthApi() {
-        if (appContext == null) {
-            throw new IllegalStateException("ApiClient no está inicializado. Llama ApiClient.init(context) en Application.onCreate().");
+        if (!initialized || publicRetrofit == null) {
+            throw new IllegalStateException("ApiClient no inicializado. Registra EconomixApp en AndroidManifest.");
         }
-        return AuthServiceFactory.getAuthApi(appContext);
+        return publicRetrofit.create(AuthApi.class);
     }
 
     public static AhorroApi getAhorroApi() {
-        return retrofit.create(AhorroApi.class);
+        return authRequiredRetrofit().create(AhorroApi.class);
     }
 
     public static ConceptoGastoApi getConceptoGastoApi() {
-        return retrofit.create(ConceptoGastoApi.class);
+        return authRequiredRetrofit().create(ConceptoGastoApi.class);
     }
 
     public static CategoriaGastoApi getCategoriaGastoApi() {
-        return retrofit.create(CategoriaGastoApi.class);
+        return authRequiredRetrofit().create(CategoriaGastoApi.class);
     }
 
     public static ConceptoIngresoApi getConceptoIngresoApi() {
-        return retrofit.create(ConceptoIngresoApi.class);
+        return authRequiredRetrofit().create(ConceptoIngresoApi.class);
     }
 
     public static ContactoApi getContactoApi() {
-        return retrofit.create(ContactoApi.class);
+        return authRequiredRetrofit().create(ContactoApi.class);
     }
 
     public static DomicilioApi getDomicilioApi() {
-        return retrofit.create(DomicilioApi.class);
+        return authRequiredRetrofit().create(DomicilioApi.class);
     }
 
     public static GastoApi getGastoApi() {
-        return retrofit.create(GastoApi.class);
+        return authRequiredRetrofit().create(GastoApi.class);
     }
 
     public static IngresoApi getIngresoApi() {
-        return retrofit.create(IngresoApi.class);
+        return authRequiredRetrofit().create(IngresoApi.class);
     }
 
     public static MovimientoAhorroApi getMovimientoAhorroApi() {
-        return retrofit.create(MovimientoAhorroApi.class);
+        return authRequiredRetrofit().create(MovimientoAhorroApi.class);
     }
 
     public static PersonaApi getPersonaApi() {
-        return retrofit.create(PersonaApi.class);
+        return authRequiredRetrofit().create(PersonaApi.class);
     }
 
-
     public static PresupuestoApi getPresupuestoApi() {
-        return retrofit.create(PresupuestoApi.class);
+        return authRequiredRetrofit().create(PresupuestoApi.class);
     }
 
     public static AiApi getAiApi() {
-        return retrofit.create(AiApi.class);
+        return authRequiredRetrofit().create(AiApi.class);
     }
 
     public static UsuarioApi getUsuarioApi() {
-        return retrofit.create(UsuarioApi.class);
+        return authRequiredRetrofit().create(UsuarioApi.class);
     }
 }

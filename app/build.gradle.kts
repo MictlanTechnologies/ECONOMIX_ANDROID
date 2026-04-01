@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -17,24 +15,23 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        val localProperties = Properties().apply {
-            val localFile = rootProject.file("local.properties")
-            if (localFile.exists()) {
-                localFile.inputStream().use { load(it) }
-            }
-        }
-
-        val geminiApiKey =
-            (project.findProperty("GEMINI_API_KEY") as String?)?.takeIf { it.isNotBlank() }
-                ?: localProperties.getProperty("GEMINI_API_KEY")?.takeIf { it.isNotBlank() }
-                ?: System.getenv("GEMINI_API_KEY")?.takeIf { it.isNotBlank() }
-                ?: "AIzaSyCogijC91bX28lq0s4lNWxXjYVKu-kdgtU"
-        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
     }
 
     buildTypes {
+        debug {
+            val baseUrl = (project.findProperty("ECONOMIX_BASE_URL_DEBUG") as String?)
+                ?.takeIf { it.isNotBlank() }
+                ?: "http://10.0.2.2:8080/"
+            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+        }
         release {
             isMinifyEnabled = false
+            val baseUrl = (project.findProperty("ECONOMIX_BASE_URL_RELEASE") as String?)
+                ?.takeIf { it.isNotBlank() }
+                ?: (project.findProperty("ECONOMIX_BASE_URL_DEBUG") as String?)
+                    ?.takeIf { it.isNotBlank() }
+                ?: "http://10.0.2.2:8080/"
+            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -82,7 +79,6 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
 }
