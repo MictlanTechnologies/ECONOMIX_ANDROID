@@ -95,13 +95,17 @@ public class ChatActivity extends AppCompatActivity {
 
         LocalDate to = LocalDate.now();
         LocalDate from = to.minusDays(30);
+        LocalDate toA = from.minusDays(1);
+        LocalDate fromA = toA.minusDays(30);
 
         Map<String, Object> facts = Collections.synchronizedMap(new LinkedHashMap<>());
         facts.put("userId", userId);
         facts.put("from", from.toString());
         facts.put("to", to.toString());
+        facts.put("fromA", fromA.toString());
+        facts.put("toA", toA.toString());
 
-        AtomicInteger pending = new AtomicInteger(3);
+        AtomicInteger pending = new AtomicInteger(6);
         Runnable done = () -> {
             if (pending.decrementAndGet() == 0) {
                 requestAiResponse(query, gson.toJson(facts));
@@ -155,6 +159,62 @@ public class ChatActivity extends AppCompatActivity {
                 done.run();
             }
         });
+
+        aiRepository.getAnomalies(userId, from, to, new Callback<AiModels.AnomalyResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<AiModels.AnomalyResponse> call, @NonNull Response<AiModels.AnomalyResponse> response) {
+                facts.put("anomalies", response.isSuccessful() ? response.body() : null);
+                if (!response.isSuccessful()) facts.put("anomaliesError", response.code());
+                done.run();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<AiModels.AnomalyResponse> call, @NonNull Throwable t) {
+                facts.put("anomalies", null);
+                facts.put("anomaliesError", t.getMessage());
+                done.run();
+            }
+        });
+
+        aiRepository.getConfidenceInterval(userId, from, to, new Callback<AiModels.ConfidenceIntervalResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<AiModels.ConfidenceIntervalResponse> call, @NonNull Response<AiModels.ConfidenceIntervalResponse> response) {
+                facts.put("confidenceInterval", response.isSuccessful() ? response.body() : null);
+                if (!response.isSuccessful()) facts.put("confidenceIntervalError", response.code());
+                done.run();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<AiModels.ConfidenceIntervalResponse> call, @NonNull Throwable t) {
+                facts.put("confidenceInterval", null);
+                facts.put("confidenceIntervalError", t.getMessage());
+                done.run();
+            }
+        });
+
+        AiModels.CompareMeansRequest compareRequest = new AiModels.CompareMeansRequest();
+        compareRequest.setUserId(userId);
+        compareRequest.setFromA(fromA);
+        compareRequest.setToA(toA);
+        compareRequest.setFromB(from);
+        compareRequest.setToB(to);
+        compareRequest.setAlpha(new java.math.BigDecimal("0.05"));
+
+        aiRepository.compareMeans(compareRequest, new Callback<AiModels.HypothesisTestResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<AiModels.HypothesisTestResponse> call, @NonNull Response<AiModels.HypothesisTestResponse> response) {
+                facts.put("hypothesisTest", response.isSuccessful() ? response.body() : null);
+                if (!response.isSuccessful()) facts.put("hypothesisTestError", response.code());
+                done.run();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<AiModels.HypothesisTestResponse> call, @NonNull Throwable t) {
+                facts.put("hypothesisTest", null);
+                facts.put("hypothesisTestError", t.getMessage());
+                done.run();
+            }
+        });
     }
 
     private void requestAiResponse(String query, String factsJson) {
@@ -182,7 +242,8 @@ public class ChatActivity extends AppCompatActivity {
                     return;
                 }
                 String text = response.body().extractText();
-                addMessage(TextUtils.isEmpty(text) ? "Recibí la solicitud, pero no hubo contenido útil." : text, ChatMessage.Sender.IA);
+                String cleanText = sanitizeAssistantText(text);
+                addMessage(TextUtils.isEmpty(cleanText) ? "Recibí la solicitud, pero no hubo contenido útil." : cleanText, ChatMessage.Sender.IA);
 
             }
 
@@ -212,7 +273,20 @@ public class ChatActivity extends AppCompatActivity {
                 + "3) Riesgos (presupuesto/anomalías)\n"
                 + "4) Recomendaciones accionables (3-6)\n"
                 + "5) Qué dato faltaría para mejorar precisión\n\n"
-                + "Si no hay datos suficientes en alguna sección, escríbelo de forma explícita sin completar con suposiciones.";
+                + "Si no hay datos suficientes en alguna sección, escríbelo de forma explícita sin completar con suposiciones.\n"
+                + "Devuelve texto plano legible. No uses Markdown (sin **, *, #, ni backticks).";
+    }
+
+    private String sanitizeAssistantText(String rawText) {
+        if (TextUtils.isEmpty(rawText)) {
+            return rawText;
+        }
+        return rawText
+                .replace("```", "")
+                .replace("**", "")
+                .replace("`", "")
+                .replaceAll("(?m)^\\s*[-*]\\s+", "• ")
+                .trim();
     }
 
     private void addMessage(String message, ChatMessage.Sender sender) {
