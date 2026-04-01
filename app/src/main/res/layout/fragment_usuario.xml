@@ -73,6 +73,18 @@
             tools:ignore="UseAppTint" />
     </com.google.android.material.card.MaterialCardView>
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieUsuario"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/avatarContainer"
+        app:layout_constraintStart_toStartOf="@id/avatarContainer"
+        app:layout_constraintTop_toTopOf="@id/avatarContainer"
+        app:lottie_autoPlay="false"
+        app:lottie_fileName="usuario.json"
+        app:lottie_loop="false" />
+
     <LinearLayout
         android:id="@+id/actionRow"
         android:layout_width="0dp"

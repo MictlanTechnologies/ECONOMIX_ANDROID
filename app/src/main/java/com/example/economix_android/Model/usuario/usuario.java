@@ -21,6 +21,8 @@ import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.databinding.FragmentUsuarioBinding;
 import com.example.economix_android.util.ProfileImageUtils;
+import com.airbnb.lottie.LottieComposition;
+import com.airbnb.lottie.LottieDrawable;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class usuario extends Fragment {
@@ -73,6 +75,14 @@ public class usuario extends Fragment {
         binding.navIngresos.setOnClickListener(bottomNavListener);
         binding.navAhorro.setOnClickListener(bottomNavListener);
         binding.navGraficas.setOnClickListener(bottomNavListener);
+        binding.lottieUsuario.addLottieOnCompositionLoadedListener(this::reproducirSegmentoDeTiempo);
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        reproducirAnimacionUsuario();
     }
 
     @Override
@@ -120,9 +130,55 @@ public class usuario extends Fragment {
         requireActivity().finish();
     }
 
+
+    private void reproducirAnimacionUsuario() {
+        if (binding == null) {
+            return;
+        }
+        binding.lottieUsuario.setVisibility(View.VISIBLE);
+        binding.lottieUsuario.setRepeatCount(0);
+        binding.lottieUsuario.setRepeatMode(LottieDrawable.RESTART);
+        binding.lottieUsuario.cancelAnimation();
+        LottieComposition composition = binding.lottieUsuario.getComposition();
+        if (composition != null) {
+            reproducirSegmentoDeTiempo(composition);
+        }
+    }
+
+    private void reproducirSegmentoDeTiempo(@NonNull LottieComposition composition) {
+        if (binding == null) {
+            return;
+        }
+
+        float duracionMs = composition.getDuration();
+        float inicioMs = 5000f;
+        float finMs = 9000f;
+
+        if (duracionMs <= 0f || inicioMs >= duracionMs) {
+            binding.lottieUsuario.setVisibility(View.GONE);
+            return;
+        }
+
+        float finAjustadoMs = Math.min(finMs, duracionMs);
+        if (finAjustadoMs <= inicioMs) {
+            binding.lottieUsuario.setVisibility(View.GONE);
+            return;
+        }
+
+        float frameInicial = composition.getFrameForProgress(inicioMs / duracionMs);
+        float frameFinal = composition.getFrameForProgress(finAjustadoMs / duracionMs);
+
+        binding.lottieUsuario.setMinAndMaxFrame(Math.round(frameInicial), Math.round(frameFinal));
+        binding.lottieUsuario.setFrame(Math.round(frameInicial));
+        binding.lottieUsuario.playAnimation();
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (binding != null) {
+            binding.lottieUsuario.cancelAnimation();
+        }
         binding = null;
     }
 }
