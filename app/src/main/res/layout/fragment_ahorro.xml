@@ -14,7 +14,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Ayuda"
         android:src="@drawable/ayuda"
-        android:tint="@color/white"
+        android:tint="@color/economix_text_primary"
         tools:ignore="UseAppTint"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,7 +26,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Perfil"
         android:src="@drawable/usuario"
-        android:tint="@color/white"
+        android:tint="@color/economix_text_primary"
         tools:ignore="UseAppTint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,7 +38,7 @@
         android:layout_marginTop="16dp"
         android:fontFamily="sans-serif-medium"
         android:text="Plan de Ahorro"
-        android:textColor="@color/softWhite"
+        android:textColor="@color/white"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -93,6 +93,7 @@
                     android:padding="20dp">
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilMetaAhorro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:boxBackgroundColor="@color/softWhite"
@@ -104,15 +105,17 @@
                         app:boxStrokeColor="@color/tealAccent">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etObjetivo"
+                            android:id="@+id/etMetaAhorro"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Objetivo"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray" />
+                            android:hint="@string/label_meta_ahorro"
+                            android:inputType="text"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilPrecioMeta"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
@@ -125,37 +128,17 @@
                         app:boxStrokeColor="@color/tealAccent">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etDescripcion"
+                            android:id="@+id/etPrecioMeta"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Descripción"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        app:boxBackgroundColor="@color/softWhite"
-                        app:boxBackgroundMode="filled"
-                        app:boxCornerRadiusBottomEnd="20dp"
-                        app:boxCornerRadiusBottomStart="20dp"
-                        app:boxCornerRadiusTopEnd="20dp"
-                        app:boxCornerRadiusTopStart="20dp"
-                        app:boxStrokeColor="@color/tealAccent">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etMeta"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Meta"
+                            android:hint="@string/label_precio_objetivo"
                             android:inputType="numberDecimal"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray" />
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilIngresoSeleccion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
@@ -167,40 +150,111 @@
                         app:boxCornerRadiusTopStart="20dp"
                         app:boxStrokeColor="@color/tealAccent">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etAhorrado"
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/etIngresoSeleccion"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Ahorrado"
-                            android:inputType="numberDecimal"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray" />
+                            android:hint="@string/label_selecciona_ingreso"
+                            android:inputType="none"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <TextView
-                        android:id="@+id/labelAvance"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="Avance"
-                        android:textAllCaps="false"
-                        android:textColor="@color/goldAccent"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.progressindicator.LinearProgressIndicator
-                        android:id="@+id/progresoAhorro"
+                        android:id="@+id/tvIngresoDisponible"
                         android:layout_width="match_parent"
-                        android:layout_height="14dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/label_disponible_ingreso"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilFechaAhorro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:indeterminate="false"
-                        android:progress="70"
-                        app:indicatorColor="@color/goldAccent"
-                        app:trackColor="@color/softWhite"
-                        app:trackCornerRadius="7dp" />
+                        app:boxBackgroundColor="@color/softWhite"
+                        app:boxBackgroundMode="filled"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/tealAccent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etFechaAhorro"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/label_fecha_ahorro"
+                            android:inputType="date"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilAporteAhorro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        app:boxBackgroundColor="@color/softWhite"
+                        app:boxBackgroundMode="filled"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/tealAccent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etAporteAhorro"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/label_monto_aporte"
+                            android:inputType="numberDecimal"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white" />
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnVerAhorros"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/label_ver_registros"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/tealSurface"
+                app:cornerRadius="24dp" />
+
+            <TextView
+                android:id="@+id/tvHistorialAhorro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="Historial de ahorro"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvAhorrosVacio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Aún no registras ahorros."
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listaAhorros"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -232,12 +286,12 @@
             android:id="@+id/btnEliminar"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_marginHorizontal="6dp"
+            android:layout_marginHorizontal="4dp"
             android:layout_weight="1"
             android:text="Eliminar"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            app:backgroundTint="@color/tealSurfaceVariant"
+            app:backgroundTint="@color/module_gastos"
             app:cornerRadius="24dp" />
 
         <com.google.android.material.button.MaterialButton
@@ -274,7 +328,7 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingHorizontal="12dp"
-            android:paddingVertical="16dp">
+            android:paddingVertical="12dp">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -285,22 +339,21 @@
 
                 <ImageButton
                     android:id="@+id/navGastos"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Gastos"
-                    android:padding="14dp"
+                    android:padding="12dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/gastosop2texto"
-                    android:tint="@color/white"
+                    android:src="@drawable/gastosop2texto2"
                     tools:ignore="UseAppTint" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="1dp"
-                android:layout_height="48dp"
-                android:layout_marginHorizontal="6dp"
+                android:layout_height="36dp"
+                android:layout_marginHorizontal="4dp"
                 android:alpha="0.3"
                 android:background="@color/softWhite" />
 
@@ -313,22 +366,21 @@
 
                 <ImageButton
                     android:id="@+id/navIngresos"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Ingresos"
-                    android:padding="14dp"
+                    android:padding="12dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/ingresosconletras"
-                    android:tint="@color/white"
                     tools:ignore="UseAppTint" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="1dp"
-                android:layout_height="48dp"
-                android:layout_marginHorizontal="6dp"
+                android:layout_height="36dp"
+                android:layout_marginHorizontal="4dp"
                 android:alpha="0.3"
                 android:background="@color/softWhite" />
 
@@ -341,21 +393,20 @@
 
                 <ImageButton
                     android:id="@+id/navAhorro"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Ahorro"
-                    android:padding="14dp"
+                    android:padding="12dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ahorrotexto"
-                    android:tint="@color/white"
+                    android:src="@drawable/ahorrotexto2"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
 
             <View
                 android:layout_width="1dp"
-                android:layout_height="48dp"
-                android:layout_marginHorizontal="6dp"
+                android:layout_height="36dp"
+                android:layout_marginHorizontal="4dp"
                 android:alpha="0.3"
                 android:background="@color/softWhite" />
 
@@ -368,14 +419,13 @@
 
                 <ImageButton
                     android:id="@+id/navGraficas"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Gráficas"
-                    android:padding="14dp"
+                    android:padding="12dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/graficastexto1"
-                    android:tint="@color/white"
+                    android:src="@drawable/graficastexto2"
                     tools:ignore="UseAppTint" />
 
             </LinearLayout>

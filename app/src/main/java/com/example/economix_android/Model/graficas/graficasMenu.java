@@ -14,6 +14,8 @@ import androidx.navigation.Navigation;
 
 import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentGraficasMenuBinding;
+import com.example.economix_android.util.ProfileImageUtils;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class graficasMenu extends Fragment {
 
@@ -31,6 +33,8 @@ public class graficasMenu extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
+        ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
+        binding.btnAyuda.setOnClickListener(v -> mostrarAyuda());
         binding.btnGastosCategoria.setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.graficasMenuGastos));
@@ -46,6 +50,14 @@ public class graficasMenu extends Fragment {
         if (currentDestination == null || currentDestination.getId() != destinationId) {
             navController.navigate(destinationId);
         }
+    }
+
+    private void mostrarAyuda() {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.titulo_ayuda_graficas_menu)
+                .setMessage(R.string.mensaje_ayuda_graficas_menu)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 
     @Override

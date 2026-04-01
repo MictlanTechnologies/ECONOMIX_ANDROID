@@ -1,19 +1,29 @@
 package com.example.economix_android.auth;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentRegistroBinding;
+import com.example.economix_android.network.dto.UsuarioDto;
+import com.example.economix_android.network.repository.UsuarioRepository;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class registroFragment extends Fragment {
 
     private FragmentRegistroBinding binding;
+    private final UsuarioRepository usuarioRepository = new UsuarioRepository();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -28,6 +38,93 @@ public class registroFragment extends Fragment {
         binding.btnBack.setOnClickListener(v -> requireActivity()
                 .getOnBackPressedDispatcher()
                 .onBackPressed());
+        binding.btnSignUp.setOnClickListener(v -> registrarUsuario());
+    }
+
+    private void registrarUsuario() {
+        limpiarErrores();
+
+        String perfil = obtenerTexto(binding.etPerfil);
+        String contrasena = obtenerTexto(binding.etPassword);
+        String confirmar = obtenerTexto(binding.etConfirmPassword);
+
+        boolean hayError = false;
+
+        if (TextUtils.isEmpty(perfil)) {
+            binding.tilPerfil.setError(getString(R.string.error_perfil_obligatorio));
+            hayError = true;
+        }
+
+        if (TextUtils.isEmpty(contrasena)) {
+            binding.tilPassword.setError(getString(R.string.error_contrasena_obligatoria));
+            hayError = true;
+        }
+
+        if (TextUtils.isEmpty(confirmar)) {
+            binding.tilConfirmPassword.setError(getString(R.string.error_confirmar_contrasena));
+            hayError = true;
+        } else if (!TextUtils.isEmpty(contrasena) && !contrasena.equals(confirmar)) {
+            binding.tilConfirmPassword.setError(getString(R.string.error_contrasenas_no_coinciden));
+            hayError = true;
+        }
+
+        if (hayError) {
+            return;
+        }
+
+        binding.btnSignUp.setEnabled(false);
+
+        UsuarioDto nuevoUsuario = UsuarioDto.builder()
+                .perfilUsuario(perfil.trim())
+                .contrasenaUsuario(contrasena)
+                .build();
+
+        usuarioRepository.crearUsuario(nuevoUsuario, new Callback<UsuarioDto>() {
+            @Override
+            public void onResponse(Call<UsuarioDto> call, Response<UsuarioDto> response) {
+                if (binding != null) {
+                    binding.btnSignUp.setEnabled(true);
+                }
+                if (!isAdded()) {
+                    return;
+                }
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(requireContext(), getString(R.string.mensaje_registro_exitoso), Toast.LENGTH_SHORT).show();
+                    requireActivity().getOnBackPressedDispatcher().onBackPressed();
+                } else if (response.code() == 409) {
+                    binding.tilPerfil.setError(getString(R.string.error_perfil_registrado));
+                    Toast.makeText(requireContext(), getString(R.string.error_perfil_registrado), Toast.LENGTH_SHORT).show();
+                } else {
+                    mostrarMensajeError(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UsuarioDto> call, Throwable t) {
+                if (binding != null) {
+                    binding.btnSignUp.setEnabled(true);
+                }
+                if (!isAdded()) {
+                    return;
+                }
+                mostrarMensajeError(null);
+            }
+        });
+    }
+
+    private void limpiarErrores() {
+        binding.tilPerfil.setError(null);
+        binding.tilPassword.setError(null);
+        binding.tilConfirmPassword.setError(null);
+    }
+
+    private String obtenerTexto(com.google.android.material.textfield.TextInputEditText editText) {
+        return editText.getText() != null ? editText.getText().toString().trim() : "";
+    }
+
+    private void mostrarMensajeError(String message) {
+        String texto = message != null ? message : getString(R.string.mensaje_error_servidor);
+        Toast.makeText(requireContext(), texto, Toast.LENGTH_SHORT).show();
     }
 
     @Override

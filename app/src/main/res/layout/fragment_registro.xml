@@ -67,7 +67,7 @@
             android:padding="24dp">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilName"
+                android:id="@+id/tilPerfil"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,31 +76,11 @@
                 app:hintTextColor="@color/economix_text_secondary">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etName"
+                    android:id="@+id/etPerfil"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Nombre completo"
-                    android:inputType="textPersonName"
-                    android:textColor="@color/softWhite"
-                    android:textCursorDrawable="@null" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilEmail"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:boxBackgroundColor="@color/tealSurfaceVariant"
-                app:boxStrokeColor="@color/tealAccent"
-                app:hintTextColor="@color/economix_text_secondary">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Correo electrónico"
-                    android:inputType="textEmailAddress"
+                    android:hint="Usuario o perfil"
+                    android:inputType="text"
                     android:textColor="@color/softWhite"
                     android:textCursorDrawable="@null" />
             </com.google.android.material.textfield.TextInputLayout>

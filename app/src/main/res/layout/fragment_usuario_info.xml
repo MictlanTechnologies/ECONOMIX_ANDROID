@@ -15,7 +15,7 @@
         android:contentDescription="Ayuda"
         android:padding="4dp"
         android:src="@drawable/ayuda"
-        android:tint="@color/white"
+        android:tint="@color/economix_text_primary"
         tools:ignore="UseAppTint"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -63,7 +63,7 @@
             android:orientation="vertical">
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/infoCard"
+                android:id="@+id/cardPersona"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/tealSurface"
@@ -78,9 +78,27 @@
                     android:orientation="vertical"
                     android:padding="20dp">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Datos personales"
+                        android:textColor="@color/goldAccent"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Completa tu nombre y apellidos"
+                        android:textColor="@color/softWhite"
+                        android:textSize="14sp" />
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
                         app:boxBackgroundColor="@color/softWhite"
                         app:boxBackgroundMode="filled"
                         app:boxCornerRadiusBottomEnd="20dp"
@@ -95,8 +113,8 @@
                             android:layout_height="wrap_content"
                             android:hint="Nombre"
                             android:inputType="textPersonName"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray" />
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -117,14 +135,50 @@
                             android:layout_height="wrap_content"
                             android:hint="Apellidos"
                             android:inputType="textPersonName"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray" />
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white" />
                     </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardContacto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/tealSurface"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="4dp"
+                app:strokeColor="@color/tealLight"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Contacto"
+                        android:textColor="@color/goldAccent"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Agrega un correo o teléfono alterno"
+                        android:textColor="@color/softWhite"
+                        android:textSize="14sp" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="12dp"
                         app:boxBackgroundColor="@color/softWhite"
                         app:boxBackgroundMode="filled"
                         app:boxCornerRadiusBottomEnd="20dp"
@@ -139,8 +193,148 @@
                             android:layout_height="wrap_content"
                             android:hint="Teléfono o correo de contacto"
                             android:inputType="textEmailAddress"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray" />
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardDomicilio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/tealSurface"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="4dp"
+                app:strokeColor="@color/tealLight"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Domicilio"
+                        android:textColor="@color/goldAccent"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Guarda tu dirección principal"
+                        android:textColor="@color/softWhite"
+                        android:textSize="14sp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        app:boxBackgroundColor="@color/softWhite"
+                        app:boxBackgroundMode="filled"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/tealAccent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etDomicilio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Domicilio"
+                            android:inputType="textPostalAddress"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/tealSurface"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="4dp"
+                app:strokeColor="@color/tealLight"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Cuenta de usuario"
+                        android:textColor="@color/goldAccent"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Actualiza tu nombre de usuario o cambia la contraseña"
+                        android:textColor="@color/softWhite"
+                        android:textSize="14sp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        app:boxBackgroundColor="@color/softWhite"
+                        app:boxBackgroundMode="filled"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/tealAccent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etPerfilUsuario"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Nombre de usuario"
+                            android:inputType="textEmailAddress"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilContrasenaActual"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        app:boxBackgroundColor="@color/softWhite"
+                        app:boxBackgroundMode="filled"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/tealAccent"
+                        app:passwordToggleEnabled="true">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etContrasenaActual"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Contraseña actual"
+                            android:inputType="textPassword"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -157,35 +351,13 @@
                         app:passwordToggleEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etContraseña"
+                            android:id="@+id/etContrasenaNueva"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Contraseña"
+                            android:hint="Nueva contraseña"
                             android:inputType="textPassword"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        app:boxBackgroundColor="@color/softWhite"
-                        app:boxBackgroundMode="filled"
-                        app:boxCornerRadiusBottomEnd="20dp"
-                        app:boxCornerRadiusBottomStart="20dp"
-                        app:boxCornerRadiusTopEnd="20dp"
-                        app:boxCornerRadiusTopStart="20dp"
-                        app:boxStrokeColor="@color/tealAccent">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etDomicilio"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Domicilio"
-                            android:inputType="textPostalAddress"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray" />
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -246,7 +418,7 @@
             android:id="@+id/btnEliminar"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_marginHorizontal="6dp"
+            android:layout_marginHorizontal="4dp"
             android:layout_weight="1"
             android:text="Eliminar"
             android:textAllCaps="false"
@@ -257,7 +429,7 @@
             app:autoSizeMaxTextSize="16sp"
             app:autoSizeMinTextSize="12sp"
             app:autoSizeStepGranularity="1sp"
-            app:backgroundTint="@color/tealSurfaceVariant"
+            app:backgroundTint="@color/module_gastos"
             app:cornerRadius="24dp" />
 
         <com.google.android.material.button.MaterialButton
@@ -300,7 +472,7 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingHorizontal="12dp"
-            android:paddingVertical="16dp">
+            android:paddingVertical="12dp">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -311,21 +483,20 @@
 
                 <ImageButton
                     android:id="@+id/navGastos"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Gastos"
-                    android:padding="14dp"
+                    android:padding="12dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/gastosop2texto"
-                    android:tint="@color/white"
+                    android:src="@drawable/gastosop2texto2"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
 
             <View
                 android:layout_width="1dp"
-                android:layout_height="48dp"
-                android:layout_marginHorizontal="6dp"
+                android:layout_height="36dp"
+                android:layout_marginHorizontal="4dp"
                 android:alpha="0.3"
                 android:background="@color/softWhite" />
 
@@ -338,21 +509,20 @@
 
                 <ImageButton
                     android:id="@+id/navIngresos"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Ingresos"
-                    android:padding="14dp"
+                    android:padding="12dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/ingresosconletras"
-                    android:tint="@color/white"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
 
             <View
                 android:layout_width="1dp"
-                android:layout_height="48dp"
-                android:layout_marginHorizontal="6dp"
+                android:layout_height="36dp"
+                android:layout_marginHorizontal="4dp"
                 android:alpha="0.3"
                 android:background="@color/softWhite" />
 
@@ -365,21 +535,20 @@
 
                 <ImageButton
                     android:id="@+id/navAhorro"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Ahorro"
-                    android:padding="14dp"
+                    android:padding="12dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ahorrotexto"
-                    android:tint="@color/white"
+                    android:src="@drawable/ahorrotexto2"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
 
             <View
                 android:layout_width="1dp"
-                android:layout_height="48dp"
-                android:layout_marginHorizontal="6dp"
+                android:layout_height="36dp"
+                android:layout_marginHorizontal="4dp"
                 android:alpha="0.3"
                 android:background="@color/softWhite" />
 
@@ -392,14 +561,13 @@
 
                 <ImageButton
                     android:id="@+id/navGraficas"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Gráficas"
-                    android:padding="14dp"
+                    android:padding="12dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/graficastexto1"
-                    android:tint="@color/white"
+                    android:src="@drawable/graficastexto2"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
         </LinearLayout>
