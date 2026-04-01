@@ -1,6 +1,7 @@
 package com.example.economix_android;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,10 +36,15 @@ public class menu extends Fragment implements View.OnClickListener {
         TextView saludoUsuario = view.findViewById(R.id.txtHolaUsuario);
 
         ProfileImageUtils.applyProfileImage(requireContext(), perfilButton);
-        String perfil = SessionManager.getPerfil(requireContext());
-        String nombreVisible = (perfil != null && !perfil.trim().isEmpty()) ? perfil : "Usuario";
-        String saludo = "Hola, " + nombreVisible;
-        saludoUsuario.setText(saludo);
+
+        String nombreVisible = SessionManager.getDisplayName(requireContext());
+        if (TextUtils.isEmpty(nombreVisible)) {
+            nombreVisible = SessionManager.getPerfil(requireContext());
+        }
+        if (TextUtils.isEmpty(nombreVisible)) {
+            nombreVisible = getString(R.string.label_usuario_generico);
+        }
+        saludoUsuario.setText(getString(R.string.label_hola_usuario, nombreVisible));
 
         tileGastos.setOnClickListener(this);
         tileIngresos.setOnClickListener(this);

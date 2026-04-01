@@ -24,8 +24,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="20dp"
-            android:paddingTop="28dp"
-            android:paddingBottom="24dp">
+            android:paddingTop="24dp"
+            android:paddingBottom="28dp">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/headerCard"
@@ -34,23 +34,25 @@
                 app:cardBackgroundColor="@android:color/transparent"
                 app:cardCornerRadius="24dp"
                 app:cardElevation="0dp"
-                app:strokeWidth="0dp">
+                app:strokeColor="@color/menuHeaderOutline"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_dashboard_header"
+                    android:background="@drawable/bg_dashboard_header_outline_clean"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="20dp">
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="16dp">
 
                     <ImageView
                         android:id="@+id/btnPerfil"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
+                        android:layout_width="58dp"
+                        android:layout_height="58dp"
                         android:background="@drawable/bg_avatar_circle"
-                        android:contentDescription="Perfil"
-                        android:padding="6dp"
+                        android:contentDescription="@string/desc_profile"
+                        android:padding="7dp"
                         android:scaleType="centerInside"
                         android:src="@drawable/ic_profile_placeholder" />
 
@@ -64,9 +66,9 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/label_hola"
-                            android:textColor="@color/menuHeaderText"
-                            android:textSize="15sp" />
+                            android:text="@string/title_inicio"
+                            android:textColor="@color/economix_text_secondary"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/txtHolaUsuario"
@@ -75,17 +77,26 @@
                             android:layout_marginTop="2dp"
                             android:fontFamily="sans-serif-medium"
                             android:textColor="@color/menuHeaderText"
-                            android:textSize="31sp"
-                            tools:text="Diego" />
+                            android:textSize="24sp"
+                            tools:text="Hola, Diego" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="@string/label_accesos_rapidos"
+                android:textColor="@color/economix_text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/menuGrid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="12dp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -104,7 +115,7 @@
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackground"
                         app:cardBackgroundColor="@android:color/transparent"
-                        app:cardElevation="3dp"
+                        app:cardElevation="2dp"
                         app:strokeWidth="0dp">
 
                         <LinearLayout
@@ -113,13 +124,13 @@
                             android:background="@drawable/bg_dashboard_card_gastos"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="18dp">
+                            android:padding="16dp">
 
                             <ImageView
                                 android:id="@+id/gastoFr"
-                                android:layout_width="84dp"
-                                android:layout_height="84dp"
-                                android:contentDescription="Acceso a gastos"
+                                android:layout_width="74dp"
+                                android:layout_height="74dp"
+                                android:contentDescription="@string/desc_acceso_gastos"
                                 android:scaleType="fitCenter"
                                 android:src="@drawable/gastosop2texto2" />
 
@@ -127,9 +138,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
-                                android:text="GASTOS"
+                                android:text="@string/title_gastos"
                                 android:textColor="@color/menuCardText"
-                                android:textSize="22sp"
+                                android:textSize="20sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
@@ -144,7 +155,7 @@
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackground"
                         app:cardBackgroundColor="@android:color/transparent"
-                        app:cardElevation="3dp"
+                        app:cardElevation="2dp"
                         app:strokeWidth="0dp">
 
                         <LinearLayout
@@ -153,13 +164,13 @@
                             android:background="@drawable/bg_dashboard_card_ingresos"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="18dp">
+                            android:padding="16dp">
 
                             <ImageView
                                 android:id="@+id/ingresoFr"
-                                android:layout_width="84dp"
-                                android:layout_height="84dp"
-                                android:contentDescription="Acceso a ingresos"
+                                android:layout_width="74dp"
+                                android:layout_height="74dp"
+                                android:contentDescription="@string/desc_acceso_ingresos"
                                 android:scaleType="fitCenter"
                                 android:src="@drawable/ingresosconletras" />
 
@@ -167,9 +178,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
-                                android:text="INGRESOS"
+                                android:text="@string/title_ingresos"
                                 android:textColor="@color/menuCardText"
-                                android:textSize="22sp"
+                                android:textSize="20sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
@@ -192,7 +203,7 @@
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackground"
                         app:cardBackgroundColor="@android:color/transparent"
-                        app:cardElevation="3dp"
+                        app:cardElevation="2dp"
                         app:strokeWidth="0dp">
 
                         <LinearLayout
@@ -201,13 +212,13 @@
                             android:background="@drawable/bg_dashboard_card_ahorro"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="18dp">
+                            android:padding="16dp">
 
                             <ImageView
                                 android:id="@+id/ahorroFr"
-                                android:layout_width="84dp"
-                                android:layout_height="84dp"
-                                android:contentDescription="Acceso al ahorro"
+                                android:layout_width="74dp"
+                                android:layout_height="74dp"
+                                android:contentDescription="@string/desc_acceso_ahorro"
                                 android:scaleType="fitCenter"
                                 android:src="@drawable/ahorrotexto2" />
 
@@ -215,9 +226,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
-                                android:text="AHORRO"
+                                android:text="@string/title_ahorro"
                                 android:textColor="@color/menuCardText"
-                                android:textSize="22sp"
+                                android:textSize="20sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
@@ -232,7 +243,7 @@
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackground"
                         app:cardBackgroundColor="@android:color/transparent"
-                        app:cardElevation="3dp"
+                        app:cardElevation="2dp"
                         app:strokeWidth="0dp">
 
                         <LinearLayout
@@ -241,13 +252,13 @@
                             android:background="@drawable/bg_dashboard_card_graficas"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="18dp">
+                            android:padding="16dp">
 
                             <ImageView
                                 android:id="@+id/graficasFr"
-                                android:layout_width="84dp"
-                                android:layout_height="84dp"
-                                android:contentDescription="Acceso a las gráficas"
+                                android:layout_width="74dp"
+                                android:layout_height="74dp"
+                                android:contentDescription="@string/desc_acceso_graficas"
                                 android:scaleType="fitCenter"
                                 android:src="@drawable/graficastexto2" />
 
@@ -255,9 +266,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
-                                android:text="GRÁFICOS"
+                                android:text="@string/title_graficas"
                                 android:textColor="@color/menuCardText"
-                                android:textSize="22sp"
+                                android:textSize="20sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
@@ -271,7 +282,7 @@
                 android:layout_marginTop="18dp"
                 app:cardBackgroundColor="@color/recentActivityBg"
                 app:cardCornerRadius="20dp"
-                app:cardElevation="2dp"
+                app:cardElevation="1dp"
                 app:strokeColor="@color/strokeSubtle"
                 app:strokeWidth="1dp">
 
@@ -287,7 +298,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/label_recent_activity"
                         android:textColor="@color/economix_text_primary"
-                        android:textSize="18sp"
+                        android:textSize="17sp"
                         android:textStyle="bold" />
 
                     <View
@@ -304,8 +315,8 @@
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:src="@drawable/ic_trending_up"
                             android:tint="@color/tealPrimary"
                             tools:ignore="UseAppTint" />
@@ -329,7 +340,7 @@
         android:id="@+id/btnAyuda"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:contentDescription="Ayuda"
+        android:contentDescription="@string/desc_help"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

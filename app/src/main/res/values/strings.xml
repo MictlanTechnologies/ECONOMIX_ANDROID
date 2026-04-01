@@ -179,6 +179,12 @@
     <string name="title_mas">Más</string>
     <string name="label_recent_activity">Actividad Reciente</string>
     <string name="label_no_recent_activity">No hay actividad reciente</string>
+    <string name="label_usuario_generico">Usuario</string>
+    <string name="label_accesos_rapidos">Accesos rápidos</string>
+    <string name="desc_acceso_gastos">Acceso a gastos</string>
+    <string name="desc_acceso_ingresos">Acceso a ingresos</string>
+    <string name="desc_acceso_ahorro">Acceso al ahorro</string>
+    <string name="desc_acceso_graficas">Acceso a gráficas</string>
 
     <!-- Presupuestos -->
     <string name="titulo_nuevo_presupuesto">Nuevo Presupuesto</string>
