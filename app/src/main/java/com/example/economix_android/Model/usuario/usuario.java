@@ -76,6 +76,7 @@ public class usuario extends Fragment {
         binding.navAhorro.setOnClickListener(bottomNavListener);
         binding.navGraficas.setOnClickListener(bottomNavListener);
         binding.lottieUsuario.addLottieOnCompositionLoadedListener(this::reproducirSegmentoDeTiempo);
+        binding.lottieUsuario.setFailureListener(error -> binding.lottieUsuario.setVisibility(View.GONE));
     }
 
 

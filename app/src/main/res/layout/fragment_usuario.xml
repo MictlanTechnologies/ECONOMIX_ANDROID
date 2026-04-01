@@ -82,7 +82,7 @@
         app:layout_constraintStart_toStartOf="@id/avatarContainer"
         app:layout_constraintTop_toTopOf="@id/avatarContainer"
         app:lottie_autoPlay="false"
-        app:lottie_fileName="usuario.json"
+        app:lottie_rawRes="@raw/usuario"
         app:lottie_loop="false" />
 
     <LinearLayout
