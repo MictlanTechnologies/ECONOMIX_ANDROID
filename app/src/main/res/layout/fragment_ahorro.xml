@@ -216,37 +216,16 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <LinearLayout
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnVerAhorros"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="56dp"
                 android:layout_marginTop="24dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnVerAhorros"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:text="@string/label_ver_registros"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    app:backgroundTint="@color/tealSurface"
-                    app:cornerRadius="14dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnMenuAhorro"
-                    android:layout_width="wrap_content"
-                    android:layout_height="56dp"
-                    android:text="Menú"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    app:backgroundTint="@color/tealAccent"
-                    app:cornerRadius="14dp"
-                    app:icon="@drawable/ic_home_filled"
-                    app:iconTint="@color/white" />
-            </LinearLayout>
+                android:text="@string/label_ver_registros"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/tealSurface"
+                app:cornerRadius="14dp" />
 
             <TextView
                 android:id="@+id/tvHistorialAhorro"
@@ -339,7 +318,7 @@
         app:cardElevation="8dp"
         app:strokeColor="@color/softWhite"
         app:strokeWidth="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/navMenuMini"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -453,5 +432,21 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/navMenuMini"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="Ir al menú"
+        app:backgroundTint="@color/tealAccent"
+        app:fabCustomSize="36dp"
+        app:maxImageSize="18dp"
+        app:srcCompat="@drawable/ic_home_filled"
+        app:tint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

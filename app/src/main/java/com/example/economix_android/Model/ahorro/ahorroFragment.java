@@ -107,7 +107,6 @@ public class ahorroFragment extends Fragment {
         binding.btnVerAhorros.setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.action_navigation_ahorro_to_ahorroInfo));
-        binding.btnMenuAhorro.setOnClickListener(v -> navigateSafely(v, R.id.menu));
 
         View.OnClickListener bottomNavListener = v -> {
             int viewId = v.getId();
@@ -119,6 +118,8 @@ public class ahorroFragment extends Fragment {
                 navigateSafely(v, R.id.navigation_ahorro);
             } else if (viewId == R.id.navGraficas) {
                 navigateSafely(v, R.id.navigation_graficas);
+            } else if (viewId == R.id.navMenuMini) {
+                navigateSafely(v, R.id.menu);
             }
         };
 
@@ -126,6 +127,7 @@ public class ahorroFragment extends Fragment {
         binding.navIngresos.setOnClickListener(bottomNavListener);
         binding.navAhorro.setOnClickListener(bottomNavListener);
         binding.navGraficas.setOnClickListener(bottomNavListener);
+        binding.navMenuMini.setOnClickListener(bottomNavListener);
 
         configurarLista();
         configurarIngresos();
