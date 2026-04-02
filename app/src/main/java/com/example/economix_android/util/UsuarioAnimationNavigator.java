@@ -28,7 +28,7 @@ public final class UsuarioAnimationNavigator {
     }
 
     public static void playAndNavigate(@NonNull View originView, @IdRes int navId) {
-        playAndNavigate(originView, navId, R.raw.usuario, 6000f, 9000f);
+        playAndNavigate(originView, navId, R.raw.usuario, 6500f, 8000f);
     }
 
     public static void playAndNavigate(@NonNull View originView,
