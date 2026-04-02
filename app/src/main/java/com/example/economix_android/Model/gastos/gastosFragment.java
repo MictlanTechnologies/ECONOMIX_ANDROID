@@ -52,6 +52,7 @@ public class gastosFragment extends Fragment {
     public static final String ARG_GASTO_PERIODO = "arg_gasto_periodo";
     public static final String ARG_GASTO_RECURRENTE = "arg_gasto_recurrente";
     public static final String ARG_GASTO_PLANTILLA = "arg_gasto_plantilla";
+    private static final String PREF_GASTO_INGRESO = "pref_gasto_ingreso_links";
 
     private FragmentGastosBinding binding;
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -329,6 +330,7 @@ public class gastosFragment extends Fragment {
                 }
                 if (result != null && result.getId() != null && ingresoActualizado != null && ingresoActualizado.getId() != null) {
                     DataRepository.vincularGastoConIngreso(result.getId(), ingresoActualizado.getId());
+                    guardarVinculoGastoIngreso(result.getId(), ingresoActualizado.getId());
                 }
                 Toast.makeText(requireContext(), R.string.mensaje_gasto_guardado, Toast.LENGTH_SHORT).show();
                 limpiarCampos();
@@ -489,7 +491,11 @@ public class gastosFragment extends Fragment {
         setGastoButtonsEnabled(false);
         final Integer gastoId = gastoEnEdicionId;
         final Gasto gastoEliminado = DataRepository.getGastoById(gastoId);
-        final Integer ingresoVinculadoId = DataRepository.getIngresoIdVinculadoAGasto(gastoId);
+        Integer ingresoVinculadoLocal = DataRepository.getIngresoIdVinculadoAGasto(gastoId);
+        if (ingresoVinculadoLocal == null) {
+            ingresoVinculadoLocal = obtenerIngresoVinculadoDesdePreferencias(gastoId);
+        }
+        final Integer ingresoVinculadoId = ingresoVinculadoLocal;
 
         DataRepository.RepositoryCallback<Boolean> callback = new DataRepository.RepositoryCallback<Boolean>() {
             @Override
@@ -504,6 +510,7 @@ public class gastosFragment extends Fragment {
                 if (Boolean.TRUE.equals(eliminado) && gastoEliminado != null && ingresoVinculadoId != null) {
                     reembolsarMontoAlIngreso(ingresoVinculadoId, parseMontoSeguro(gastoEliminado.getDescripcion()));
                 } else {
+                    eliminarVinculoGastoIngreso(gastoId);
                     limpiarCampos();
                     setGastoButtonsEnabled(true);
                 }
@@ -530,6 +537,7 @@ public class gastosFragment extends Fragment {
 
     private void reembolsarMontoAlIngreso(@NonNull Integer ingresoId, @NonNull BigDecimal montoReembolso) {
         if (montoReembolso.compareTo(BigDecimal.ZERO) <= 0) {
+            eliminarVinculoGastoIngreso(gastoEnEdicionId);
             limpiarCampos();
             setGastoButtonsEnabled(true);
             return;
@@ -545,6 +553,7 @@ public class gastosFragment extends Fragment {
         }
         if (ingreso == null) {
             cargarIngresos();
+            eliminarVinculoGastoIngreso(gastoEnEdicionId);
             limpiarCampos();
             setGastoButtonsEnabled(true);
             return;
@@ -560,6 +569,7 @@ public class gastosFragment extends Fragment {
                             return;
                         }
                         cargarIngresos();
+                        eliminarVinculoGastoIngreso(gastoEnEdicionId);
                         limpiarCampos();
                         setGastoButtonsEnabled(true);
                     }
@@ -570,11 +580,47 @@ public class gastosFragment extends Fragment {
                             return;
                         }
                         cargarIngresos();
+                        eliminarVinculoGastoIngreso(gastoEnEdicionId);
                         limpiarCampos();
                         setGastoButtonsEnabled(true);
                         mostrarMensajeError(message);
                     }
                 });
+    }
+
+    private void guardarVinculoGastoIngreso(@Nullable Integer gastoId, @Nullable Integer ingresoId) {
+        if (gastoId == null || ingresoId == null) {
+            return;
+        }
+        requireContext().getSharedPreferences(PREF_GASTO_INGRESO, 0)
+                .edit()
+                .putInt(String.valueOf(gastoId), ingresoId)
+                .apply();
+    }
+
+    @Nullable
+    private Integer obtenerIngresoVinculadoDesdePreferencias(@Nullable Integer gastoId) {
+        if (gastoId == null) {
+            return null;
+        }
+        android.content.SharedPreferences prefs =
+                requireContext().getSharedPreferences(PREF_GASTO_INGRESO, 0);
+        String key = String.valueOf(gastoId);
+        if (!prefs.contains(key)) {
+            return null;
+        }
+        int value = prefs.getInt(key, -1);
+        return value > 0 ? value : null;
+    }
+
+    private void eliminarVinculoGastoIngreso(@Nullable Integer gastoId) {
+        if (gastoId == null) {
+            return;
+        }
+        requireContext().getSharedPreferences(PREF_GASTO_INGRESO, 0)
+                .edit()
+                .remove(String.valueOf(gastoId))
+                .apply();
     }
 
     private void limpiarErrores() {
