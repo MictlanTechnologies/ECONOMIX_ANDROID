@@ -44,6 +44,7 @@ public final class DataRepository {
     private static final List<Gasto> gastos = new ArrayList<>();
     private static final List<Gasto> gastosRecurrentes = new ArrayList<>();
     private static final Map<Integer, BigDecimal> ingresosOriginales = new HashMap<>();
+    private static final Map<Integer, Integer> gastoIngresoLinks = new HashMap<>();
     private static final Map<Integer, Integer> conceptoIngresoLinks = new HashMap<>();
     private static final Map<Integer, Integer> conceptoGastoLinks = new HashMap<>();
 
@@ -90,6 +91,18 @@ public final class DataRepository {
 
     public static List<Gasto> getGastos() {
         return Collections.unmodifiableList(gastos);
+    }
+
+    public static Gasto getGastoById(Integer id) {
+        if (id == null) {
+            return null;
+        }
+        for (Gasto gasto : gastos) {
+            if (Objects.equals(gasto.getId(), id)) {
+                return gasto;
+            }
+        }
+        return null;
     }
 
     public static List<Gasto> getGastosRecurrentes() {
@@ -501,6 +514,20 @@ public final class DataRepository {
         });
     }
 
+    public static void vincularGastoConIngreso(Integer gastoId, Integer ingresoId) {
+        if (gastoId == null || ingresoId == null) {
+            return;
+        }
+        gastoIngresoLinks.put(gastoId, ingresoId);
+    }
+
+    public static Integer getIngresoIdVinculadoAGasto(Integer gastoId) {
+        if (gastoId == null) {
+            return null;
+        }
+        return gastoIngresoLinks.get(gastoId);
+    }
+
     public static void updateIngreso(Context context, Ingreso ingreso, RepositoryCallback<Ingreso> callback) {
         if (ingreso == null || ingreso.getId() == null) {
             notifyError(callback, "El ingreso no es válido para actualizar.");
@@ -816,22 +843,12 @@ public final class DataRepository {
 
     private static void eliminarGastoPorId(Integer id) {
         gastos.removeIf(gasto -> Objects.equals(gasto.getId(), id));
+        gastoIngresoLinks.remove(id);
     }
 
     private static void eliminarGastoRecurrentePorId(Integer id) {
         gastosRecurrentes.removeIf(gasto -> Objects.equals(gasto.getId(), id));
-    }
-
-    private static Gasto getGastoById(Integer id) {
-        if (id == null) {
-            return null;
-        }
-        for (Gasto gasto : gastos) {
-            if (Objects.equals(gasto.getId(), id)) {
-                return gasto;
-            }
-        }
-        return null;
+        gastoIngresoLinks.remove(id);
     }
 
     private static Ingreso fromDto(IngresoDto dto) {
@@ -1102,6 +1119,7 @@ public final class DataRepository {
         gastos.clear();
         gastosRecurrentes.clear();
         ingresosOriginales.clear();
+        gastoIngresoLinks.clear();
         conceptoIngresoLinks.clear();
         conceptoGastoLinks.clear();
     }

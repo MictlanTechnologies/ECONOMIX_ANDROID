@@ -326,6 +326,9 @@ public class gastosFragment extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
+                if (result != null && result.getId() != null && ingresoActualizado != null && ingresoActualizado.getId() != null) {
+                    DataRepository.vincularGastoConIngreso(result.getId(), ingresoActualizado.getId());
+                }
                 Toast.makeText(requireContext(), R.string.mensaje_gasto_guardado, Toast.LENGTH_SHORT).show();
                 limpiarCampos();
                 cargarIngresos();
@@ -483,6 +486,10 @@ public class gastosFragment extends Fragment {
 
     private void ejecutarEliminacionSeleccionada() {
         setGastoButtonsEnabled(false);
+        final Integer gastoId = gastoEnEdicionId;
+        final Gasto gastoEliminado = DataRepository.getGastoById(gastoId);
+        final Integer ingresoVinculadoId = DataRepository.getIngresoIdVinculadoAGasto(gastoId);
+
         DataRepository.RepositoryCallback<Boolean> callback = new DataRepository.RepositoryCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean eliminado) {
@@ -493,8 +500,12 @@ public class gastosFragment extends Fragment {
                         ? R.string.mensaje_gasto_eliminado_seleccionado
                         : R.string.error_sin_gastos;
                 Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show();
-                limpiarCampos();
-                setGastoButtonsEnabled(true);
+                if (Boolean.TRUE.equals(eliminado) && gastoEliminado != null && ingresoVinculadoId != null) {
+                    reembolsarMontoAlIngreso(ingresoVinculadoId, parseMontoSeguro(gastoEliminado.getDescripcion()));
+                } else {
+                    limpiarCampos();
+                    setGastoButtonsEnabled(true);
+                }
             }
 
             @Override
@@ -514,6 +525,55 @@ public class gastosFragment extends Fragment {
         } else {
             DataRepository.removeGastoById(gastoEnEdicionId, callback);
         }
+    }
+
+    private void reembolsarMontoAlIngreso(@NonNull Integer ingresoId, @NonNull BigDecimal montoReembolso) {
+        if (montoReembolso.compareTo(BigDecimal.ZERO) <= 0) {
+            limpiarCampos();
+            setGastoButtonsEnabled(true);
+            return;
+        }
+        Ingreso ingreso = DataRepository.getIngresoById(ingresoId);
+        if (ingreso == null) {
+            for (Ingreso historial : DataRepository.getIngresosHistorial()) {
+                if (ingresoId.equals(historial.getId())) {
+                    ingreso = historial;
+                    break;
+                }
+            }
+        }
+        if (ingreso == null) {
+            cargarIngresos();
+            limpiarCampos();
+            setGastoButtonsEnabled(true);
+            return;
+        }
+
+        BigDecimal montoActual = parseMontoSeguro(ingreso.getDescripcion());
+        BigDecimal nuevoMonto = montoActual.add(montoReembolso);
+        DataRepository.updateIngresoMonto(requireContext(), ingreso, nuevoMonto,
+                new DataRepository.RepositoryCallback<Ingreso>() {
+                    @Override
+                    public void onSuccess(Ingreso result) {
+                        if (!isAdded()) {
+                            return;
+                        }
+                        cargarIngresos();
+                        limpiarCampos();
+                        setGastoButtonsEnabled(true);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        if (!isAdded()) {
+                            return;
+                        }
+                        cargarIngresos();
+                        limpiarCampos();
+                        setGastoButtonsEnabled(true);
+                        mostrarMensajeError(message);
+                    }
+                });
     }
 
     private void limpiarErrores() {
