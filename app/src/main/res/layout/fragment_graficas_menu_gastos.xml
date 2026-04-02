@@ -95,7 +95,7 @@
                         android:layout_height="64dp"
                         android:layout_gravity="center_horizontal"
                         android:contentDescription="Ilustración gráfica"
-                        android:src="@drawable/graficastexto1"
+                        android:src="@drawable/graficastexto2"
                         tools:ignore="UseAppTint" />
 
                     <TextView
@@ -128,7 +128,7 @@
                         android:textStyle="bold"
                         app:backgroundTint="@color/tealSurfaceVariant"
                         app:cornerRadius="20dp"
-                        app:icon="@drawable/graficastexto1"
+                        app:icon="@drawable/graficastexto2"
                         app:iconGravity="textStart"
                         app:iconPadding="16dp"
                         app:iconSize="32dp" />
