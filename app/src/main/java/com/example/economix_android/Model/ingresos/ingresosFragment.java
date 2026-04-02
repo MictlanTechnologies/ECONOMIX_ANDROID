@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.example.economix_android.Model.data.RegistroFinanciero;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RawRes;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -277,6 +278,7 @@ public class ingresosFragment extends Fragment {
                     return;
                 }
                 Toast.makeText(requireContext(), R.string.mensaje_ingreso_guardado, Toast.LENGTH_SHORT).show();
+                UsuarioAnimationNavigator.playOnly(binding.getRoot(), resolverAnimacionRaw("ingreso"));
                 limpiarCampos();
                 setIngresoButtonsEnabled(true);
             }
@@ -507,6 +509,13 @@ public class ingresosFragment extends Fragment {
 
         editText.clearFocus();
         datePickerDialog.show();
+    }
+
+    @RawRes
+    private int resolverAnimacionRaw(@NonNull String nombre) {
+        int id = requireContext().getResources().getIdentifier(
+                nombre.toLowerCase(Locale.ROOT), "raw", requireContext().getPackageName());
+        return id != 0 ? id : R.raw.usuario;
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RawRes;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
@@ -37,12 +38,17 @@ public class graficasMenuGastos extends Fragment {
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyuda.setOnClickListener(v -> mostrarAyuda());
         binding.btnGraficaBarras.setOnClickListener(v ->
-                Navigation.findNavController(v)
-                        .navigate(R.id.graficaBarrasGastos));
+                UsuarioAnimationNavigator.playAndNavigate(v, R.id.graficaBarrasGastos, resolverAnimacionRaw("barras")));
         binding.btnGraficaCircular.setOnClickListener(v ->
-                Navigation.findNavController(v)
-                        .navigate(R.id.graficaCircularGastos));
+                UsuarioAnimationNavigator.playAndNavigate(v, R.id.graficaCircularGastos, resolverAnimacionRaw("pastel")));
         binding.btnVolverMenuGraficas.setOnClickListener(v -> navigateSafely(v, R.id.navigation_graficas));
+    }
+
+    @RawRes
+    private int resolverAnimacionRaw(@NonNull String nombre) {
+        int id = requireContext().getResources().getIdentifier(
+                nombre.toLowerCase(java.util.Locale.ROOT), "raw", requireContext().getPackageName());
+        return id != 0 ? id : R.raw.usuario;
     }
 
     private void navigateSafely(View view, int destinationId) {

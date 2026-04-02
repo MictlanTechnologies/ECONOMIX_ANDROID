@@ -31,6 +31,62 @@ public final class UsuarioAnimationNavigator {
         playAndNavigate(originView, navId, R.raw.usuario, 6500f, 8000f);
     }
 
+    public static void playOnly(@NonNull View originView, @RawRes int animationRes) {
+        playOnly(originView, animationRes, null, null);
+    }
+
+    public static void playOnly(@NonNull View originView,
+                                @RawRes int animationRes,
+                                @Nullable Float startMs,
+                                @Nullable Float endMs) {
+        Context context = originView.getContext();
+
+        Dialog dialog = new Dialog(context, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+        FrameLayout root = new FrameLayout(context);
+        root.setBackgroundColor(0x88000000);
+
+        LottieAnimationView lottie = new LottieAnimationView(context);
+        int size = (int) (220 * context.getResources().getDisplayMetrics().density);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(size, size);
+        params.gravity = Gravity.CENTER;
+        lottie.setLayoutParams(params);
+        lottie.setAnimation(animationRes);
+        lottie.setRepeatCount(0);
+        lottie.setRepeatMode(LottieDrawable.RESTART);
+
+        root.addView(lottie);
+        dialog.setContentView(root);
+        dialog.setCancelable(false);
+
+        lottie.addLottieOnCompositionLoadedListener(composition -> playSegment(lottie, composition, startMs, endMs));
+        lottie.setFailureListener(error -> {
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+        });
+        lottie.addAnimatorListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        dialog.show();
+        LottieComposition composition = lottie.getComposition();
+        if (composition != null) {
+            playSegment(lottie, composition, startMs, endMs);
+        }
+    }
+
     public static void playAndNavigate(@NonNull View originView,
                                        @IdRes int navId,
                                        @RawRes int animationRes) {

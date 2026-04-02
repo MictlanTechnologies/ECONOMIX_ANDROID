@@ -64,6 +64,7 @@ public class graficaBarrasIngreosVsGastos extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        UsuarioAnimationNavigator.playOnly(view, resolverAnimacionRaw("barras"));
 
         binding.btnPerfil.setOnClickListener(v ->
                 UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario));
@@ -75,6 +76,12 @@ public class graficaBarrasIngreosVsGastos extends Fragment {
         configureChartAppearance();
         configurarFiltros();
         refreshData();
+    }
+
+    private int resolverAnimacionRaw(@NonNull String nombre) {
+        int id = requireContext().getResources().getIdentifier(
+                nombre.toLowerCase(Locale.ROOT), "raw", requireContext().getPackageName());
+        return id != 0 ? id : R.raw.usuario;
     }
 
     @Override

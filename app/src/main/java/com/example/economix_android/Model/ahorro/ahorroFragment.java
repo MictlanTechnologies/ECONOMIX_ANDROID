@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RawRes;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
@@ -407,6 +408,7 @@ public class ahorroFragment extends Fragment {
                 setButtonsEnabled(true);
                 if (response.isSuccessful() && response.body() != null) {
                     Toast.makeText(requireContext(), R.string.mensaje_ahorro_guardado, Toast.LENGTH_SHORT).show();
+                    UsuarioAnimationNavigator.playOnly(binding.getRoot(), resolverAnimacionRaw("ahorro"));
                     cargarIngresos();
                     cargarAhorros();
                     if (objetivo.compareTo(BigDecimal.ZERO) > 0
@@ -961,6 +963,13 @@ public class ahorroFragment extends Fragment {
         if (disponible.compareTo(BigDecimal.ZERO) <= 0) {
             Toast.makeText(requireContext(), R.string.mensaje_ingreso_agotado, Toast.LENGTH_LONG).show();
         }
+    }
+
+    @RawRes
+    private int resolverAnimacionRaw(@NonNull String nombre) {
+        int id = requireContext().getResources().getIdentifier(
+                nombre.toLowerCase(Locale.ROOT), "raw", requireContext().getPackageName());
+        return id != 0 ? id : R.raw.usuario;
     }
 
     @Override
