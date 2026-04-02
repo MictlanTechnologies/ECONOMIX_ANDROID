@@ -49,7 +49,7 @@
     <color name="bottomNavActiveBg">#2563EB</color>
     <color name="bottomNavInactiveTint">#FFFFFF</color>
     <color name="bottomNavDarkBg">#1E3A8A</color>
-    <color name="fieldIconTint">#FFFFFF</color>
+    <color name="fieldIconTint">#1E3A8A</color>
     <color name="stepIndicatorActive">#2563EB</color>
     <color name="stepIndicatorInactive">#CBD5E1</color>
 

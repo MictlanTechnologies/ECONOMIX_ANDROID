@@ -132,6 +132,7 @@
 
     </LinearLayout>
 
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/bottomBarContainer"
         android:layout_width="0dp"
@@ -143,7 +144,7 @@
         app:cardElevation="8dp"
         app:strokeColor="@color/softWhite"
         app:strokeWidth="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/navMenuMini"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -253,5 +254,20 @@
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/navMenuMini"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="Ir al menú"
+        app:backgroundTint="@color/tealAccent"
+        app:fabCustomSize="36dp"
+        app:maxImageSize="18dp"
+        app:srcCompat="@drawable/ic_home_filled"
+        app:tint="@color/economix_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

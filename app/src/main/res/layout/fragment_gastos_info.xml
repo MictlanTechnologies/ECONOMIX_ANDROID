@@ -194,8 +194,8 @@
                                 android:layout_height="wrap_content"
                                 android:hint="@string/hint_buscar_concepto"
                                 android:inputType="textCapSentences"
-                                android:textColor="@color/white"
-                                android:textColorHint="@color/white" />
+                                android:textColor="@color/economix_background"
+                                android:textColorHint="@color/tealDark" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <LinearLayout
@@ -273,7 +273,7 @@
         app:cardElevation="8dp"
         app:strokeColor="@color/softWhite"
         app:strokeWidth="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/navMenuMini"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -383,6 +383,21 @@
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/navMenuMini"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="Ir al menú"
+        app:backgroundTint="@color/tealAccent"
+        app:fabCustomSize="36dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:maxImageSize="18dp"
+        app:srcCompat="@drawable/ic_home_filled"
+        app:tint="@color/economix_background" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

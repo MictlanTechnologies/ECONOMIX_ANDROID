@@ -15,6 +15,7 @@ import androidx.navigation.Navigation;
 import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentGraficasMenuBinding;
 import com.example.economix_android.util.ProfileImageUtils;
+import com.example.economix_android.util.UsuarioAnimationNavigator;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class graficasMenu extends Fragment {
@@ -32,7 +33,7 @@ public class graficasMenu extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
+        binding.btnPerfil.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyuda.setOnClickListener(v -> mostrarAyuda());
         binding.btnGastosCategoria.setOnClickListener(v ->
@@ -42,6 +43,27 @@ public class graficasMenu extends Fragment {
                 Navigation.findNavController(v)
                         .navigate(R.id.graficasMenuIngresosVsGastos));
         binding.btnVolverGraficas.setOnClickListener(v -> navigateSafely(v, R.id.menu));
+
+        View.OnClickListener bottomNavListener = v -> {
+            int viewId = v.getId();
+            if (viewId == R.id.navGastos) {
+                navigateSafely(v, R.id.navigation_gastos);
+            } else if (viewId == R.id.navIngresos) {
+                navigateSafely(v, R.id.navigation_ingresos);
+            } else if (viewId == R.id.navAhorro) {
+                navigateSafely(v, R.id.navigation_ahorro);
+            } else if (viewId == R.id.navGraficas) {
+                navigateSafely(v, R.id.navigation_graficas);
+            } else if (viewId == R.id.navMenuMini) {
+                navigateSafely(v, R.id.menu);
+            }
+        };
+
+        binding.navGastos.setOnClickListener(bottomNavListener);
+        binding.navIngresos.setOnClickListener(bottomNavListener);
+        binding.navAhorro.setOnClickListener(bottomNavListener);
+        binding.navGraficas.setOnClickListener(bottomNavListener);
+        binding.navMenuMini.setOnClickListener(bottomNavListener);
     }
 
     private void navigateSafely(View view, int destinationId) {

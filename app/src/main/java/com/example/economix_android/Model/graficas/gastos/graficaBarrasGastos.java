@@ -21,6 +21,7 @@ import com.example.economix_android.Model.data.RegistroFinanciero;
 import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentGraficaBarrasGastosBinding;
 import com.example.economix_android.util.ProfileImageUtils;
+import com.example.economix_android.util.UsuarioAnimationNavigator;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -63,7 +64,7 @@ public class graficaBarrasGastos extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.btnPerfil.setOnClickListener(v ->
-                Navigation.findNavController(v).navigate(R.id.usuario));
+                UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaIngInf.setOnClickListener(v -> mostrarAyuda());
         binding.buttonBack.setOnClickListener(v ->

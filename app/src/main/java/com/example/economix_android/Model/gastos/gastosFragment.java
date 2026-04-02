@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.economix_android.Model.data.RegistroFinanciero;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RawRes;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -25,6 +26,7 @@ import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.Model.data.Gasto;
 import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.util.ProfileImageUtils;
+import com.example.economix_android.util.UsuarioAnimationNavigator;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputEditText;
@@ -51,6 +53,7 @@ public class gastosFragment extends Fragment {
     public static final String ARG_GASTO_PERIODO = "arg_gasto_periodo";
     public static final String ARG_GASTO_RECURRENTE = "arg_gasto_recurrente";
     public static final String ARG_GASTO_PLANTILLA = "arg_gasto_plantilla";
+    private static final String PREF_GASTO_INGRESO = "pref_gasto_ingreso_links";
 
     private FragmentGastosBinding binding;
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -79,7 +82,7 @@ public class gastosFragment extends Fragment {
         binding.btnVerGas.setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.action_navigation_gastos_to_gastosInfo));
-        binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
+        binding.btnPerfil.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaGas.setOnClickListener(v -> mostrarAyuda());
 
@@ -97,6 +100,8 @@ public class gastosFragment extends Fragment {
                 navigateSafely(v, R.id.navigation_ahorro);
             } else if (viewId == R.id.navGraficas) {
                 navigateSafely(v, R.id.navigation_graficas);
+            } else if (viewId == R.id.navMenuMini) {
+                navigateSafely(v, R.id.menu);
             }
         };
 
@@ -104,6 +109,7 @@ public class gastosFragment extends Fragment {
         binding.navIngresos.setOnClickListener(bottomNavListener);
         binding.navAhorro.setOnClickListener(bottomNavListener);
         binding.navGraficas.setOnClickListener(bottomNavListener);
+        binding.navMenuMini.setOnClickListener(bottomNavListener);
 
         setupDatePicker(binding.etFechaGas);
         setupChipGroupSync();
@@ -316,13 +322,19 @@ public class gastosFragment extends Fragment {
     }
 
     private void crearGasto(Gasto gasto, Ingreso ingresoActualizado, BigDecimal montoOriginal) {
-        DataRepository.addGasto(requireContext(), gasto, new DataRepository.RepositoryCallback<Gasto>() {
+        Integer ingresoVinculadoId = ingresoActualizado != null ? ingresoActualizado.getId() : null;
+        DataRepository.addGasto(requireContext(), gasto, ingresoVinculadoId, new DataRepository.RepositoryCallback<Gasto>() {
             @Override
             public void onSuccess(Gasto result) {
                 if (!isAdded()) {
                     return;
                 }
+                if (result != null && result.getId() != null && ingresoActualizado != null && ingresoActualizado.getId() != null) {
+                    DataRepository.vincularGastoConIngreso(result.getId(), ingresoActualizado.getId());
+                    guardarVinculoGastoIngreso(result.getId(), ingresoActualizado.getId());
+                }
                 Toast.makeText(requireContext(), R.string.mensaje_gasto_guardado, Toast.LENGTH_SHORT).show();
+                UsuarioAnimationNavigator.playOnly(binding.getRoot(), resolverAnimacionRaw("gasto"));
                 limpiarCampos();
                 cargarIngresos();
                 setGastoButtonsEnabled(true);
@@ -479,6 +491,14 @@ public class gastosFragment extends Fragment {
 
     private void ejecutarEliminacionSeleccionada() {
         setGastoButtonsEnabled(false);
+        final Integer gastoId = gastoEnEdicionId;
+        final Gasto gastoEliminado = DataRepository.getGastoById(gastoId);
+        Integer ingresoVinculadoLocal = DataRepository.getIngresoIdVinculadoAGasto(gastoId);
+        if (ingresoVinculadoLocal == null) {
+            ingresoVinculadoLocal = obtenerIngresoVinculadoDesdePreferencias(gastoId);
+        }
+        final Integer ingresoVinculadoId = ingresoVinculadoLocal;
+
         DataRepository.RepositoryCallback<Boolean> callback = new DataRepository.RepositoryCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean eliminado) {
@@ -489,8 +509,13 @@ public class gastosFragment extends Fragment {
                         ? R.string.mensaje_gasto_eliminado_seleccionado
                         : R.string.error_sin_gastos;
                 Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show();
-                limpiarCampos();
-                setGastoButtonsEnabled(true);
+                if (Boolean.TRUE.equals(eliminado) && gastoEliminado != null && ingresoVinculadoId != null) {
+                    reembolsarMontoAlIngreso(ingresoVinculadoId, parseMontoSeguro(gastoEliminado.getDescripcion()));
+                } else {
+                    eliminarVinculoGastoIngreso(gastoId);
+                    limpiarCampos();
+                    setGastoButtonsEnabled(true);
+                }
             }
 
             @Override
@@ -510,6 +535,101 @@ public class gastosFragment extends Fragment {
         } else {
             DataRepository.removeGastoById(gastoEnEdicionId, callback);
         }
+    }
+
+    private void reembolsarMontoAlIngreso(@NonNull Integer ingresoId, @NonNull BigDecimal montoReembolso) {
+        if (montoReembolso.compareTo(BigDecimal.ZERO) <= 0) {
+            eliminarVinculoGastoIngreso(gastoEnEdicionId);
+            limpiarCampos();
+            setGastoButtonsEnabled(true);
+            return;
+        }
+        Ingreso ingreso = DataRepository.getIngresoById(ingresoId);
+        if (ingreso == null) {
+            for (Ingreso historial : DataRepository.getIngresosHistorial()) {
+                if (ingresoId.equals(historial.getId())) {
+                    ingreso = historial;
+                    break;
+                }
+            }
+        }
+        if (ingreso == null) {
+            cargarIngresos();
+            eliminarVinculoGastoIngreso(gastoEnEdicionId);
+            limpiarCampos();
+            setGastoButtonsEnabled(true);
+            return;
+        }
+
+        BigDecimal montoActual = parseMontoSeguro(ingreso.getDescripcion());
+        BigDecimal nuevoMonto = montoActual.add(montoReembolso);
+        DataRepository.updateIngresoMonto(requireContext(), ingreso, nuevoMonto,
+                new DataRepository.RepositoryCallback<Ingreso>() {
+                    @Override
+                    public void onSuccess(Ingreso result) {
+                        if (!isAdded()) {
+                            return;
+                        }
+                        cargarIngresos();
+                        eliminarVinculoGastoIngreso(gastoEnEdicionId);
+                        limpiarCampos();
+                        setGastoButtonsEnabled(true);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        if (!isAdded()) {
+                            return;
+                        }
+                        cargarIngresos();
+                        eliminarVinculoGastoIngreso(gastoEnEdicionId);
+                        limpiarCampos();
+                        setGastoButtonsEnabled(true);
+                        mostrarMensajeError(message);
+                    }
+                });
+    }
+
+    private void guardarVinculoGastoIngreso(@Nullable Integer gastoId, @Nullable Integer ingresoId) {
+        if (gastoId == null || ingresoId == null) {
+            return;
+        }
+        requireContext().getSharedPreferences(PREF_GASTO_INGRESO, 0)
+                .edit()
+                .putInt(String.valueOf(gastoId), ingresoId)
+                .apply();
+    }
+
+    @Nullable
+    private Integer obtenerIngresoVinculadoDesdePreferencias(@Nullable Integer gastoId) {
+        if (gastoId == null) {
+            return null;
+        }
+        android.content.SharedPreferences prefs =
+                requireContext().getSharedPreferences(PREF_GASTO_INGRESO, 0);
+        String key = String.valueOf(gastoId);
+        if (!prefs.contains(key)) {
+            return null;
+        }
+        int value = prefs.getInt(key, -1);
+        return value > 0 ? value : null;
+    }
+
+    private void eliminarVinculoGastoIngreso(@Nullable Integer gastoId) {
+        if (gastoId == null) {
+            return;
+        }
+        requireContext().getSharedPreferences(PREF_GASTO_INGRESO, 0)
+                .edit()
+                .remove(String.valueOf(gastoId))
+                .apply();
+    }
+
+    @RawRes
+    private int resolverAnimacionRaw(@NonNull String nombre) {
+        int id = requireContext().getResources().getIdentifier(
+                nombre.toLowerCase(Locale.ROOT), "raw", requireContext().getPackageName());
+        return id != 0 ? id : R.raw.usuario;
     }
 
     private void limpiarErrores() {

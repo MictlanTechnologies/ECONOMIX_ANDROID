@@ -113,8 +113,8 @@
                             android:layout_height="wrap_content"
                             android:hint="Nombre"
                             android:inputType="textPersonName"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white" />
+                            android:textColor="@color/economix_background"
+                            android:textColorHint="@color/tealDark" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -135,8 +135,8 @@
                             android:layout_height="wrap_content"
                             android:hint="Apellidos"
                             android:inputType="textPersonName"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white" />
+                            android:textColor="@color/economix_background"
+                            android:textColorHint="@color/tealDark" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -193,8 +193,8 @@
                             android:layout_height="wrap_content"
                             android:hint="Teléfono o correo de contacto"
                             android:inputType="textEmailAddress"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white" />
+                            android:textColor="@color/economix_background"
+                            android:textColorHint="@color/tealDark" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -251,8 +251,8 @@
                             android:layout_height="wrap_content"
                             android:hint="Domicilio"
                             android:inputType="textPostalAddress"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white" />
+                            android:textColor="@color/economix_background"
+                            android:textColorHint="@color/tealDark" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -309,8 +309,8 @@
                             android:layout_height="wrap_content"
                             android:hint="Nombre de usuario"
                             android:inputType="textEmailAddress"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white" />
+                            android:textColor="@color/economix_background"
+                            android:textColorHint="@color/tealDark" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -333,8 +333,8 @@
                             android:layout_height="wrap_content"
                             android:hint="Contraseña actual"
                             android:inputType="textPassword"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white" />
+                            android:textColor="@color/economix_background"
+                            android:textColorHint="@color/tealDark" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -356,8 +356,8 @@
                             android:layout_height="wrap_content"
                             android:hint="Nueva contraseña"
                             android:inputType="textPassword"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white" />
+                            android:textColor="@color/economix_background"
+                            android:textColorHint="@color/tealDark" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
