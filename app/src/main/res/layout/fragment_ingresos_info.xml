@@ -452,7 +452,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:maxImageSize="18dp"
         app:srcCompat="@drawable/ic_home_filled"
-        app:tint="@color/white" />
+        app:tint="@color/economix_background" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

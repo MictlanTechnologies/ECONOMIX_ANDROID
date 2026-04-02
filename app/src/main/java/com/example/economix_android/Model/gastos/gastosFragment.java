@@ -320,7 +320,8 @@ public class gastosFragment extends Fragment {
     }
 
     private void crearGasto(Gasto gasto, Ingreso ingresoActualizado, BigDecimal montoOriginal) {
-        DataRepository.addGasto(requireContext(), gasto, new DataRepository.RepositoryCallback<Gasto>() {
+        Integer ingresoVinculadoId = ingresoActualizado != null ? ingresoActualizado.getId() : null;
+        DataRepository.addGasto(requireContext(), gasto, ingresoVinculadoId, new DataRepository.RepositoryCallback<Gasto>() {
             @Override
             public void onSuccess(Gasto result) {
                 if (!isAdded()) {

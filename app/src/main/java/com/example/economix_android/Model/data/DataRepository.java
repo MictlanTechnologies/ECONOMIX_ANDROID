@@ -262,6 +262,9 @@ public final class DataRepository {
                             Gasto gasto = fromDto(dto);
                             if (gasto != null) {
                                 nuevos.add(gasto);
+                                if (gasto.getId() != null && dto.getIdPresupuesto() != null) {
+                                    gastoIngresoLinks.put(gasto.getId(), dto.getIdPresupuesto());
+                                }
                             }
                         }
                     }
@@ -347,11 +350,16 @@ public final class DataRepository {
     }
 
     public static void addGasto(Context context, Gasto gasto, RepositoryCallback<Gasto> callback) {
+        addGasto(context, gasto, null, callback);
+    }
+
+    public static void addGasto(Context context, Gasto gasto, Integer ingresoVinculadoId,
+                                RepositoryCallback<Gasto> callback) {
         if (gasto == null) {
             notifyError(callback, "El gasto es inválido.");
             return;
         }
-        GastoDto dto = toDto(gasto, context);
+        GastoDto dto = toDto(gasto, context, ingresoVinculadoId);
         if (dto == null) {
             notifyError(callback, "Debes iniciar sesión antes de crear gastos.");
             return;
@@ -363,6 +371,9 @@ public final class DataRepository {
                     Gasto creado = fromDto(response.body());
                     if (creado != null) {
                         gastos.add(creado);
+                        if (creado.getId() != null && response.body().getIdPresupuesto() != null) {
+                            gastoIngresoLinks.put(creado.getId(), response.body().getIdPresupuesto());
+                        }
                         if (gasto.isRecurrente()) {
                             Gasto concepto = new Gasto(null,
                                     gasto.getArticulo(),
@@ -909,6 +920,10 @@ public final class DataRepository {
     }
 
     private static GastoDto toDto(Gasto gasto, Context context) {
+        return toDto(gasto, context, null);
+    }
+
+    private static GastoDto toDto(Gasto gasto, Context context, Integer ingresoVinculadoId) {
         Integer userId = SessionManager.getUserId(context);
         if (userId == null) {
             return null;
@@ -916,6 +931,7 @@ public final class DataRepository {
         return GastoDto.builder()
                 .idGastos(gasto.getId())
                 .idUsuario(userId)
+                .idPresupuesto(ingresoVinculadoId)
                 .descripcionGasto(gasto.getArticulo())
                 .articuloGasto(gasto.getArticulo())
                 .montoGasto(parseMonto(gasto.getDescripcion()))

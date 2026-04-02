@@ -260,7 +260,7 @@
         app:fabCustomSize="36dp"
         app:maxImageSize="18dp"
         app:srcCompat="@drawable/ic_home_filled"
-        app:tint="@color/white"
+        app:tint="@color/economix_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
