@@ -119,8 +119,8 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_ingreso_articulo"
                             android:inputType="textCapSentences"
-                            android:textColor="@color/economix_text_primary"
-                            android:textColorHint="@color/economix_text_secondary"
+                            android:textColor="@color/economix_background"
+                            android:textColorHint="@color/tealDark"
                             android:textSize="15sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -146,8 +146,8 @@
                             android:hint="Monto"
                             android:digits="0123456789.,"
                             android:inputType="numberDecimal"
-                            android:textColor="@color/economix_text_primary"
-                            android:textColorHint="@color/economix_text_secondary"
+                            android:textColor="@color/economix_background"
+                            android:textColorHint="@color/tealDark"
                             android:textSize="15sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -174,8 +174,8 @@
                             android:inputType="none"
                             android:focusable="false"
                             android:clickable="true"
-                            android:textColor="@color/economix_text_primary"
-                            android:textColorHint="@color/economix_text_secondary"
+                            android:textColor="@color/economix_background"
+                            android:textColorHint="@color/tealDark"
                             android:textSize="15sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -302,8 +302,10 @@
                                 android:layout_height="wrap_content"
                                 android:hint="@string/hint_nueva_categoria"
                                 android:inputType="textCapWords"
-                                android:textColor="@color/economix_text_primary"
-                                android:textSize="14sp" />
+                                android:textColor="@color/economix_background"
+                                android:textSize="14sp" 
+                            android:textColorHint="@color/tealDark"
+                        />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.button.MaterialButton
@@ -353,8 +355,10 @@
                                 android:layout_height="wrap_content"
                                 android:hint="@string/hint_nueva_etiqueta"
                                 android:inputType="textNoSuggestions"
-                                android:textColor="@color/economix_text_primary"
-                                android:textSize="14sp" />
+                                android:textColor="@color/economix_background"
+                                android:textSize="14sp" 
+                            android:textColorHint="@color/tealDark"
+                        />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.button.MaterialButton
@@ -400,7 +404,10 @@
                             android:id="@+id/etPeriodoIng"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="text" />
+                            android:inputType="text" 
+                            android:textColor="@color/economix_background"
+                            android:textColorHint="@color/tealDark"
+                        />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- Recurrente toggle as switch -->
