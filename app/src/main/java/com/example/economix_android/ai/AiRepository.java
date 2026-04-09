@@ -11,7 +11,7 @@ public class AiRepository {
     private final AiApi aiApi = ApiClient.getAiApi();
 
     public void getSummary(LocalDate from, LocalDate to, Callback<AiModels.AISummaryResponse> callback) {
-        aiApi.getSummary(from, to).enqueue(callback);
+        aiApi.getSummary(from.toString(), to.toString()).enqueue(callback);
     }
 
     public void getSpendPrediction(Integer horizonDays, Callback<AiModels.SpendForecastResponse> callback) {
@@ -23,11 +23,11 @@ public class AiRepository {
     }
 
     public void getAnomalies(LocalDate from, LocalDate to, Callback<AiModels.AnomalyResponse> callback) {
-        aiApi.getAnomalies(from, to).enqueue(callback);
+        aiApi.getAnomalies(from.toString(), to.toString()).enqueue(callback);
     }
 
     public void getConfidenceInterval(LocalDate from, LocalDate to, Callback<AiModels.ConfidenceIntervalResponse> callback) {
-        aiApi.getConfidenceInterval(from, to, null, 0.95d).enqueue(callback);
+        aiApi.getConfidenceInterval(from.toString(), to.toString(), null, 0.95d).enqueue(callback);
     }
 
     public void compareMeans(AiModels.CompareMeansRequest request, Callback<AiModels.HypothesisTestResponse> callback) {

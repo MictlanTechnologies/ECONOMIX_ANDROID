@@ -88,9 +88,10 @@ public class PredictionsFragment extends Fragment {
         int horizon = binding.rb30Dias.isChecked() ? 30 : 7;
         LocalDate fromRange = LocalDate.now().minusDays(horizon);
         LocalDate toRange = LocalDate.now();
+        Integer userId = SessionManager.getUserId(requireContext());
 
         binding.tvAnalysisStatus.setText("Consultando backend IA...");
-        viewModel.analyze(horizon, fromRange, toRange, fromA, toA, fromB, toB);
+        viewModel.analyze(horizon, fromRange, toRange, fromA, toA, fromB, toB, userId);
     }
 
     private void renderStatus(AiViewModel.AnalysisStatus status) {
@@ -103,7 +104,7 @@ public class PredictionsFragment extends Fragment {
                 binding.tvAnalysisStatus.setText("Análisis listo para el rango principal y comparación A/B.");
                 break;
             case INSUFFICIENT_DATA:
-                binding.tvAnalysisStatus.setText("Datos insuficientes para algunos cálculos (INSUFFICIENT_DATA). Registra más movimientos en el rango seleccionado.");
+                binding.tvAnalysisStatus.setText("Necesitas al menos 10 gastos registrados para ver predicciones. Registra más movimientos en el rango seleccionado.");
                 break;
             case UNAUTHORIZED:
                 binding.tvAnalysisStatus.setText("Tu sesión expiró (401). Inicia sesión nuevamente.");
@@ -128,16 +129,22 @@ public class PredictionsFragment extends Fragment {
         if (data == null) return;
 
         if (data.spendForecast != null) {
-            String explanation = data.spendForecast.getExplanation() != null ? data.spendForecast.getExplanation() : "Sin explicación";
-            binding.tvForecast.setText("Predicción gasto (rango principal): "
-                    + money(data.spendForecast.getExpectedSpend())
-                    + " (IC95% " + money(data.spendForecast.getLower95())
-                    + " - " + money(data.spendForecast.getUpper95()) + ")\n"
-                    + "Estado=" + safeStatus(data.spendForecast.getStatus()) + " | " + explanation);
+            if ("INSUFFICIENT_DATA".equalsIgnoreCase(data.spendForecast.getStatus())) {
+                binding.tvForecast.setText("Predicción de gasto: necesitas al menos 10 gastos registrados para ver predicciones.");
+            } else {
+                String explanation = data.spendForecast.getExplanation() != null ? data.spendForecast.getExplanation() : "Sin explicación";
+                binding.tvForecast.setText("Predicción gasto (rango principal): "
+                        + money(data.spendForecast.getExpectedSpend())
+                        + " (IC95% " + money(data.spendForecast.getLower95())
+                        + " - " + money(data.spendForecast.getUpper95()) + ")\n"
+                        + "Estado=" + safeStatus(data.spendForecast.getStatus()) + " | " + explanation);
+            }
         }
 
         List<String> budgetItems = new ArrayList<>();
-        if (data.budgetRisk != null && data.budgetRisk.getItems() != null) {
+        if (data.budgetRisk != null && "INSUFFICIENT_DATA".equalsIgnoreCase(data.budgetRisk.getStatus())) {
+            budgetItems.add("Necesitas al menos 10 gastos registrados para ver el análisis de riesgo de presupuesto.");
+        } else if (data.budgetRisk != null && data.budgetRisk.getItems() != null) {
             for (AiModels.BudgetRiskItem item : data.budgetRisk.getItems()) {
                 budgetItems.add((item.getCategoria() != null ? item.getCategoria() : "Sin categoría")
                         + " | consumido=" + money(item.getMontoConsumido())
@@ -149,7 +156,9 @@ public class PredictionsFragment extends Fragment {
         binding.lvBudgetRisk.setAdapter(new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, budgetItems));
 
         List<String> anomalyItems = new ArrayList<>();
-        if (data.anomalies != null && data.anomalies.getAnomalies() != null) {
+        if (data.anomalies != null && "INSUFFICIENT_DATA".equalsIgnoreCase(data.anomalies.getStatus())) {
+            anomalyItems.add("Necesitas al menos 10 gastos registrados para detectar anomalías.");
+        } else if (data.anomalies != null && data.anomalies.getAnomalies() != null) {
             for (AiModels.AnomalyItem anomaly : data.anomalies.getAnomalies()) {
                 anomalyItems.add((anomaly.getFecha() != null ? anomaly.getFecha().toString() : "")
                         + " | " + (anomaly.getArticulo() != null ? anomaly.getArticulo() : "")
@@ -161,18 +170,26 @@ public class PredictionsFragment extends Fragment {
         binding.lvAnomalies.setAdapter(new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, anomalyItems));
 
         if (data.confidenceInterval != null) {
-            binding.tvConfidenceInterval.setText("IC media (rango principal): "
-                    + money(data.confidenceInterval.getMean()) + " ["
-                    + money(data.confidenceInterval.getLower()) + " - "
-                    + money(data.confidenceInterval.getUpper()) + "]"
-                    + " | estado=" + safeStatus(data.confidenceInterval.getStatus()));
+            if ("INSUFFICIENT_DATA".equalsIgnoreCase(data.confidenceInterval.getStatus())) {
+                binding.tvConfidenceInterval.setText("Intervalo de confianza: necesitas al menos 10 gastos registrados para calcular este indicador.");
+            } else {
+                binding.tvConfidenceInterval.setText("IC media (rango principal): "
+                        + money(data.confidenceInterval.getMean()) + " ["
+                        + money(data.confidenceInterval.getLower()) + " - "
+                        + money(data.confidenceInterval.getUpper()) + "]"
+                        + " | estado=" + safeStatus(data.confidenceInterval.getStatus()));
+            }
         }
 
         if (data.hypothesisTest != null) {
-            binding.tvHypothesis.setText("Comparación A/B (Welch): p-value="
-                    + money(data.hypothesisTest.getPValue())
-                    + " | estado=" + safeStatus(data.hypothesisTest.getStatus())
-                    + "\n" + (data.hypothesisTest.getConclusion() != null ? data.hypothesisTest.getConclusion() : "Sin conclusión"));
+            if ("INSUFFICIENT_DATA".equalsIgnoreCase(data.hypothesisTest.getStatus())) {
+                binding.tvHypothesis.setText("Comparación A/B: necesitas al menos 10 gastos en cada periodo para aplicar la prueba estadística.");
+            } else {
+                binding.tvHypothesis.setText("Comparación A/B (Welch): p-value="
+                        + money(data.hypothesisTest.getPValue())
+                        + " | estado=" + safeStatus(data.hypothesisTest.getStatus())
+                        + "\n" + (data.hypothesisTest.getConclusion() != null ? data.hypothesisTest.getConclusion() : "Sin conclusión"));
+            }
         }
 
         List<String> recommendations = data.recommendations();

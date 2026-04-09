@@ -102,6 +102,7 @@ public class AiModels {
 
     @Data
     public static class CompareMeansRequest {
+        private Integer userId;
         private LocalDate fromA;
         private LocalDate toA;
         private LocalDate fromB;

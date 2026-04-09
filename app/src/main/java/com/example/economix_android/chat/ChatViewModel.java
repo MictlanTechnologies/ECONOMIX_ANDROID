@@ -80,7 +80,8 @@ public class ChatViewModel extends ViewModel {
             @Override
             public void onFailure(Call<AiModels.AiChatResponse> call, Throwable t) {
                 loading.postValue(false);
-                error.postValue("Error de red al consultar IA. Intenta nuevamente.");
+                error.postValue("No se pudo conectar al servidor. Verifica tu conexión.");
+                appendMessage(new ChatMessage("No se pudo conectar al servidor. Verifica tu conexión.", ChatMessage.Sender.IA));
             }
         });
     }

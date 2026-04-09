@@ -43,7 +43,8 @@ public class AiViewModel extends ViewModel {
                         LocalDate fromA,
                         LocalDate toA,
                         LocalDate fromB,
-                        LocalDate toB) {
+                        LocalDate toB,
+                        Integer userId) {
         loading.setValue(true);
         error.setValue(null);
         status.setValue(AnalysisStatus.LOADING);
@@ -138,6 +139,7 @@ public class AiViewModel extends ViewModel {
         });
 
         AiModels.CompareMeansRequest request = new AiModels.CompareMeansRequest();
+        request.setUserId(userId);
         request.setFromA(fromA);
         request.setToA(toA);
         request.setFromB(fromB);

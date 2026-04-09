@@ -28,6 +28,7 @@ import com.google.gson.JsonSerializer;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -67,6 +68,9 @@ public final class ApiClient {
         AuthApi refreshApi = publicRetrofit.create(AuthApi.class);
 
         OkHttpClient authenticatedClient = new OkHttpClient.Builder()
+                .connectTimeout(15, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
                 .addInterceptor(new AuthInterceptor(sessionManager))
                 .authenticator(new TokenAuthenticator(sessionManager, refreshApi))
                 .addInterceptor(logging)

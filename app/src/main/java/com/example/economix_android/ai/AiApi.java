@@ -1,7 +1,5 @@
 package com.example.economix_android.ai;
 
-import java.time.LocalDate;
-
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -12,8 +10,8 @@ public interface AiApi {
 
     @GET("/economix/api/ai/summary")
     Call<AiModels.AISummaryResponse> getSummary(
-            @Query("from") LocalDate from,
-            @Query("to") LocalDate to
+            @Query("from") String from,
+            @Query("to") String to
     );
 
     @GET("/economix/api/ai/predict/spend")
@@ -30,14 +28,14 @@ public interface AiApi {
 
     @GET("/economix/api/ai/anomalies")
     Call<AiModels.AnomalyResponse> getAnomalies(
-            @Query("from") LocalDate from,
-            @Query("to") LocalDate to
+            @Query("from") String from,
+            @Query("to") String to
     );
 
     @GET("/economix/api/ai/infer/ci-mean")
     Call<AiModels.ConfidenceIntervalResponse> getConfidenceInterval(
-            @Query("from") LocalDate from,
-            @Query("to") LocalDate to,
+            @Query("from") String from,
+            @Query("to") String to,
             @Query("categoryId") Integer categoryId,
             @Query("confidence") Double confidence
     );
