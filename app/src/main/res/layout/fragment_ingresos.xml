@@ -310,13 +310,14 @@
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnAgregarCategoriaIng"
-                            android:layout_width="wrap_content"
+                            android:layout_width="44dp"
                             android:layout_height="44dp"
                             android:layout_marginStart="8dp"
-                            android:text="@string/label_agregar_categoria"
+                            android:contentDescription="@string/desc_agregar_categoria_personalizada"
+                            android:text="+"
                             android:textAllCaps="false"
                             android:textColor="@color/white"
-                            android:textSize="12sp"
+                            android:textSize="20sp"
                             app:backgroundTint="@color/tealAccent"
                             app:cornerRadius="12dp" />
                     </LinearLayout>
@@ -363,13 +364,14 @@
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnAgregarEtiquetaIng"
-                            android:layout_width="wrap_content"
+                            android:layout_width="44dp"
                             android:layout_height="44dp"
                             android:layout_marginStart="8dp"
-                            android:text="@string/label_agregar_etiqueta"
+                            android:contentDescription="@string/desc_agregar_etiqueta_personalizada"
+                            android:text="+"
                             android:textAllCaps="false"
                             android:textColor="@color/white"
-                            android:textSize="12sp"
+                            android:textSize="20sp"
                             app:backgroundTint="@color/tealPrimary"
                             app:cornerRadius="12dp" />
                     </LinearLayout>
