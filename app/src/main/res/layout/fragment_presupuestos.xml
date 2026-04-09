@@ -595,52 +595,102 @@
             android:paddingHorizontal="12dp"
             android:paddingVertical="12dp">
 
-            <ImageButton
-                android:id="@+id/navGastos"
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="70dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/bottom_nav_icon_background"
-                android:contentDescription="Gastos"
-                android:padding="12dp"
-                android:src="@drawable/gastosop2texto2"
-                tools:ignore="UseAppTint" />
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/navIngresos"
-                android:layout_width="0dp"
-                android:layout_height="70dp"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:background="@drawable/bottom_nav_icon_background"
-                android:contentDescription="Ingresos"
-                android:padding="12dp"
-                android:src="@drawable/ingresosconletras"
-                tools:ignore="UseAppTint" />
+                <ImageButton
+                    android:id="@+id/navGastos"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="@drawable/bottom_nav_icon_background"
+                    android:contentDescription="Gastos"
+                    android:padding="12dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/gastosop2texto2"
+                    tools:ignore="UseAppTint" />
+            </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/navAhorro"
-                android:layout_width="0dp"
-                android:layout_height="70dp"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:background="@drawable/bottom_nav_icon_background"
-                android:contentDescription="Ahorro"
-                android:padding="12dp"
-                android:src="@drawable/ahorrotexto2"
-                tools:ignore="UseAppTint" />
+            <View
+                android:layout_width="1dp"
+                android:layout_height="36dp"
+                android:layout_marginHorizontal="4dp"
+                android:alpha="0.3"
+                android:background="@color/softWhite" />
 
-            <ImageButton
-                android:id="@+id/navGraficas"
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="70dp"
-                android:layout_marginStart="8dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/bottom_nav_icon_background"
-                android:contentDescription="Gráficas"
-                android:padding="12dp"
-                android:src="@drawable/graficastexto2"
-                tools:ignore="UseAppTint" />
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/navIngresos"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="@drawable/bottom_nav_icon_background"
+                    android:contentDescription="Ingresos"
+                    android:padding="12dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ingresosconletras"
+                    tools:ignore="UseAppTint" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="36dp"
+                android:layout_marginHorizontal="4dp"
+                android:alpha="0.3"
+                android:background="@color/softWhite" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/navAhorro"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="@drawable/bottom_nav_icon_background"
+                    android:contentDescription="Ahorro"
+                    android:padding="12dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ahorrotexto2"
+                    tools:ignore="UseAppTint" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="36dp"
+                android:layout_marginHorizontal="4dp"
+                android:alpha="0.3"
+                android:background="@color/softWhite" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/navGraficas"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="@drawable/bottom_nav_icon_background"
+                    android:contentDescription="Gráficas"
+                    android:padding="12dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/graficastexto2"
+                    tools:ignore="UseAppTint" />
+            </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
