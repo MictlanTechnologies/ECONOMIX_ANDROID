@@ -152,17 +152,12 @@ public class gastosFragment extends Fragment {
     }
 
     private void solicitarCategoriaPersonalizada() {
-        String categoria = obtenerTexto(binding.etNuevaCategoriaGas);
-        if (TextUtils.isEmpty(categoria)) {
-            mostrarDialogoEntrada(
-                    R.string.titulo_nueva_categoria,
-                    R.string.hint_nueva_categoria,
-                    R.string.error_categoria_vacia,
-                    this::agregarCategoriaPersonalizada
-            );
-            return;
-        }
-        agregarCategoriaPersonalizada(categoria);
+        mostrarDialogoEntrada(
+                R.string.titulo_nueva_categoria,
+                R.string.hint_nueva_categoria,
+                R.string.error_categoria_vacia,
+                this::agregarCategoriaPersonalizada
+        );
     }
 
     private void agregarCategoriaPersonalizada(String categoriaInput) {
@@ -183,21 +178,15 @@ public class gastosFragment extends Fragment {
         binding.chipGroupCategoriaGas.addView(chip);
         chipCategoryMap.put(chip.getId(), categoria);
         chip.setChecked(true);
-        binding.etNuevaCategoriaGas.setText("");
     }
 
     private void solicitarEtiquetaPersonalizada() {
-        String etiquetaIngresada = obtenerTexto(binding.etNuevaEtiquetaGas);
-        if (TextUtils.isEmpty(etiquetaIngresada)) {
-            mostrarDialogoEntrada(
-                    R.string.titulo_nueva_etiqueta,
-                    R.string.hint_nueva_etiqueta,
-                    R.string.error_etiqueta_vacia,
-                    this::agregarEtiquetaPersonalizada
-            );
-            return;
-        }
-        agregarEtiquetaPersonalizada(etiquetaIngresada);
+        mostrarDialogoEntrada(
+                R.string.titulo_nueva_etiqueta,
+                R.string.hint_nueva_etiqueta,
+                R.string.error_etiqueta_vacia,
+                this::agregarEtiquetaPersonalizada
+        );
     }
 
     private void agregarEtiquetaPersonalizada(String etiquetaInput) {
@@ -207,7 +196,6 @@ public class gastosFragment extends Fragment {
             return;
         }
         if (existeEtiqueta(etiqueta)) {
-            binding.etNuevaEtiquetaGas.setText("");
             return;
         }
         Chip chip = new Chip(requireContext());
@@ -224,7 +212,6 @@ public class gastosFragment extends Fragment {
         chip.setChipStrokeColor(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.tealLight)));
         chip.setChipStrokeWidth(getResources().getDisplayMetrics().density);
         binding.chipGroupEtiquetasGas.addView(chip);
-        binding.etNuevaEtiquetaGas.setText("");
         sincronizarEtiquetasOcultas();
     }
 
@@ -448,8 +435,6 @@ public class gastosFragment extends Fragment {
         binding.chipGroupCategoriaGas.clearCheck();
         binding.chipGroupEtiquetasGas.removeAllViews();
         binding.etEtiquetasGas.setText("");
-        binding.etNuevaEtiquetaGas.setText("");
-        binding.etNuevaCategoriaGas.setText("");
         ingresoSeleccionado = null;
         actualizarIngresoDisponible();
         enModoPlantilla = false;
