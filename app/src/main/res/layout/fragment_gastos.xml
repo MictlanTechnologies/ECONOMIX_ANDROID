@@ -308,44 +308,29 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:gravity="center_vertical"
+                        android:gravity="end"
                         android:orientation="horizontal">
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            app:boxBackgroundColor="@color/softWhite"
-                            app:boxBackgroundMode="filled"
-                            app:boxCornerRadiusBottomEnd="14dp"
-                            app:boxCornerRadiusBottomStart="14dp"
-                            app:boxCornerRadiusTopEnd="14dp"
-                            app:boxCornerRadiusTopStart="14dp"
-                            app:boxStrokeColor="@color/tealAccent">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etNuevaCategoriaGas"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="@string/hint_nueva_categoria"
-                                android:inputType="textCapWords"
-                                android:textColor="@color/economix_background"
-                                android:textSize="14sp" 
-                            android:textColorHint="@color/tealDark"
-                        />
-                        </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnAgregarCategoriaGas"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             android:layout_width="wrap_content"
                             android:layout_height="44dp"
-                            android:layout_marginStart="8dp"
+                            android:minWidth="0dp"
+                            android:paddingHorizontal="12dp"
+                            android:contentDescription="@string/desc_agregar_categoria_personalizada"
                             android:text="@string/label_agregar_categoria"
                             android:textAllCaps="false"
                             android:textColor="@color/white"
-                            android:textSize="12sp"
-                            app:backgroundTint="@color/tealAccent"
-                            app:cornerRadius="12dp" />
+                            android:textSize="13sp"
+                            app:backgroundTint="@android:color/transparent"
+                            app:cornerRadius="12dp"
+                            app:icon="@drawable/ic_add_24"
+                            app:iconGravity="textStart"
+                            app:iconPadding="6dp"
+                            app:iconTint="@color/white"
+                            app:strokeColor="@color/tealLight"
+                            app:strokeWidth="1dp" />
                     </LinearLayout>
 
                     <TextView
@@ -361,44 +346,29 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
+                        android:gravity="end"
                         android:orientation="horizontal">
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            app:boxBackgroundColor="@color/softWhite"
-                            app:boxBackgroundMode="filled"
-                            app:boxCornerRadiusBottomEnd="14dp"
-                            app:boxCornerRadiusBottomStart="14dp"
-                            app:boxCornerRadiusTopEnd="14dp"
-                            app:boxCornerRadiusTopStart="14dp"
-                            app:boxStrokeColor="@color/tealAccent">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etNuevaEtiquetaGas"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="@string/hint_nueva_etiqueta"
-                                android:inputType="textNoSuggestions"
-                                android:textColor="@color/economix_background"
-                                android:textSize="14sp" 
-                            android:textColorHint="@color/tealDark"
-                        />
-                        </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnAgregarEtiquetaGas"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                             android:layout_width="wrap_content"
                             android:layout_height="44dp"
-                            android:layout_marginStart="8dp"
+                            android:minWidth="0dp"
+                            android:paddingHorizontal="12dp"
+                            android:contentDescription="@string/desc_agregar_etiqueta_personalizada"
                             android:text="@string/label_agregar_etiqueta"
                             android:textAllCaps="false"
                             android:textColor="@color/white"
-                            android:textSize="12sp"
-                            app:backgroundTint="@color/tealPrimary"
-                            app:cornerRadius="12dp" />
+                            android:textSize="13sp"
+                            app:backgroundTint="@android:color/transparent"
+                            app:cornerRadius="12dp"
+                            app:icon="@drawable/ic_add_24"
+                            app:iconGravity="textStart"
+                            app:iconPadding="6dp"
+                            app:iconTint="@color/white"
+                            app:strokeColor="@color/tealLight"
+                            app:strokeWidth="1dp" />
                     </LinearLayout>
 
                     <com.google.android.material.chip.ChipGroup

@@ -3,58 +3,58 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Core semantic palette (Light: joven tecnológica) -->
-    <color name="economix_background">#1E40AF</color>
-    <color name="economix_surface_dark">#1D4ED8</color>
-    <color name="economix_surface_light">#2563EB</color>
-    <color name="economix_accent">#2563EB</color>
-    <color name="economix_text_primary">#FFFFFF</color>
-    <color name="economix_text_secondary">#FFFFFF</color>
+    <!-- Core semantic palette (Light: regreso a base teal) -->
+    <color name="economix_background">#062C33</color>
+    <color name="economix_surface_dark">#0B3F48</color>
+    <color name="economix_surface_light">#0E4B56</color>
+    <color name="economix_accent">#4EDBE5</color>
+    <color name="economix_text_primary">#FFFFFFFF</color>
+    <color name="economix_text_secondary">#B5E8ED</color>
 
     <!-- Compatibility aliases used across legacy layouts -->
-    <color name="tealPrimary">#2563EB</color>
-    <color name="tealDark">#1E3A8A</color>
-    <color name="tealLight">#93C5FD</color>
-    <color name="tealAccent">#7C3AED</color>
-    <color name="teal_200">#93C5FD</color>
-    <color name="teal_700">#1D4ED8</color>
-    <color name="tealSurface">#1D4ED8</color>
-    <color name="tealSurfaceVariant">#1E3A8A</color>
-    <color name="goldAccent">#A78BFA</color>
-    <color name="softWhite">#FFFFFF</color>
+    <color name="tealPrimary">#0E4F4E</color>
+    <color name="tealDark">#042B2C</color>
+    <color name="tealLight">#6FD8D2</color>
+    <color name="tealAccent">#2FB6B0</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="teal_700">#018786</color>
+    <color name="tealSurface">#135856</color>
+    <color name="tealSurfaceVariant">#1D6F6B</color>
+    <color name="goldAccent">#F3D373</color>
+    <color name="softWhite">#F5FBFA</color>
 
-    <color name="economix_bar_1">#2563EB</color>
-    <color name="economix_bar_2">#3B82F6</color>
-    <color name="economix_bar_3">#60A5FA</color>
-    <color name="economix_bar_4">#93C5FD</color>
+    <color name="economix_bar_1">#4EDBE5</color>
+    <color name="economix_bar_2">#4CCAF6</color>
+    <color name="economix_bar_3">#3B8DF0</color>
+    <color name="economix_bar_4">#2E4FCF</color>
 
     <!-- Dashboard semantic module colors -->
-    <color name="module_gastos">#EF4444</color>
-    <color name="module_ingresos">#2563EB</color>
-    <color name="module_ahorro">#22C55E</color>
-    <color name="module_graficas">#3B82F6</color>
+    <color name="module_gastos">#F07A7A</color>
+    <color name="module_ingresos">#4EDBE5</color>
+    <color name="module_ahorro">#52D4A3</color>
+    <color name="module_graficas">#4CCAF6</color>
 
-    <!-- Existing menu aliases remapped to modern palette -->
-    <color name="menuTealDark">#2563EB</color>
-    <color name="menuSilver">#E2E8F0</color>
-    <color name="menuBackground">#1E40AF</color>
-    <color name="menuBackgroundOutline">#991E40AF</color>
-    <color name="menuHeaderBg">#1D4ED8</color>
-    <color name="menuHeaderText">#FFFFFF</color>
-    <color name="menuCardDark">#1E3A8A</color>
-    <color name="menuCardLight">#1E3A8A</color>
-    <color name="menuCardText">#FFFFFF</color>
-    <color name="recentActivityBg">#1E3A8A</color>
-    <color name="recentActivityText">#FFFFFF</color>
-    <color name="bottomNavActiveBg">#2563EB</color>
-    <color name="bottomNavInactiveTint">#FFFFFF</color>
-    <color name="bottomNavDarkBg">#1E3A8A</color>
-    <color name="fieldIconTint">#1E3A8A</color>
-    <color name="stepIndicatorActive">#2563EB</color>
-    <color name="stepIndicatorInactive">#CBD5E1</color>
+    <!-- Existing menu aliases remapped to teal palette -->
+    <color name="menuTealDark">#0E4F4E</color>
+    <color name="menuSilver">#D9F1EF</color>
+    <color name="menuBackground">#062C33</color>
+    <color name="menuBackgroundOutline">#99062C33</color>
+    <color name="menuHeaderBg">#0B3F48</color>
+    <color name="menuHeaderText">#FFFFFFFF</color>
+    <color name="menuCardDark">#0B3F48</color>
+    <color name="menuCardLight">#135856</color>
+    <color name="menuCardText">#FFFFFFFF</color>
+    <color name="recentActivityBg">#135856</color>
+    <color name="recentActivityText">#B5E8ED</color>
+    <color name="bottomNavActiveBg">#0E4B56</color>
+    <color name="bottomNavInactiveTint">#B5E8ED</color>
+    <color name="bottomNavDarkBg">#042B2C</color>
+    <color name="fieldIconTint">#6FD8D2</color>
+    <color name="stepIndicatorActive">#4EDBE5</color>
+    <color name="stepIndicatorInactive">#5D8D93</color>
 
     <color name="menuHeaderSurface">#1AFFFFFF</color>
-    <color name="menuHeaderOutline">#66E2E8F0</color>
+    <color name="menuHeaderOutline">#664EDBE5</color>
 
-    <color name="strokeSubtle">#60A5FA</color>
+    <color name="strokeSubtle">#2C737B</color>
 </resources>
