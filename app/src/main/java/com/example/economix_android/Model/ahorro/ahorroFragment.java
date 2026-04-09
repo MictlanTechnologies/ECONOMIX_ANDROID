@@ -151,9 +151,10 @@ public class ahorroFragment extends Fragment {
     private void configurarIngresos() {
         AutoCompleteTextView ingresoView = (AutoCompleteTextView) binding.etIngresoSeleccion;
         ingresosAdapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, new ArrayList<>());
+                R.layout.item_dropdown_light, new ArrayList<>());
         ingresoView.setAdapter(ingresosAdapter);
         ingresoView.setThreshold(0);
+        ingresoView.setDropDownBackgroundResource(android.R.color.white);
         ingresoView.setOnItemClickListener((parent, view, position, id) -> {
             if (position >= 0 && position < ingresosDisponibles.size()) {
                 ingresoSeleccionado = ingresosDisponibles.get(position);
