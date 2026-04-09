@@ -12,6 +12,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
+import androidx.navigation.Navigation;
 
 import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentPresupuestosBinding;
@@ -59,6 +62,8 @@ public class PresupuestosFragment extends Fragment {
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfilPres);
         binding.btnAyudaPres.setOnClickListener(v -> mostrarAyuda());
         binding.btnGuardarPres.setOnClickListener(v -> guardarPresupuesto());
+        binding.btnMenuAhorroPres.setOnClickListener(v -> navigateSafely(v, R.id.navigation_ahorro));
+        binding.btnMenuPresupuestosPres.setOnClickListener(v -> navigateSafely(v, R.id.navigation_presupuestos));
 
         // Pre-select current month and year
         Calendar now = Calendar.getInstance();
@@ -201,6 +206,14 @@ public class PresupuestosFragment extends Fragment {
         mesView.setText(meses[now.get(Calendar.MONTH)], false);
         AutoCompleteTextView anioView = (AutoCompleteTextView) binding.etAnioPres;
         anioView.setText(String.valueOf(now.get(Calendar.YEAR)), false);
+    }
+
+    private void navigateSafely(View view, int destinationId) {
+        NavController navController = Navigation.findNavController(view);
+        NavDestination currentDestination = navController.getCurrentDestination();
+        if (currentDestination == null || currentDestination.getId() != destinationId) {
+            navController.navigate(destinationId);
+        }
     }
 
     @Override

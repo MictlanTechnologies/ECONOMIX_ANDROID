@@ -108,6 +108,8 @@ public class ahorroFragment extends Fragment {
         binding.btnVerAhorros.setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.action_navigation_ahorro_to_ahorroInfo));
+        binding.btnMenuAhorro.setOnClickListener(v -> navigateSafely(v, R.id.navigation_ahorro));
+        binding.btnMenuPresupuestos.setOnClickListener(v -> navigateSafely(v, R.id.navigation_presupuestos));
 
         View.OnClickListener bottomNavListener = v -> {
             int viewId = v.getId();
