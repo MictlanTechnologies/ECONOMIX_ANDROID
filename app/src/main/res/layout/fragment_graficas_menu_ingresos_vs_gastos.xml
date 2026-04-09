@@ -40,7 +40,7 @@
         android:layout_marginTop="16dp"
         android:fontFamily="sans-serif-medium"
         android:text="Ingresos vs gastos"
-        android:textColor="@color/softWhite"
+        android:textColor="@color/economix_text_primary"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +104,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="16dp"
                         android:text="Gráfica de barras"
-                        android:textColor="@color/softWhite"
+                        android:textColor="@color/economix_text_primary"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -165,7 +165,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="16dp"
                         android:text="Gráfica circular"
-                        android:textColor="@color/softWhite"
+                        android:textColor="@color/economix_text_primary"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 

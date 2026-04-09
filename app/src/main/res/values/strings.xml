@@ -179,6 +179,8 @@
     <string name="title_mas">Análisis IA</string>
     <string name="label_recent_activity">Actividad Reciente</string>
     <string name="label_no_recent_activity">No hay actividad reciente</string>
+    <string name="label_recent_widget_ingreso">Ingreso reciente: %1$s · %2$s</string>
+    <string name="label_recent_widget_gasto">Gasto reciente: %1$s · %2$s</string>
     <string name="label_usuario_generico">Usuario</string>
     <string name="label_accesos_rapidos">Accesos rápidos</string>
     <string name="desc_acceso_gastos">Acceso a gastos</string>
