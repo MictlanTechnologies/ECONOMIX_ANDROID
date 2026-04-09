@@ -62,62 +62,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtTitulo" />
 
-    <LinearLayout
-        android:id="@+id/miniMenuAhorro"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:layout_marginHorizontal="16dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvAhorroSubtitle">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnMenuAhorro"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:text="@string/title_ahorro"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            app:backgroundTint="@color/tealAccent"
-            app:cornerRadius="16dp"
-            app:icon="@drawable/ahorrotexto2"
-            app:iconGravity="textStart"
-            app:iconPadding="8dp"
-            app:iconTint="@color/white" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnMenuPresupuestos"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:text="@string/title_presupuestos"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            app:backgroundTint="@android:color/transparent"
-            app:cornerRadius="16dp"
-            app:icon="@drawable/ic_dashboard_black_24dp"
-            app:iconGravity="textStart"
-            app:iconPadding="8dp"
-            app:iconTint="@color/white"
-            app:strokeColor="@color/tealLight"
-            app:strokeWidth="1dp" />
-    </LinearLayout>
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollContent"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingHorizontal="16dp"
@@ -125,7 +74,7 @@
         app:layout_constraintBottom_toTopOf="@id/actionRow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/miniMenuAhorro">
+        app:layout_constraintTop_toBottomOf="@id/tvAhorroSubtitle">
 
         <LinearLayout
             android:layout_width="match_parent"

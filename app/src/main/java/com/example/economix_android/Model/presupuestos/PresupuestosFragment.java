@@ -62,8 +62,26 @@ public class PresupuestosFragment extends Fragment {
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfilPres);
         binding.btnAyudaPres.setOnClickListener(v -> mostrarAyuda());
         binding.btnGuardarPres.setOnClickListener(v -> guardarPresupuesto());
-        binding.btnMenuAhorroPres.setOnClickListener(v -> navigateSafely(v, R.id.navigation_ahorro));
-        binding.btnMenuPresupuestosPres.setOnClickListener(v -> navigateSafely(v, R.id.navigation_presupuestos));
+
+        View.OnClickListener bottomNavListener = v -> {
+            int viewId = v.getId();
+            if (viewId == R.id.navGastos) {
+                navigateSafely(v, R.id.navigation_gastos);
+            } else if (viewId == R.id.navIngresos) {
+                navigateSafely(v, R.id.navigation_ingresos);
+            } else if (viewId == R.id.navAhorro) {
+                navigateSafely(v, R.id.navigation_ahorro);
+            } else if (viewId == R.id.navGraficas) {
+                navigateSafely(v, R.id.navigation_graficas);
+            } else if (viewId == R.id.navMenuMini) {
+                navigateSafely(v, R.id.menu);
+            }
+        };
+        binding.navGastos.setOnClickListener(bottomNavListener);
+        binding.navIngresos.setOnClickListener(bottomNavListener);
+        binding.navAhorro.setOnClickListener(bottomNavListener);
+        binding.navGraficas.setOnClickListener(bottomNavListener);
+        binding.navMenuMini.setOnClickListener(bottomNavListener);
 
         // Pre-select current month and year
         Calendar now = Calendar.getInstance();
