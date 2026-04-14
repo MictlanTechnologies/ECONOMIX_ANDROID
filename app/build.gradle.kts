@@ -1,5 +1,14 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
+}
+
+// Lee local.properties para overrides por máquina (ej. IP real para celular físico).
+// Este archivo está en .gitignore y nunca se sube al repositorio.
+val localProps = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) f.inputStream().use(this::load)
 }
 
 android {
@@ -18,11 +27,6 @@ android {
     }
 
     buildTypes {
-        val localProps = java.util.Properties().also { props ->
-            val f = rootProject.file("local.properties")
-            if (f.exists()) f.inputStream().use(props::load)
-        }
-
         debug {
             val baseUrl = localProps.getProperty("ECONOMIX_BASE_URL_DEBUG")
                 ?: (project.findProperty("ECONOMIX_BASE_URL_DEBUG") as String?)
