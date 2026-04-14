@@ -31,7 +31,7 @@ android {
             val baseUrl = localProps.getProperty("ECONOMIX_BASE_URL_DEBUG")
                 ?: (project.findProperty("ECONOMIX_BASE_URL_DEBUG") as String?)
                     ?.takeIf { it.isNotBlank() }
-                ?: "http://10.0.2.2:8080/"
+                ?: "http://192.168.1.73:8080/"
             buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
         }
         release {
@@ -42,7 +42,7 @@ android {
                     ?.takeIf { it.isNotBlank() }
                 ?: (project.findProperty("ECONOMIX_BASE_URL_DEBUG") as String?)
                     ?.takeIf { it.isNotBlank() }
-                ?: "http://10.0.2.2:8080/"
+                ?: "http://192.168.1.73:8080/"
             buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
