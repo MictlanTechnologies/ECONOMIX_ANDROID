@@ -18,16 +18,24 @@ android {
     }
 
     buildTypes {
+        val localProps = java.util.Properties().also { props ->
+            val f = rootProject.file("local.properties")
+            if (f.exists()) f.inputStream().use(props::load)
+        }
+
         debug {
-            val baseUrl = (project.findProperty("ECONOMIX_BASE_URL_DEBUG") as String?)
-                ?.takeIf { it.isNotBlank() }
+            val baseUrl = localProps.getProperty("ECONOMIX_BASE_URL_DEBUG")
+                ?: (project.findProperty("ECONOMIX_BASE_URL_DEBUG") as String?)
+                    ?.takeIf { it.isNotBlank() }
                 ?: "http://10.0.2.2:8080/"
             buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
         }
         release {
             isMinifyEnabled = false
-            val baseUrl = (project.findProperty("ECONOMIX_BASE_URL_RELEASE") as String?)
-                ?.takeIf { it.isNotBlank() }
+            val baseUrl = localProps.getProperty("ECONOMIX_BASE_URL_RELEASE")
+                ?: localProps.getProperty("ECONOMIX_BASE_URL_DEBUG")
+                ?: (project.findProperty("ECONOMIX_BASE_URL_RELEASE") as String?)
+                    ?.takeIf { it.isNotBlank() }
                 ?: (project.findProperty("ECONOMIX_BASE_URL_DEBUG") as String?)
                     ?.takeIf { it.isNotBlank() }
                 ?: "http://10.0.2.2:8080/"
