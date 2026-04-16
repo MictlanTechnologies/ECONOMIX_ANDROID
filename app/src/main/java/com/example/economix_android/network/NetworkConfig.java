@@ -1,11 +1,13 @@
 package com.example.economix_android.network;
 
-import com.example.economix_android.BuildConfig;
+import android.content.Context;
 
 public final class NetworkConfig {
 
-    public static final String BASE_URL = BuildConfig.BASE_URL;
-
     private NetworkConfig() {
+    }
+
+    public static String getBaseUrl(Context context) {
+        return ServerUrlManager.getBaseUrl(context.getApplicationContext());
     }
 }
