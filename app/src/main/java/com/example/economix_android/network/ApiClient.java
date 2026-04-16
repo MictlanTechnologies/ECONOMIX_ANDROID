@@ -2,6 +2,7 @@ package com.example.economix_android.network;
 
 import android.content.Context;
 
+import com.example.economix_android.BuildConfig;
 import com.example.economix_android.ai.AiApi;
 import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.network.api.AhorroApi;
@@ -44,10 +45,11 @@ public final class ApiClient {
     private ApiClient() {
     }
 
+    /**
+     * Inicializa (o re-inicializa) el cliente HTTP.
+     */
     public static synchronized void init(Context context) {
-        if (initialized) {
-            return;
-        }
+        if (initialized) return;
 
         SessionManager sessionManager = new SessionManager(context.getApplicationContext());
         Gson gson = createGson();
@@ -55,18 +57,23 @@ public final class ApiClient {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
 
+        // Cliente público (login, refresh, register)
         OkHttpClient publicClient = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
                 .addInterceptor(logging)
                 .build();
 
         publicRetrofit = new Retrofit.Builder()
-                .baseUrl(NetworkConfig.BASE_URL)
+                .baseUrl(BuildConfig.BASE_URL)
                 .client(publicClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
         AuthApi refreshApi = publicRetrofit.create(AuthApi.class);
 
+        // Cliente autenticado
         OkHttpClient authenticatedClient = new OkHttpClient.Builder()
                 .connectTimeout(15, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
@@ -77,12 +84,18 @@ public final class ApiClient {
                 .build();
 
         authenticatedRetrofit = new Retrofit.Builder()
-                .baseUrl(NetworkConfig.BASE_URL)
+                .baseUrl(BuildConfig.BASE_URL)
                 .client(authenticatedClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
         initialized = true;
+    }
+
+    public static synchronized void reset() {
+        initialized = false;
+        publicRetrofit = null;
+        authenticatedRetrofit = null;
     }
 
     private static Gson createGson() {
@@ -110,67 +123,29 @@ public final class ApiClient {
 
     private static Retrofit authRequiredRetrofit() {
         if (!initialized || authenticatedRetrofit == null) {
-            throw new IllegalStateException("ApiClient no inicializado. Registra EconomixApp en AndroidManifest.");
+            throw new IllegalStateException("ApiClient no inicializado. Asegurate de que EconomixApp esta registrado en AndroidManifest.");
         }
         return authenticatedRetrofit;
     }
 
     public static AuthApi getAuthApi() {
         if (!initialized || publicRetrofit == null) {
-            throw new IllegalStateException("ApiClient no inicializado. Registra EconomixApp en AndroidManifest.");
+            throw new IllegalStateException("ApiClient no inicializado. Asegurate de que EconomixApp esta registrado en AndroidManifest.");
         }
         return publicRetrofit.create(AuthApi.class);
     }
 
-    public static AhorroApi getAhorroApi() {
-        return authRequiredRetrofit().create(AhorroApi.class);
-    }
-
-    public static ConceptoGastoApi getConceptoGastoApi() {
-        return authRequiredRetrofit().create(ConceptoGastoApi.class);
-    }
-
-    public static CategoriaGastoApi getCategoriaGastoApi() {
-        return authRequiredRetrofit().create(CategoriaGastoApi.class);
-    }
-
-    public static ConceptoIngresoApi getConceptoIngresoApi() {
-        return authRequiredRetrofit().create(ConceptoIngresoApi.class);
-    }
-
-    public static ContactoApi getContactoApi() {
-        return authRequiredRetrofit().create(ContactoApi.class);
-    }
-
-    public static DomicilioApi getDomicilioApi() {
-        return authRequiredRetrofit().create(DomicilioApi.class);
-    }
-
-    public static GastoApi getGastoApi() {
-        return authRequiredRetrofit().create(GastoApi.class);
-    }
-
-    public static IngresoApi getIngresoApi() {
-        return authRequiredRetrofit().create(IngresoApi.class);
-    }
-
-    public static MovimientoAhorroApi getMovimientoAhorroApi() {
-        return authRequiredRetrofit().create(MovimientoAhorroApi.class);
-    }
-
-    public static PersonaApi getPersonaApi() {
-        return authRequiredRetrofit().create(PersonaApi.class);
-    }
-
-    public static PresupuestoApi getPresupuestoApi() {
-        return authRequiredRetrofit().create(PresupuestoApi.class);
-    }
-
-    public static AiApi getAiApi() {
-        return authRequiredRetrofit().create(AiApi.class);
-    }
-
-    public static UsuarioApi getUsuarioApi() {
-        return authRequiredRetrofit().create(UsuarioApi.class);
-    }
+    public static AhorroApi getAhorroApi() { return authRequiredRetrofit().create(AhorroApi.class); }
+    public static ConceptoGastoApi getConceptoGastoApi() { return authRequiredRetrofit().create(ConceptoGastoApi.class); }
+    public static CategoriaGastoApi getCategoriaGastoApi() { return authRequiredRetrofit().create(CategoriaGastoApi.class); }
+    public static ConceptoIngresoApi getConceptoIngresoApi() { return authRequiredRetrofit().create(ConceptoIngresoApi.class); }
+    public static ContactoApi getContactoApi() { return authRequiredRetrofit().create(ContactoApi.class); }
+    public static DomicilioApi getDomicilioApi() { return authRequiredRetrofit().create(DomicilioApi.class); }
+    public static GastoApi getGastoApi() { return authRequiredRetrofit().create(GastoApi.class); }
+    public static IngresoApi getIngresoApi() { return authRequiredRetrofit().create(IngresoApi.class); }
+    public static MovimientoAhorroApi getMovimientoAhorroApi() { return authRequiredRetrofit().create(MovimientoAhorroApi.class); }
+    public static PersonaApi getPersonaApi() { return authRequiredRetrofit().create(PersonaApi.class); }
+    public static PresupuestoApi getPresupuestoApi() { return authRequiredRetrofit().create(PresupuestoApi.class); }
+    public static AiApi getAiApi() { return authRequiredRetrofit().create(AiApi.class); }
+    public static UsuarioApi getUsuarioApi() { return authRequiredRetrofit().create(UsuarioApi.class); }
 }
