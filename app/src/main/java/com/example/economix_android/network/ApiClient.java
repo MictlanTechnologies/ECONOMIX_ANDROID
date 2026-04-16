@@ -1,8 +1,8 @@
 package com.example.economix_android.network;
 
 import android.content.Context;
+import android.util.Log;
 
-import com.example.economix_android.BuildConfig;
 import com.example.economix_android.ai.AiApi;
 import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.network.api.AhorroApi;
@@ -38,9 +38,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public final class ApiClient {
 
+    private static final String TAG = "ApiClient";
+
     private static volatile boolean initialized = false;
     private static Retrofit publicRetrofit;
     private static Retrofit authenticatedRetrofit;
+    private static String currentBaseUrl;
 
     private ApiClient() {
     }
@@ -49,9 +52,19 @@ public final class ApiClient {
      * Inicializa (o re-inicializa) el cliente HTTP.
      */
     public static synchronized void init(Context context) {
-        if (initialized) return;
+        Context appContext = context.getApplicationContext();
+        String baseUrl = NetworkConfig.getBaseUrl(appContext);
 
-        SessionManager sessionManager = new SessionManager(context.getApplicationContext());
+        if (initialized
+                && publicRetrofit != null
+                && authenticatedRetrofit != null
+                && baseUrl.equals(currentBaseUrl)) {
+            return;
+        }
+
+        Log.i(TAG, "Inicializando ApiClient con baseUrl=" + baseUrl);
+
+        SessionManager sessionManager = new SessionManager(appContext);
         Gson gson = createGson();
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -66,7 +79,7 @@ public final class ApiClient {
                 .build();
 
         publicRetrofit = new Retrofit.Builder()
-                .baseUrl(BuildConfig.BASE_URL)
+                .baseUrl(baseUrl)
                 .client(publicClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
@@ -84,11 +97,12 @@ public final class ApiClient {
                 .build();
 
         authenticatedRetrofit = new Retrofit.Builder()
-                .baseUrl(BuildConfig.BASE_URL)
+                .baseUrl(baseUrl)
                 .client(authenticatedClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
+        currentBaseUrl = baseUrl;
         initialized = true;
     }
 
@@ -96,6 +110,17 @@ public final class ApiClient {
         initialized = false;
         publicRetrofit = null;
         authenticatedRetrofit = null;
+        currentBaseUrl = null;
+        Log.d(TAG, "ApiClient reseteado");
+    }
+
+    public static synchronized void refreshBaseUrl(Context context) {
+        String nextBaseUrl = NetworkConfig.getBaseUrl(context.getApplicationContext());
+        if (!nextBaseUrl.equals(currentBaseUrl)) {
+            Log.i(TAG, "Cambio de baseUrl detectado. Anterior=" + currentBaseUrl + " Nueva=" + nextBaseUrl);
+            reset();
+        }
+        init(context.getApplicationContext());
     }
 
     private static Gson createGson() {
