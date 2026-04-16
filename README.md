@@ -1,4 +1,4 @@
-# ECONOMIX Android + Backend: guía de inicialización paso a paso
+    # ECONOMIX Android + Backend: guía de inicialización paso a paso
 
 Este README explica **cómo levantar el servidor (backend)** y **cómo configurar el frontend Android** después de la refactorización de IA.
 
