@@ -4,11 +4,14 @@ import android.app.DatePickerDialog;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.Toast;
 import com.example.economix_android.Model.data.RegistroFinanciero;
 import androidx.annotation.NonNull;
@@ -144,12 +147,21 @@ public class gastosFragment extends Fragment {
     }
 
     private void configurarEntradasDinamicas() {
-        binding.btnAgregarCategoriaGas.setOnClickListener(v -> agregarCategoriaPersonalizada());
-        binding.btnAgregarEtiquetaGas.setOnClickListener(v -> agregarEtiquetaPersonalizada());
+        binding.btnAgregarCategoriaGas.setOnClickListener(v -> solicitarCategoriaPersonalizada());
+        binding.btnAgregarEtiquetaGas.setOnClickListener(v -> solicitarEtiquetaPersonalizada());
     }
 
-    private void agregarCategoriaPersonalizada() {
-        String categoria = obtenerTexto(binding.etNuevaCategoriaGas);
+    private void solicitarCategoriaPersonalizada() {
+        mostrarDialogoEntrada(
+                R.string.titulo_nueva_categoria,
+                R.string.hint_nueva_categoria,
+                R.string.error_categoria_vacia,
+                this::agregarCategoriaPersonalizada
+        );
+    }
+
+    private void agregarCategoriaPersonalizada(String categoriaInput) {
+        String categoria = categoriaInput != null ? categoriaInput.trim() : "";
         if (TextUtils.isEmpty(categoria)) {
             Toast.makeText(requireContext(), R.string.error_categoria_vacia, Toast.LENGTH_SHORT).show();
             return;
@@ -166,17 +178,24 @@ public class gastosFragment extends Fragment {
         binding.chipGroupCategoriaGas.addView(chip);
         chipCategoryMap.put(chip.getId(), categoria);
         chip.setChecked(true);
-        binding.etNuevaCategoriaGas.setText("");
     }
 
-    private void agregarEtiquetaPersonalizada() {
-        String etiqueta = normalizarEtiqueta(obtenerTexto(binding.etNuevaEtiquetaGas));
+    private void solicitarEtiquetaPersonalizada() {
+        mostrarDialogoEntrada(
+                R.string.titulo_nueva_etiqueta,
+                R.string.hint_nueva_etiqueta,
+                R.string.error_etiqueta_vacia,
+                this::agregarEtiquetaPersonalizada
+        );
+    }
+
+    private void agregarEtiquetaPersonalizada(String etiquetaInput) {
+        String etiqueta = normalizarEtiqueta(etiquetaInput);
         if (TextUtils.isEmpty(etiqueta)) {
             Toast.makeText(requireContext(), R.string.error_etiqueta_vacia, Toast.LENGTH_SHORT).show();
             return;
         }
         if (existeEtiqueta(etiqueta)) {
-            binding.etNuevaEtiquetaGas.setText("");
             return;
         }
         Chip chip = new Chip(requireContext());
@@ -193,8 +212,48 @@ public class gastosFragment extends Fragment {
         chip.setChipStrokeColor(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.tealLight)));
         chip.setChipStrokeWidth(getResources().getDisplayMetrics().density);
         binding.chipGroupEtiquetasGas.addView(chip);
-        binding.etNuevaEtiquetaGas.setText("");
         sincronizarEtiquetasOcultas();
+    }
+
+    private void mostrarDialogoEntrada(int tituloRes, int hintRes, int errorRes, OnTextoConfirmado onTextoConfirmado) {
+        final TextInputEditText input = new TextInputEditText(requireContext());
+        input.setHint(hintRes);
+        input.setSingleLine(true);
+        input.setTextColor(ContextCompat.getColor(requireContext(), R.color.economix_text_primary));
+        input.setHintTextColor(ContextCompat.getColor(requireContext(), R.color.economix_text_secondary));
+
+        int horizontal = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                20,
+                getResources().getDisplayMetrics()
+        );
+        FrameLayout container = new FrameLayout(requireContext());
+        container.setPadding(horizontal, 0, horizontal, 0);
+        container.addView(input);
+
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(tituloRes)
+                .setView(container)
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(R.string.label_agregar, null);
+
+        androidx.appcompat.app.AlertDialog dialog = builder.create();
+        dialog.show();
+
+        Button positiveButton = dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(v -> {
+            String valor = obtenerTexto(input);
+            if (TextUtils.isEmpty(valor)) {
+                input.setError(getString(errorRes));
+                return;
+            }
+            onTextoConfirmado.onConfirm(valor);
+            dialog.dismiss();
+        });
+    }
+
+    private interface OnTextoConfirmado {
+        void onConfirm(String valor);
     }
 
     private boolean existeEtiqueta(String etiqueta) {
@@ -376,8 +435,6 @@ public class gastosFragment extends Fragment {
         binding.chipGroupCategoriaGas.clearCheck();
         binding.chipGroupEtiquetasGas.removeAllViews();
         binding.etEtiquetasGas.setText("");
-        binding.etNuevaEtiquetaGas.setText("");
-        binding.etNuevaCategoriaGas.setText("");
         ingresoSeleccionado = null;
         actualizarIngresoDisponible();
         enModoPlantilla = false;

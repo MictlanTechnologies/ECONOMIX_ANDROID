@@ -234,6 +234,10 @@
     <string name="label_etiquetas">Etiquetas</string>
     <string name="hint_nueva_etiqueta">Nueva etiqueta</string>
     <string name="label_agregar_etiqueta">Agregar etiqueta</string>
+    <string name="titulo_nueva_categoria">Crear categoría personalizada</string>
+    <string name="titulo_nueva_etiqueta">Crear etiqueta personalizada</string>
+    <string name="desc_agregar_categoria_personalizada">Agregar categoría personalizada</string>
+    <string name="desc_agregar_etiqueta_personalizada">Agregar etiqueta personalizada</string>
     <string name="error_categoria_vacia">Escribe un nombre de categoría.</string>
     <string name="error_etiqueta_vacia">Escribe una etiqueta válida.</string>
 
