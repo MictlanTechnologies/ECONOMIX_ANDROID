@@ -2,23 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/menu"
+        android:icon="@drawable/ic_home_filled"
+        android:title="@string/title_inicio" />
+
+    <item
         android:id="@+id/navigation_gastos"
-        android:icon="@drawable/gastosop2"
-        android:title="@string/title_gastos" />
+        android:icon="@drawable/ic_swap_horiz"
+        android:title="@string/title_movimientos" />
 
     <item
-        android:id="@+id/navigation_ingresos"
-        android:icon="@drawable/ingresos"
-        android:title="@string/title_ingresos" />
+        android:id="@+id/navigation_presupuestos"
+        android:icon="@drawable/ic_pie_chart"
+        android:title="@string/title_presupuestos" />
 
     <item
-        android:id="@+id/navigation_ahorro"
-        android:icon="@drawable/ahorro_removebg_preview"
-        android:title="@string/title_ahorro" />
-
-    <item
-        android:id="@+id/navigation_graficas"
-        android:icon="@drawable/graficastexto1"
-        android:title="@string/title_graficas" />
+        android:id="@+id/navigation_predictions"
+        android:icon="@drawable/ic_more_horiz"
+        android:title="@string/title_mas" />
 
 </menu>
