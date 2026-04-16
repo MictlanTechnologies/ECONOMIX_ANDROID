@@ -1,7 +1,5 @@
 package com.example.economix_android.network.dto;
 
-import com.google.gson.annotations.SerializedName;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,10 +14,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class AhorroDto {
     private Integer idAhorro;
-    private Integer idIngresos;
-    private BigDecimal montoAhorro;
-    private String periodoTAhorro;
-    private LocalDate fechaAhorro;
-    @SerializedName(value = "fechaActualizacionA", alternate = {"fechaActualizaciónA"})
-    private LocalDate fechaActualizacionA;
+    private Integer idUsuario;
+    private String nombreObjetivo;
+    private String descripcionObjetivo;
+    private BigDecimal meta;
+    private BigDecimal montoAhorrado;
+    private LocalDate fechaLimite;
 }

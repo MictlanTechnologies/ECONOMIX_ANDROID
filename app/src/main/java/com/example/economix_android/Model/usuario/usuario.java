@@ -39,8 +39,11 @@ public class usuario extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        String perfil = SessionManager.getPerfil(requireContext());
-        binding.tvNombre.setText(perfil != null ? perfil : getString(R.string.app_name));
+        String nombreVisible = SessionManager.getDisplayName(requireContext());
+        if (nombreVisible == null || nombreVisible.trim().isEmpty()) {
+            nombreVisible = SessionManager.getPerfil(requireContext());
+        }
+        binding.tvNombre.setText(nombreVisible != null ? nombreVisible : getString(R.string.app_name));
 
         ProfileImageUtils.applyProfileImage(requireContext(), binding.imgAvatar, R.drawable.usuariog);
 
@@ -63,6 +66,8 @@ public class usuario extends Fragment {
                 navigateSafely(v, R.id.navigation_ahorro);
             } else if (viewId == R.id.navGraficas) {
                 navigateSafely(v, R.id.navigation_graficas);
+            } else if (viewId == R.id.navMenuMini) {
+                navigateSafely(v, R.id.menu);
             }
         };
 
@@ -70,7 +75,10 @@ public class usuario extends Fragment {
         binding.navIngresos.setOnClickListener(bottomNavListener);
         binding.navAhorro.setOnClickListener(bottomNavListener);
         binding.navGraficas.setOnClickListener(bottomNavListener);
+        binding.navMenuMini.setOnClickListener(bottomNavListener);
+
     }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -116,6 +124,7 @@ public class usuario extends Fragment {
         startActivity(intent);
         requireActivity().finish();
     }
+
 
     @Override
     public void onDestroyView() {

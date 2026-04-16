@@ -17,6 +17,8 @@ import java.time.LocalDate;
 public class GastoDto {
     private Integer idGastos;
     private Integer idUsuario;
+    private Integer idCategoria;
+    private Integer idPresupuesto;
     @SerializedName(value = "descripcionGasto", alternate = {"descripciónGasto"})
     private String descripcionGasto;
     @SerializedName(value = "articuloGasto", alternate = {"artículoGasto"})

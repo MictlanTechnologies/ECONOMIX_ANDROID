@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -14,6 +16,20 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val localProperties = Properties().apply {
+            val localFile = rootProject.file("local.properties")
+            if (localFile.exists()) {
+                localFile.inputStream().use { load(it) }
+            }
+        }
+
+        val geminiApiKey =
+            (project.findProperty("GEMINI_API_KEY") as String?)?.takeIf { it.isNotBlank() }
+                ?: localProperties.getProperty("GEMINI_API_KEY")?.takeIf { it.isNotBlank() }
+                ?: System.getenv("GEMINI_API_KEY")?.takeIf { it.isNotBlank() }
+                ?: "YOUR_GEMINI_API_KEY"
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
     }
 
     buildTypes {
@@ -32,6 +48,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
     packaging {
         resources {
@@ -65,4 +82,6 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("com.airbnb.android:lottie:6.7.1")
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
 }

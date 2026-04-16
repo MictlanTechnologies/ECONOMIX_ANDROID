@@ -12,14 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.R;
 import com.example.economix_android.Vista.menu;
-import com.example.economix_android.Model.data.DataRepository;
-import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.databinding.FragmentInicioSesionBinding;
 import com.example.economix_android.network.dto.LoginRequest;
+import com.example.economix_android.network.dto.PersonaDto;
 import com.example.economix_android.network.dto.UsuarioDto;
+import com.example.economix_android.network.repository.PersonaRepository;
 import com.example.economix_android.network.repository.UsuarioRepository;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,6 +32,7 @@ public class inicio_sesionFragment extends Fragment {
 
     private FragmentInicioSesionBinding binding;
     private final UsuarioRepository usuarioRepository = new UsuarioRepository();
+    private final PersonaRepository personaRepository = new PersonaRepository();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -90,9 +94,7 @@ public class inicio_sesionFragment extends Fragment {
                     UsuarioDto usuario = response.body();
                     DataRepository.clearAll();
                     SessionManager.saveSession(requireContext(), usuario);
-                    Intent menuIntent = new Intent(requireContext(), menu.class);
-                    startActivity(menuIntent);
-                    requireActivity().finish();
+                    cargarNombreUsuarioYContinuar(usuario);
                 } else if (response.code() == 401) {
                     Toast.makeText(requireContext(), getString(R.string.error_credenciales_invalidas), Toast.LENGTH_SHORT).show();
                 } else {
@@ -111,6 +113,61 @@ public class inicio_sesionFragment extends Fragment {
                 mostrarMensajeError(null);
             }
         });
+    }
+
+    private void cargarNombreUsuarioYContinuar(UsuarioDto usuario) {
+        Integer userId = usuario.getIdUsuario();
+        if (userId == null) {
+            abrirMenu();
+            return;
+        }
+
+        personaRepository.obtenerPersonas(new Callback<List<PersonaDto>>() {
+            @Override
+            public void onResponse(Call<List<PersonaDto>> call, Response<List<PersonaDto>> response) {
+                if (!isAdded()) {
+                    return;
+                }
+                if (response.isSuccessful() && response.body() != null) {
+                    String nombreCompleto = null;
+                    for (PersonaDto persona : response.body()) {
+                        if (userId.equals(persona.getIdUsuario())) {
+                            nombreCompleto = construirNombreCompleto(persona);
+                            break;
+                        }
+                    }
+                    if (!TextUtils.isEmpty(nombreCompleto)) {
+                        SessionManager.saveDisplayName(requireContext(), nombreCompleto);
+                    }
+                }
+                abrirMenu();
+            }
+
+            @Override
+            public void onFailure(Call<List<PersonaDto>> call, Throwable t) {
+                if (!isAdded()) {
+                    return;
+                }
+                abrirMenu();
+            }
+        });
+    }
+
+    private String construirNombreCompleto(PersonaDto persona) {
+        if (persona == null) {
+            return null;
+        }
+        String nombre = persona.getNombrePersona() != null ? persona.getNombrePersona().trim() : "";
+        String apellidoP = persona.getApellidoP() != null ? persona.getApellidoP().trim() : "";
+        String apellidoM = persona.getApellidoM() != null ? persona.getApellidoM().trim() : "";
+        String resultado = (nombre + " " + apellidoP + " " + apellidoM).trim();
+        return resultado.isEmpty() ? null : resultado;
+    }
+
+    private void abrirMenu() {
+        Intent menuIntent = new Intent(requireContext(), menu.class);
+        startActivity(menuIntent);
+        requireActivity().finish();
     }
 
     private void limpiarErrores() {
