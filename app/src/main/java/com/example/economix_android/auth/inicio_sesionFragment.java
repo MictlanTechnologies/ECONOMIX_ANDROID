@@ -17,8 +17,12 @@ import com.example.economix_android.R;
 import com.example.economix_android.Vista.menu;
 import com.example.economix_android.databinding.FragmentInicioSesionBinding;
 import com.example.economix_android.network.dto.LoginRequest;
+import com.example.economix_android.network.dto.PersonaDto;
 import com.example.economix_android.network.dto.UsuarioDto;
+import com.example.economix_android.network.repository.PersonaRepository;
 import com.example.economix_android.network.repository.UsuarioRepository;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;

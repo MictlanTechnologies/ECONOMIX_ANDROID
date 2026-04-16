@@ -4,17 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_app_gradient"
-    android:padding="20dp">
+    android:background="@drawable/bg_menu_gradient">
 
     <ImageButton
         android:id="@+id/btnAyuda"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Ayuda"
+        android:padding="8dp"
         android:src="@drawable/ayuda"
-        android:tint="@color/white"
+        android:tint="@color/economix_text_primary"
         tools:ignore="UseAppTint"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,10 +25,13 @@
         android:id="@+id/btnPerfil"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Perfil"
+        android:padding="8dp"
         android:src="@drawable/usuario"
-        android:tint="@color/white"
+        android:tint="@color/economix_text_primary"
         tools:ignore="UseAppTint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -35,11 +40,11 @@
         android:id="@+id/txtTitulo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="sans-serif-medium"
         android:text="Plan de Ahorro"
-        android:textColor="@color/softWhite"
-        android:textSize="28sp"
+        android:textColor="@color/economix_text_primary"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Define tu meta, da seguimiento y celebra tus avances"
-        android:textColor="@color/white"
+        android:textColor="@color/economix_text_secondary"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -61,10 +66,11 @@
         android:id="@+id/scrollContent"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="24dp"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/actionRow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -110,8 +116,8 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/label_meta_ahorro"
                             android:inputType="text"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray" />
+                            android:textColor="@color/economix_background"
+                            android:textColorHint="@color/tealDark" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -133,8 +139,8 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/label_precio_objetivo"
                             android:inputType="numberDecimal"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray" />
+                            android:textColor="@color/economix_background"
+                            android:textColorHint="@color/tealDark" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -148,7 +154,8 @@
                         app:boxCornerRadiusBottomStart="20dp"
                         app:boxCornerRadiusTopEnd="20dp"
                         app:boxCornerRadiusTopStart="20dp"
-                        app:boxStrokeColor="@color/tealAccent">
+                        app:boxStrokeColor="@color/tealAccent"
+                        app:endIconMode="dropdown_menu">
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/etIngresoSeleccion"
@@ -156,8 +163,8 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/label_selecciona_ingreso"
                             android:inputType="none"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray" />
+                            android:textColor="@color/economix_background"
+                            android:textColorHint="@color/tealDark" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <TextView
@@ -188,8 +195,8 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/label_fecha_ahorro"
                             android:inputType="date"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray" />
+                            android:textColor="@color/economix_background"
+                            android:textColorHint="@color/tealDark" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -211,8 +218,8 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/label_monto_aporte"
                             android:inputType="numberDecimal"
-                            android:textColor="@android:color/black"
-                            android:textColorHint="@android:color/darker_gray" />
+                            android:textColor="@color/economix_background"
+                            android:textColorHint="@color/tealDark" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -226,7 +233,7 @@
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 app:backgroundTint="@color/tealSurface"
-                app:cornerRadius="24dp" />
+                app:cornerRadius="14dp" />
 
             <TextView
                 android:id="@+id/tvHistorialAhorro"
@@ -235,7 +242,7 @@
                 android:layout_marginTop="20dp"
                 android:fontFamily="sans-serif-medium"
                 android:text="Historial de ahorro"
-                android:textColor="@color/softWhite"
+                android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -262,7 +269,8 @@
         android:id="@+id/actionRow"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="12dp"
         android:gravity="center"
         android:orientation="horizontal"
         android:weightSum="3"
@@ -280,19 +288,19 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             app:backgroundTint="@color/tealAccent"
-            app:cornerRadius="24dp" />
+            app:cornerRadius="14dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEliminar"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_marginHorizontal="6dp"
+            android:layout_marginHorizontal="4dp"
             android:layout_weight="1"
             android:text="Eliminar"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            app:backgroundTint="@color/tealSurfaceVariant"
-            app:cornerRadius="24dp" />
+            app:backgroundTint="@color/module_gastos"
+            app:cornerRadius="14dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLimpiar"
@@ -304,21 +312,21 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             app:backgroundTint="@color/tealLight"
-            app:cornerRadius="24dp" />
+            app:cornerRadius="14dp" />
     </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/bottomBarContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="16dp"
         app:cardBackgroundColor="@color/tealSurfaceVariant"
-        app:cardCornerRadius="32dp"
+        app:cardCornerRadius="28dp"
         app:cardElevation="8dp"
         app:strokeColor="@color/softWhite"
-        app:strokeWidth="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:strokeWidth="1dp"
+        app:layout_constraintBottom_toTopOf="@id/navMenuMini"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -328,7 +336,7 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingHorizontal="12dp"
-            android:paddingVertical="16dp">
+            android:paddingVertical="12dp">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -339,22 +347,21 @@
 
                 <ImageButton
                     android:id="@+id/navGastos"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Gastos"
-                    android:padding="14dp"
+                    android:padding="12dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/gastosop2texto"
-                    android:tint="@color/white"
+                    android:src="@drawable/gastosop2texto2"
                     tools:ignore="UseAppTint" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="1dp"
-                android:layout_height="48dp"
-                android:layout_marginHorizontal="6dp"
+                android:layout_height="36dp"
+                android:layout_marginHorizontal="4dp"
                 android:alpha="0.3"
                 android:background="@color/softWhite" />
 
@@ -367,22 +374,21 @@
 
                 <ImageButton
                     android:id="@+id/navIngresos"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Ingresos"
-                    android:padding="14dp"
+                    android:padding="12dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/ingresosconletras"
-                    android:tint="@color/white"
                     tools:ignore="UseAppTint" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="1dp"
-                android:layout_height="48dp"
-                android:layout_marginHorizontal="6dp"
+                android:layout_height="36dp"
+                android:layout_marginHorizontal="4dp"
                 android:alpha="0.3"
                 android:background="@color/softWhite" />
 
@@ -395,21 +401,20 @@
 
                 <ImageButton
                     android:id="@+id/navAhorro"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Ahorro"
-                    android:padding="14dp"
+                    android:padding="12dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ahorrotexto"
-                    android:tint="@color/white"
+                    android:src="@drawable/ahorrotexto2"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
 
             <View
                 android:layout_width="1dp"
-                android:layout_height="48dp"
-                android:layout_marginHorizontal="6dp"
+                android:layout_height="36dp"
+                android:layout_marginHorizontal="4dp"
                 android:alpha="0.3"
                 android:background="@color/softWhite" />
 
@@ -422,19 +427,34 @@
 
                 <ImageButton
                     android:id="@+id/navGraficas"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Gráficas"
-                    android:padding="14dp"
+                    android:padding="12dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/graficastexto1"
-                    android:tint="@color/white"
+                    android:src="@drawable/graficastexto2"
                     tools:ignore="UseAppTint" />
 
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/navMenuMini"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="Ir al menú"
+        app:backgroundTint="@color/tealAccent"
+        app:fabCustomSize="36dp"
+        app:maxImageSize="18dp"
+        app:srcCompat="@drawable/ic_home_filled"
+        app:tint="@color/economix_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

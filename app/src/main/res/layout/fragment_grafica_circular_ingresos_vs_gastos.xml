@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#143B39"
-    android:paddingBottom="24dp"
+    android:background="@drawable/bg_app_gradient"
+    android:padding="20dp"
     tools:context=".Model.graficas.IngresosVsGastos.graficaCircularIngresosVsGastos">
 
     <com.google.android.material.card.MaterialCardView
@@ -105,7 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/label_todas_fechas"
-            android:textColor="@color/softWhite"
+            android:textColor="@color/economix_text_primary"
             android:textSize="12sp" />
     </LinearLayout>
 
@@ -143,10 +143,12 @@
         android:layout_marginEnd="48dp"
         android:layout_marginBottom="16dp"
         android:text="@string/action_back"
-        android:textAllCaps="true"
-        android:textColor="@color/economix_background"
-        app:backgroundTint="@color/economix_accent"
+        android:textAllCaps="false"
+        android:textColor="@color/goldAccent"
+        app:backgroundTint="@android:color/transparent"
         app:cornerRadius="24dp"
+        app:strokeColor="@color/goldAccent"
+        app:strokeWidth="2dp"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -158,6 +160,9 @@
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:orientation="horizontal"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="12dp"
+        android:background="@drawable/bottom_nav_background"
         android:weightSum="4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

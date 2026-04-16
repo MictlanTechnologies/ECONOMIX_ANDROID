@@ -26,6 +26,9 @@
             android:exported="false" />
 
         <activity
+            android:name=".chat.ChatActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity_inicio"
             android:exported="false" />
         <activity
