@@ -22,7 +22,25 @@
         android:id="@+id/inicio_sesionFragment"
         android:name="com.example.economix_android.auth.inicio_sesionFragment"
         android:label="Inicio sesión"
-        tools:layout="@layout/fragment_inicio_sesion" />
+        tools:layout="@layout/fragment_inicio_sesion" >
+        <action
+            android:id="@+id/action_inicio_sesionFragment_to_twoFactorFragment"
+            app:destination="@id/twoFactorFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/twoFactorFragment"
+        android:name="com.example.economix_android.auth.TwoFactorFragment"
+        android:label="Verificación 2FA"
+        tools:layout="@layout/fragment_two_factor">
+        <argument
+            android:name="challengeId"
+            app:argType="string" />
+        <argument
+            android:name="challengeExpiresAt"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
 
     <fragment
         android:id="@+id/registroFragment"
