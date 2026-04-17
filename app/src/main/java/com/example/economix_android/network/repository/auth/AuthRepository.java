@@ -17,6 +17,7 @@ import com.example.economix_android.network.auth.dto.Verify2faResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AuthRepository {
 
@@ -43,7 +44,21 @@ public class AuthRepository {
     }
 
     public void setup2fa(Callback<TwoFaSetupResponse> callback) {
-        authApi.setup2fa().enqueue(callback);
+        authApi.setup2fa().enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<TwoFaSetupResponse> call, Response<TwoFaSetupResponse> response) {
+                if (response.code() == 404 || response.code() == 405) {
+                    authApi.setup2faGet().enqueue(callback);
+                    return;
+                }
+                callback.onResponse(call, response);
+            }
+
+            @Override
+            public void onFailure(Call<TwoFaSetupResponse> call, Throwable t) {
+                callback.onFailure(call, t);
+            }
+        });
     }
 
     public void enable2fa(OtpCodeRequest request, Callback<TwoFactorToggleResponse> callback) {

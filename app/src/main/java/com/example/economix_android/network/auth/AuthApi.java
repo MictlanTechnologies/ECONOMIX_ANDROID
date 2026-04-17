@@ -13,6 +13,7 @@ import com.example.economix_android.network.auth.dto.Verify2faResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface AuthApi {
@@ -30,6 +31,9 @@ public interface AuthApi {
 
     @POST("users/2fa/setup")
     Call<TwoFaSetupResponse> setup2fa();
+
+    @GET("users/2fa/setup")
+    Call<TwoFaSetupResponse> setup2faGet();
 
     @POST("users/2fa/enable")
     Call<TwoFactorToggleResponse> enable2fa(@Body OtpCodeRequest request);

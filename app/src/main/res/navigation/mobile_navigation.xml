@@ -268,4 +268,22 @@
             app:destination="@id/usuario" />
     </fragment>
 
+    <fragment
+        android:id="@+id/seguridad2faFragment"
+        android:name="com.example.economix_android.Model.usuario.Seguridad2faFragment"
+        android:label="seguridad_2fa"
+        tools:layout="@layout/fragment_seguridad_2fa" />
+
+    <fragment
+        android:id="@+id/recentActivityFragment"
+        android:name="com.example.economix_android.Model.data.RecentActivityFragment"
+        android:label="recent_activity"
+        tools:layout="@layout/fragment_recent_activity" />
+
+    <fragment
+        android:id="@+id/navigation_presupuestos"
+        android:name="com.example.economix_android.Model.presupuestos.PresupuestosFragment"
+        android:label="presupuestos"
+        tools:layout="@layout/fragment_presupuestos" />
+
 </navigation>
