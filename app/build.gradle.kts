@@ -29,7 +29,13 @@ android {
                 ?: localProperties.getProperty("GEMINI_API_KEY")?.takeIf { it.isNotBlank() }
                 ?: System.getenv("GEMINI_API_KEY")?.takeIf { it.isNotBlank() }
                 ?: "YOUR_GEMINI_API_KEY"
+        val apiBaseUrl =
+            (project.findProperty("API_BASE_URL") as String?)?.takeIf { it.isNotBlank() }
+                ?: localProperties.getProperty("API_BASE_URL")?.takeIf { it.isNotBlank() }
+                ?: System.getenv("API_BASE_URL")?.takeIf { it.isNotBlank() }
+                ?: "http://10.0.2.2:8080/"
         buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
+        buildConfigField("String", "API_BASE_URL", "\"$apiBaseUrl\"")
     }
 
     buildTypes {
