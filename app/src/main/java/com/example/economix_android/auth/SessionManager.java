@@ -3,6 +3,7 @@ package com.example.economix_android.auth;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKey;
@@ -18,6 +19,7 @@ public class SessionManager {
     private static final String KEY_USER_ID = "user_id";
     private static final String KEY_USER_NAME = "user_name";
     private static final String KEY_PERFIL = "perfil_usuario";
+    private static final String KEY_DISPLAY_NAME = "display_name";
     private static final String KEY_FOTO_URI = "foto_perfil_uri";
     private static final String KEY_ACCESS_TOKEN = "access_token";
     private static final String KEY_REFRESH_TOKEN = "refresh_token";
@@ -105,6 +107,10 @@ public class SessionManager {
     }
 
     public static void saveSession(Context context, UsuarioDto usuario) {
+        saveSession(context, usuario, null);
+    }
+
+    public static void saveSession(Context context, UsuarioDto usuario, String displayName) {
         if (context == null || usuario == null) {
             return;
         }
@@ -121,6 +127,11 @@ public class SessionManager {
 
     public static String getPerfil(Context context) {
         return new SessionManager(context).getPerfil();
+    }
+
+    public static String getDisplayName(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return preferences.getString(KEY_DISPLAY_NAME, null);
     }
 
     public static void clearSession(Context context) {
@@ -146,5 +157,14 @@ public class SessionManager {
         }
         SharedPreferences preferences = context.getSharedPreferences(PREF_PHOTOS, Context.MODE_PRIVATE);
         return preferences.getString(KEY_FOTO_URI + "_" + userId, null);
+    }
+
+    public static void clearProfilePhoto(Context context) {
+        Integer userId = getUserId(context);
+        if (userId == null) {
+            return;
+        }
+        SharedPreferences preferences = context.getSharedPreferences(PREF_PHOTOS, Context.MODE_PRIVATE);
+        preferences.edit().remove(KEY_FOTO_URI + "_" + userId).apply();
     }
 }

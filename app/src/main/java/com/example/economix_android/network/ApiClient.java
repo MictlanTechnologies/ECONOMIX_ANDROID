@@ -5,12 +5,15 @@ import static com.example.economix_android.network.NetworkConfig.BASE_URL;
 import android.content.Context;
 
 import com.example.economix_android.network.api.AhorroApi;
+import com.example.economix_android.network.api.CategoriaGastoApi;
 import com.example.economix_android.network.api.ConceptoGastoApi;
 import com.example.economix_android.network.api.ConceptoIngresoApi;
 import com.example.economix_android.network.api.ContactoApi;
 import com.example.economix_android.network.api.DomicilioApi;
 import com.example.economix_android.network.api.GastoApi;
 import com.example.economix_android.network.api.IngresoApi;
+import com.example.economix_android.network.api.MovimientoAhorroApi;
+import com.example.economix_android.network.api.PresupuestoApi;
 import com.example.economix_android.network.api.PersonaApi;
 import com.example.economix_android.network.api.UsuarioApi;
 import com.example.economix_android.network.auth.AuthApi;
@@ -105,6 +108,11 @@ public final class ApiClient {
         return retrofit.create(AhorroApi.class);
     }
 
+
+    public static CategoriaGastoApi getCategoriaGastoApi() {
+        return retrofit.create(CategoriaGastoApi.class);
+    }
+
     public static ConceptoGastoApi getConceptoGastoApi() {
         return retrofit.create(ConceptoGastoApi.class);
     }
@@ -127,6 +135,15 @@ public final class ApiClient {
 
     public static IngresoApi getIngresoApi() {
         return retrofit.create(IngresoApi.class);
+    }
+
+
+    public static MovimientoAhorroApi getMovimientoAhorroApi() {
+        return retrofit.create(MovimientoAhorroApi.class);
+    }
+
+    public static PresupuestoApi getPresupuestoApi() {
+        return retrofit.create(PresupuestoApi.class);
     }
 
     public static PersonaApi getPersonaApi() {

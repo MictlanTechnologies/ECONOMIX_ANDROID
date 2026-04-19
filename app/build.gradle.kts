@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -14,6 +16,26 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val localProperties = Properties().apply {
+            val localFile = rootProject.file("local.properties")
+            if (localFile.exists()) {
+                localFile.inputStream().use { load(it) }
+            }
+        }
+
+        val geminiApiKey =
+            (project.findProperty("GEMINI_API_KEY") as String?)?.takeIf { it.isNotBlank() }
+                ?: localProperties.getProperty("GEMINI_API_KEY")?.takeIf { it.isNotBlank() }
+                ?: System.getenv("GEMINI_API_KEY")?.takeIf { it.isNotBlank() }
+                ?: "YOUR_GEMINI_API_KEY"
+        val apiBaseUrl =
+            (project.findProperty("API_BASE_URL") as String?)?.takeIf { it.isNotBlank() }
+                ?: localProperties.getProperty("API_BASE_URL")?.takeIf { it.isNotBlank() }
+                ?: System.getenv("API_BASE_URL")?.takeIf { it.isNotBlank() }
+                ?: "http://192.168.1.73:8080/"
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
+        buildConfigField("String", "API_BASE_URL", "\"$apiBaseUrl\"")
     }
 
     buildTypes {
@@ -32,6 +54,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
     packaging {
         resources {
