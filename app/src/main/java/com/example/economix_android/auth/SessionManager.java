@@ -134,6 +134,14 @@ public class SessionManager {
         return preferences.getString(KEY_DISPLAY_NAME, null);
     }
 
+    public static void saveDisplayName(Context context, String displayName) {
+        if (context == null) return;
+        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+                .edit()
+                .putString(KEY_DISPLAY_NAME, displayName)
+                .apply();
+    }
+
     public static void clearSession(Context context) {
         new SessionManager(context).clearSession();
     }
