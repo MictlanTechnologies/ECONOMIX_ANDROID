@@ -11,7 +11,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
-public class activity_inicio extends AppCompatActivity {
+public class  activity_inicio extends AppCompatActivity {
 
     public static final String EXTRA_MOSTRAR_LOGIN = "com.example.economix_android.EXTRA_MOSTRAR_LOGIN";
 
