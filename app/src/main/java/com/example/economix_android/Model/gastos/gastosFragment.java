@@ -88,6 +88,9 @@ public class gastosFragment extends Fragment {
         binding.btnPerfil.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaGas.setOnClickListener(v -> mostrarAyuda());
+        binding.btnAgregarEtiquetaGas.setVisibility(View.GONE);
+        binding.chipGroupEtiquetasGas.setVisibility(View.GONE);
+        binding.etEtiquetasGas.setVisibility(View.GONE);
 
         binding.btnGuardarGas.setOnClickListener(v -> guardarGasto());
         binding.btnEliminarGas.setOnClickListener(v -> eliminarGasto());
@@ -148,7 +151,6 @@ public class gastosFragment extends Fragment {
 
     private void configurarEntradasDinamicas() {
         binding.btnAgregarCategoriaGas.setOnClickListener(v -> solicitarCategoriaPersonalizada());
-        binding.btnAgregarEtiquetaGas.setOnClickListener(v -> solicitarEtiquetaPersonalizada());
     }
 
     private void solicitarCategoriaPersonalizada() {

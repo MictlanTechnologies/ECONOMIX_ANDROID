@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -17,19 +15,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        val localProperties = Properties().apply {
-            val localFile = rootProject.file("local.properties")
-            if (localFile.exists()) {
-                localFile.inputStream().use { load(it) }
-            }
-        }
-
-        val geminiApiKey =
-            (project.findProperty("GEMINI_API_KEY") as String?)?.takeIf { it.isNotBlank() }
-                ?: localProperties.getProperty("GEMINI_API_KEY")?.takeIf { it.isNotBlank() }
-                ?: System.getenv("GEMINI_API_KEY")?.takeIf { it.isNotBlank() }
-                ?: "YOUR_GEMINI_API_KEY"
-        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
     }
 
     buildTypes {
@@ -48,7 +33,6 @@ android {
     }
     buildFeatures {
         viewBinding = true
-        buildConfig = true
     }
     packaging {
         resources {
