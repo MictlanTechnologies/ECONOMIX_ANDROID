@@ -23,6 +23,7 @@ import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.Model.data.Gasto;
 import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.util.ProfileImageUtils;
+import com.example.economix_android.util.UsuarioAnimationNavigator;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -68,7 +69,7 @@ public class gastosFragment extends Fragment {
         binding.btnVerGas.setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.action_navigation_gastos_to_gastosInfo));
-        binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
+        binding.btnPerfil.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario, R.raw.usuario, 6500f, 8000f));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaGas.setOnClickListener(v -> mostrarAyuda());
 
@@ -178,9 +179,12 @@ public class gastosFragment extends Fragment {
                     return;
                 }
                 Toast.makeText(requireContext(), R.string.mensaje_gasto_guardado, Toast.LENGTH_SHORT).show();
-                limpiarCampos();
-                cargarIngresos();
-                setGastoButtonsEnabled(true);
+                UsuarioAnimationNavigator.playOnly(binding.getRoot(), R.raw.gasto, 1000f, 2500f, () -> {
+                    if (!isAdded()) return;
+                    limpiarCampos();
+                    cargarIngresos();
+                    setGastoButtonsEnabled(true);
+                });
             }
 
             @Override

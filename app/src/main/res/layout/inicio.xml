@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_app_gradient"
+    android:background="@drawable/bg_inicio_animated"
     android:padding="32dp"
     tools:context=".Inicio.Inicio">
 
