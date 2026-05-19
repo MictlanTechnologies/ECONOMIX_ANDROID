@@ -26,10 +26,12 @@ import com.example.economix_android.R;
 import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.Model.data.RegistroFinanciero;
+import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.databinding.FragmentAhorroInfoBinding;
 import com.example.economix_android.network.dto.AhorroDto;
 import com.example.economix_android.network.repository.AhorroRepository;
 import com.example.economix_android.util.ProfileImageUtils;
+import com.example.economix_android.util.UsuarioAnimationNavigator;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -83,7 +85,7 @@ public class ahorroInfo extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
+        binding.btnPerfil.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaAhorroInf.setOnClickListener(v -> mostrarAyuda());
 
@@ -149,15 +151,9 @@ public class ahorroInfo extends Fragment {
                     if (body != null) {
                         SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_AHORRO, Context.MODE_PRIVATE);
                         java.util.Set<String> metasCompletadas = obtenerMetasCompletadas(prefs);
-                        List<Ingreso> ingresosUsuario = DataRepository.getIngresos();
-                        java.util.Set<Integer> idsIngresos = new java.util.HashSet<>();
-                        for (Ingreso ingreso : ingresosUsuario) {
-                            if (ingreso.getId() != null) {
-                                idsIngresos.add(ingreso.getId());
-                            }
-                        }
+                        Integer userId = SessionManager.getUserId(requireContext());
                         for (AhorroDto dto : body) {
-                            if (dto.getIdIngresos() == null || !idsIngresos.contains(dto.getIdIngresos())) {
+                            if (userId != null && dto.getIdUsuario() != null && !userId.equals(dto.getIdUsuario())) {
                                 continue;
                             }
                             AhorroItem item = convertir(dto);
@@ -303,10 +299,12 @@ public class ahorroInfo extends Fragment {
     private void actualizarAhorro(AhorroItem item, String titulo, BigDecimal monto, Integer ingresoId) {
         AhorroDto dto = AhorroDto.builder()
                 .idAhorro(item.getIdAhorro())
-                .idIngresos(ingresoId != null ? ingresoId : item.getIngresoId())
-                .periodoTAhorro(titulo)
-                .montoAhorro(monto)
-                .fechaAhorro(parseFecha(item.getFecha()))
+                .idUsuario(SessionManager.getUserId(requireContext()))
+                .nombreObjetivo(titulo)
+                .descripcionObjetivo(titulo)
+                .meta(parseMontoSeguro(item.getMonto()))
+                .montoAhorrado(monto)
+                .fechaLimite(parseFecha(item.getFecha()))
                 .build();
 
         ahorroRepository.actualizarAhorro(item.getIdAhorro(), dto, new Callback<AhorroDto>() {
@@ -337,10 +335,10 @@ public class ahorroInfo extends Fragment {
         if (dto == null) {
             return null;
         }
-        String monto = dto.getMontoAhorro() != null ? dto.getMontoAhorro().stripTrailingZeros().toPlainString() : "0";
-        String periodo = dto.getPeriodoTAhorro() != null ? dto.getPeriodoTAhorro() : getString(R.string.label_periodo_sin_definir);
-        String fecha = formatearFecha(dto.getFechaAhorro());
-        return new AhorroItem(dto.getIdAhorro(), monto, periodo, fecha, dto.getIdIngresos());
+        String monto = dto.getMontoAhorrado() != null ? dto.getMontoAhorrado().stripTrailingZeros().toPlainString() : "0";
+        String periodo = dto.getNombreObjetivo() != null ? dto.getNombreObjetivo() : getString(R.string.label_periodo_sin_definir);
+        String fecha = formatearFecha(dto.getFechaLimite());
+        return new AhorroItem(dto.getIdAhorro(), monto, periodo, fecha, dto.getIdUsuario());
     }
 
     private String formatearFecha(LocalDate fecha) {

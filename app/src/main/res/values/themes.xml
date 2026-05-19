@@ -1,9 +1,38 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.ECONOMIX_ANDROID" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/tealPrimary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/tealAccent</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSurface">@color/economix_surface_dark</item>
+        <item name="android:colorBackground">@color/economix_background</item>
+        <item name="colorOnSurface">@color/economix_text_primary</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/bottomNavDarkBg</item>
+        <item name="materialCardViewStyle">@style/Widget.Economix.Card</item>
+        <item name="chipStyle">@style/Widget.Economix.Chip</item>
+        <item name="textInputStyle">@style/Widget.Economix.TextInputLayout</item>
     </style>
 
     <style name="Theme.ECONOMIX_ANDROID" parent="Base.Theme.ECONOMIX_ANDROID" />
+
+    <style name="Widget.Economix.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardCornerRadius">20dp</item>
+        <item name="cardElevation">4dp</item>
+        <item name="strokeColor">@color/strokeSubtle</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
+    <style name="Widget.Economix.Chip" parent="Widget.Material3.Chip.Assist">
+        <item name="chipBackgroundColor">@color/tealSurfaceVariant</item>
+        <item name="chipStrokeColor">@color/strokeSubtle</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="android:textColor">@color/economix_text_primary</item>
+    </style>
+
+    <style name="Widget.Economix.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/softWhite</item>
+        <item name="boxStrokeColor">@color/strokeSubtle</item>
+        <item name="hintTextColor">@color/economix_text_secondary</item>
+    </style>
 </resources>

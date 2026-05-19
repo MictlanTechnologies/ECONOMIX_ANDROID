@@ -14,6 +14,7 @@
     <string name="title_ingresos">Ingresos</string>
     <string name="title_ahorro">Ahorro</string>
     <string name="title_graficas">Graficas</string>
+    <string name="title_predictions">Predicciones</string>
     <string name="title_gastos_por_categoria">Gastos por categoría</string>
     <string name="title_gastos_por_periodo">Gastos por categoría</string>
     <string name="action_back">Volver</string>
@@ -170,4 +171,88 @@
     <string name="titulo_seleccionar_periodo">Selecciona un periodo</string>
     <string name="desc_filtrar_fechas">Filtrar por fechas</string>
     <string name="mensaje_usuario_actualizado">Cuenta de usuario actualizada correctamente.</string>
+
+    <!-- Redesigned menu -->
+    <string name="title_inicio">Inicio</string>
+    <string name="title_movimientos">Movimientos</string>
+    <string name="title_presupuestos">Presupuestos</string>
+    <string name="title_mas">Análisis IA</string>
+    <string name="label_recent_activity">Actividad Reciente</string>
+    <string name="label_no_recent_activity">No hay actividad reciente</string>
+    <string name="label_recent_widget_ingreso">Ingreso reciente: %1$s · %2$s</string>
+    <string name="label_recent_widget_gasto">Gasto reciente: %1$s · %2$s</string>
+    <string name="label_usuario_generico">Usuario</string>
+    <string name="label_accesos_rapidos">Accesos rápidos</string>
+    <string name="desc_acceso_gastos">Acceso a gastos</string>
+    <string name="desc_acceso_ingresos">Acceso a ingresos</string>
+    <string name="desc_acceso_ahorro">Acceso al ahorro</string>
+    <string name="desc_acceso_graficas">Acceso a gráficas</string>
+
+    <!-- Presupuestos -->
+    <string name="titulo_nuevo_presupuesto">Nuevo Presupuesto</string>
+    <string name="subtitulo_presupuesto">Define límites de gasto por categoría</string>
+    <string name="hint_categoria_presupuesto">Categoría</string>
+    <string name="hint_monto_maximo">Monto máximo</string>
+    <string name="hint_mes">Mes</string>
+    <string name="hint_anio">Año</string>
+    <string name="label_paso_1">Categoría</string>
+    <string name="label_paso_2">Monto</string>
+    <string name="label_paso_3">Periodo</string>
+    <string name="mensaje_presupuesto_guardado">Presupuesto guardado correctamente.</string>
+    <string name="error_campos_presupuesto">Completa todos los campos para guardar.</string>
+    <string name="error_monto_presupuesto">Ingresa un monto válido.</string>
+    <string name="titulo_ayuda_presupuestos">Presupuestos</string>
+    <string name="mensaje_ayuda_presupuestos">Define un presupuesto máximo por categoría y mes. Así podrás controlar tus gastos y recibir alertas cuando te acerques al límite.</string>
+
+    <!-- Improved form labels -->
+    <string name="hint_articulo_descriptivo">¿En qué gastaste?</string>
+    <string name="hint_monto_descriptivo">$ Monto</string>
+    <string name="hint_fecha_descriptivo">Seleccionar fecha</string>
+    <string name="hint_categoria_descriptivo">Categoría</string>
+    <string name="hint_ingreso_articulo">¿De dónde proviene?</string>
+
+    <!-- Category options -->
+    <string name="cat_alimentacion">Alimentación</string>
+    <string name="cat_transporte">Transporte</string>
+    <string name="cat_entretenimiento">Entretenimiento</string>
+    <string name="cat_salud">Salud</string>
+    <string name="cat_educacion">Educación</string>
+    <string name="cat_servicios">Servicios</string>
+    <string name="cat_ropa">Ropa</string>
+    <string name="cat_hogar">Hogar</string>
+    <string name="cat_otro">Otro</string>
+
+    <string name="cat_ing_salario">Salario</string>
+    <string name="cat_ing_freelance">Freelance</string>
+    <string name="cat_ing_negocio">Negocio</string>
+    <string name="cat_ing_inversiones">Inversiones</string>
+    <string name="cat_ing_venta">Venta</string>
+    <string name="cat_ing_otro">Otro</string>
+
+    <string name="label_agregar_categoria">Agregar categoría</string>
+    <string name="hint_nueva_categoria">Nueva categoría</string>
+    <string name="label_etiquetas">Etiquetas</string>
+    <string name="hint_nueva_etiqueta">Nueva etiqueta</string>
+    <string name="label_agregar_etiqueta">Agregar etiqueta</string>
+    <string name="titulo_nueva_categoria">Crear categoría personalizada</string>
+    <string name="titulo_nueva_etiqueta">Crear etiqueta personalizada</string>
+    <string name="desc_agregar_categoria_personalizada">Agregar categoría personalizada</string>
+    <string name="desc_agregar_etiqueta_personalizada">Agregar etiqueta personalizada</string>
+    <string name="error_categoria_vacia">Escribe un nombre de categoría.</string>
+    <string name="error_etiqueta_vacia">Escribe una etiqueta válida.</string>
+
+    <string name="inicio_bienvenida">Bienvenido a ECONOMIX</string>
+    <string name="inicio_mensaje">Controla tus finanzas personales con claridad, orden y decisiones inteligentes.</string>
+    <string name="inicio_tagline">Haz la diferencia en cada decisión</string>
+    <string name="inicio_cta_login">Iniciar sesión</string>
+    <string name="inicio_cta_signup">Crear cuenta</string>
+    <string name="inicio_footer">Tu control financiero empieza hoy.</string>
+    <string name="inicio_logo_desc">Logotipo de ECONOMIX</string>
+    <string name="title_recent_activity">Actividad reciente</string>
+    <string name="label_last_ingreso">Último ingreso</string>
+    <string name="label_last_gasto">Último gasto</string>
+    <string name="label_recent_ingreso_format">Monto: %1$s
+Fecha: %2$s</string>
+    <string name="label_recent_gasto_format">Monto: %1$s
+Fecha: %2$s</string>
 </resources>

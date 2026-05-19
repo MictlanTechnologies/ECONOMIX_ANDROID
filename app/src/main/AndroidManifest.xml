@@ -16,9 +16,6 @@
         android:usesCleartextTraffic="true">
 
         <activity
-            android:name=".auth.ui.TwoFactorActivity"
-            android:exported="false" />
-        <activity
             android:name=".auth.ui.LoginActivity"
             android:exported="false" />
         <activity

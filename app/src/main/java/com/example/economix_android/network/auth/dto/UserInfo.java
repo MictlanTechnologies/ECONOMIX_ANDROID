@@ -6,7 +6,6 @@ public class UserInfo {
     private Integer userId;
     private String username;
     private List<String> roles;
-    private boolean twoFactorEnabled;
 
     public Integer getUserId() {
         return userId;
@@ -20,7 +19,4 @@ public class UserInfo {
         return roles;
     }
 
-    public boolean isTwoFactorEnabled() {
-        return twoFactorEnabled;
-    }
 }

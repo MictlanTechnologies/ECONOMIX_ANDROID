@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RawRes;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
@@ -28,10 +29,12 @@ import com.example.economix_android.Model.ahorro.AhorroItem;
 import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.Model.data.RegistroFinanciero;
+import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.databinding.FragmentAhorroBinding;
 import com.example.economix_android.network.dto.AhorroDto;
 import com.example.economix_android.network.repository.AhorroRepository;
 import com.example.economix_android.util.ProfileImageUtils;
+import com.example.economix_android.util.UsuarioAnimationNavigator;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -96,7 +99,7 @@ public class ahorroFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
+        binding.btnPerfil.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyuda.setOnClickListener(v -> mostrarAyuda());
         binding.btnGuardar.setOnClickListener(v -> guardarAhorro());
@@ -116,6 +119,8 @@ public class ahorroFragment extends Fragment {
                 navigateSafely(v, R.id.navigation_ahorro);
             } else if (viewId == R.id.navGraficas) {
                 navigateSafely(v, R.id.navigation_graficas);
+            } else if (viewId == R.id.navMenuMini) {
+                navigateSafely(v, R.id.menu);
             }
         };
 
@@ -123,6 +128,7 @@ public class ahorroFragment extends Fragment {
         binding.navIngresos.setOnClickListener(bottomNavListener);
         binding.navAhorro.setOnClickListener(bottomNavListener);
         binding.navGraficas.setOnClickListener(bottomNavListener);
+        binding.navMenuMini.setOnClickListener(bottomNavListener);
 
         configurarLista();
         configurarIngresos();
@@ -143,9 +149,10 @@ public class ahorroFragment extends Fragment {
     private void configurarIngresos() {
         AutoCompleteTextView ingresoView = (AutoCompleteTextView) binding.etIngresoSeleccion;
         ingresosAdapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, new ArrayList<>());
+                R.layout.item_dropdown_light, new ArrayList<>());
         ingresoView.setAdapter(ingresosAdapter);
         ingresoView.setThreshold(0);
+        ingresoView.setDropDownBackgroundResource(android.R.color.white);
         ingresoView.setOnItemClickListener((parent, view, position, id) -> {
             if (position >= 0 && position < ingresosDisponibles.size()) {
                 ingresoSeleccionado = ingresosDisponibles.get(position);
@@ -242,15 +249,9 @@ public class ahorroFragment extends Fragment {
                     List<AhorroDto> body = response.body();
                     List<AhorroItem> items = new ArrayList<>();
                     if (body != null) {
-                        List<Ingreso> ingresosUsuario = DataRepository.getIngresos();
-                        java.util.Set<Integer> idsIngresos = new java.util.HashSet<>();
-                        for (Ingreso ingreso : ingresosUsuario) {
-                            if (ingreso.getId() != null) {
-                                idsIngresos.add(ingreso.getId());
-                            }
-                        }
+                        Integer userId = SessionManager.getUserId(requireContext());
                         for (AhorroDto dto : body) {
-                            if (dto.getIdIngresos() == null || !idsIngresos.contains(dto.getIdIngresos())) {
+                            if (userId != null && dto.getIdUsuario() != null && !userId.equals(dto.getIdUsuario())) {
                                 continue;
                             }
                             AhorroItem item = convertir(dto);
@@ -391,10 +392,12 @@ public class ahorroFragment extends Fragment {
                              Ingreso ingresoActualizado, BigDecimal montoOriginal,
                              BigDecimal totalActualMeta, BigDecimal objetivo) {
         AhorroDto dto = AhorroDto.builder()
-                .montoAhorro(aporte)
-                .periodoTAhorro(meta)
-                .idIngresos(ingresoActualizado != null ? ingresoActualizado.getId() : null)
-                .fechaAhorro(fechaAhorro)
+                                .idUsuario(SessionManager.getUserId(requireContext()))
+                .nombreObjetivo(meta)
+                .descripcionObjetivo(meta)
+                .meta(objetivo)
+                .montoAhorrado(aporte)
+                .fechaLimite(fechaAhorro)
                 .build();
 
         ahorroRepository.crearAhorro(dto, new Callback<AhorroDto>() {
@@ -406,6 +409,7 @@ public class ahorroFragment extends Fragment {
                 setButtonsEnabled(true);
                 if (response.isSuccessful() && response.body() != null) {
                     Toast.makeText(requireContext(), R.string.mensaje_ahorro_guardado, Toast.LENGTH_SHORT).show();
+                    UsuarioAnimationNavigator.playOnly(binding.getRoot(), resolverAnimacionRaw("ahorro"));
                     cargarIngresos();
                     cargarAhorros();
                     if (objetivo.compareTo(BigDecimal.ZERO) > 0
@@ -663,10 +667,10 @@ public class ahorroFragment extends Fragment {
         if (dto == null) {
             return null;
         }
-        String monto = dto.getMontoAhorro() != null ? dto.getMontoAhorro().stripTrailingZeros().toPlainString() : "0";
-        String periodo = dto.getPeriodoTAhorro() != null ? dto.getPeriodoTAhorro() : getString(R.string.label_periodo_sin_definir);
-        String fecha = formatearFecha(dto.getFechaAhorro());
-        return new AhorroItem(dto.getIdAhorro(), monto, periodo, fecha, dto.getIdIngresos());
+        String monto = dto.getMontoAhorrado() != null ? dto.getMontoAhorrado().stripTrailingZeros().toPlainString() : "0";
+        String periodo = dto.getNombreObjetivo() != null ? dto.getNombreObjetivo() : getString(R.string.label_periodo_sin_definir);
+        String fecha = formatearFecha(dto.getFechaLimite());
+        return new AhorroItem(dto.getIdAhorro(), monto, periodo, fecha, dto.getIdUsuario());
     }
 
     private LocalDate parseFechaGuardada(String fecha) {
@@ -960,6 +964,13 @@ public class ahorroFragment extends Fragment {
         if (disponible.compareTo(BigDecimal.ZERO) <= 0) {
             Toast.makeText(requireContext(), R.string.mensaje_ingreso_agotado, Toast.LENGTH_LONG).show();
         }
+    }
+
+    @RawRes
+    private int resolverAnimacionRaw(@NonNull String nombre) {
+        int id = requireContext().getResources().getIdentifier(
+                nombre.toLowerCase(Locale.ROOT), "raw", requireContext().getPackageName());
+        return id != 0 ? id : R.raw.usuario;
     }
 
     @Override
