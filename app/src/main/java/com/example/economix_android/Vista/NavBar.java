@@ -29,7 +29,7 @@ public class NavBar extends AppCompatActivity {
 
         BottomNavigationView navView = binding.navView;
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.menu, R.id.navigation_gastos, R.id.navigation_presupuestos, R.id.navigation_predictions)
+                R.id.menu, R.id.navigation_gastos, R.id.navigation_presupuestos, R.id.navigation_graficas)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_usuario);
         NavigationUI.setupWithNavController(binding.navView, navController);

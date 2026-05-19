@@ -272,12 +272,6 @@
         tools:layout="@layout/fragment_recent_activity" />
 
     <fragment
-        android:id="@+id/navigation_predictions"
-        android:name="com.example.economix_android.ai.PredictionsFragment"
-        android:label="@string/title_predictions"
-        tools:layout="@layout/fragment_predictions" />
-
-    <fragment
         android:id="@+id/navigation_presupuestos"
         android:name="com.example.economix_android.Model.presupuestos.PresupuestosFragment"
         android:label="@string/title_presupuestos"

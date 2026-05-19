@@ -17,8 +17,8 @@
         android:title="@string/title_presupuestos" />
 
     <item
-        android:id="@+id/navigation_predictions"
+        android:id="@+id/navigation_graficas"
         android:icon="@drawable/ic_more_horiz"
-        android:title="@string/title_mas" />
+        android:title="@string/title_graficas" />
 
 </menu>
