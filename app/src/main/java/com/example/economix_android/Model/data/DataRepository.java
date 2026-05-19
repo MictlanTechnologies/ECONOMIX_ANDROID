@@ -44,7 +44,6 @@ public final class DataRepository {
     private static final List<Gasto> gastos = new ArrayList<>();
     private static final List<Gasto> gastosRecurrentes = new ArrayList<>();
     private static final Map<Integer, BigDecimal> ingresosOriginales = new HashMap<>();
-    private static final Map<Integer, Integer> gastoIngresoLinks = new HashMap<>();
     private static final Map<Integer, Integer> conceptoIngresoLinks = new HashMap<>();
     private static final Map<Integer, Integer> conceptoGastoLinks = new HashMap<>();
 
@@ -91,18 +90,6 @@ public final class DataRepository {
 
     public static List<Gasto> getGastos() {
         return Collections.unmodifiableList(gastos);
-    }
-
-    public static Gasto getGastoById(Integer id) {
-        if (id == null) {
-            return null;
-        }
-        for (Gasto gasto : gastos) {
-            if (Objects.equals(gasto.getId(), id)) {
-                return gasto;
-            }
-        }
-        return null;
     }
 
     public static List<Gasto> getGastosRecurrentes() {
@@ -262,9 +249,6 @@ public final class DataRepository {
                             Gasto gasto = fromDto(dto);
                             if (gasto != null) {
                                 nuevos.add(gasto);
-                                if (gasto.getId() != null && dto.getIdPresupuesto() != null) {
-                                    gastoIngresoLinks.put(gasto.getId(), dto.getIdPresupuesto());
-                                }
                             }
                         }
                     }
@@ -350,16 +334,11 @@ public final class DataRepository {
     }
 
     public static void addGasto(Context context, Gasto gasto, RepositoryCallback<Gasto> callback) {
-        addGasto(context, gasto, null, callback);
-    }
-
-    public static void addGasto(Context context, Gasto gasto, Integer ingresoVinculadoId,
-                                RepositoryCallback<Gasto> callback) {
         if (gasto == null) {
             notifyError(callback, "El gasto es inválido.");
             return;
         }
-        GastoDto dto = toDto(gasto, context, ingresoVinculadoId);
+        GastoDto dto = toDto(gasto, context);
         if (dto == null) {
             notifyError(callback, "Debes iniciar sesión antes de crear gastos.");
             return;
@@ -371,9 +350,6 @@ public final class DataRepository {
                     Gasto creado = fromDto(response.body());
                     if (creado != null) {
                         gastos.add(creado);
-                        if (creado.getId() != null && response.body().getIdPresupuesto() != null) {
-                            gastoIngresoLinks.put(creado.getId(), response.body().getIdPresupuesto());
-                        }
                         if (gasto.isRecurrente()) {
                             Gasto concepto = new Gasto(null,
                                     gasto.getArticulo(),
@@ -523,20 +499,6 @@ public final class DataRepository {
                 notifyError(callback, "Error al eliminar el gasto en el servidor.");
             }
         });
-    }
-
-    public static void vincularGastoConIngreso(Integer gastoId, Integer ingresoId) {
-        if (gastoId == null || ingresoId == null) {
-            return;
-        }
-        gastoIngresoLinks.put(gastoId, ingresoId);
-    }
-
-    public static Integer getIngresoIdVinculadoAGasto(Integer gastoId) {
-        if (gastoId == null) {
-            return null;
-        }
-        return gastoIngresoLinks.get(gastoId);
     }
 
     public static void updateIngreso(Context context, Ingreso ingreso, RepositoryCallback<Ingreso> callback) {
@@ -854,12 +816,22 @@ public final class DataRepository {
 
     private static void eliminarGastoPorId(Integer id) {
         gastos.removeIf(gasto -> Objects.equals(gasto.getId(), id));
-        gastoIngresoLinks.remove(id);
     }
 
     private static void eliminarGastoRecurrentePorId(Integer id) {
         gastosRecurrentes.removeIf(gasto -> Objects.equals(gasto.getId(), id));
-        gastoIngresoLinks.remove(id);
+    }
+
+    private static Gasto getGastoById(Integer id) {
+        if (id == null) {
+            return null;
+        }
+        for (Gasto gasto : gastos) {
+            if (Objects.equals(gasto.getId(), id)) {
+                return gasto;
+            }
+        }
+        return null;
     }
 
     private static Ingreso fromDto(IngresoDto dto) {
@@ -920,10 +892,6 @@ public final class DataRepository {
     }
 
     private static GastoDto toDto(Gasto gasto, Context context) {
-        return toDto(gasto, context, null);
-    }
-
-    private static GastoDto toDto(Gasto gasto, Context context, Integer ingresoVinculadoId) {
         Integer userId = SessionManager.getUserId(context);
         if (userId == null) {
             return null;
@@ -931,7 +899,6 @@ public final class DataRepository {
         return GastoDto.builder()
                 .idGastos(gasto.getId())
                 .idUsuario(userId)
-                .idPresupuesto(ingresoVinculadoId)
                 .descripcionGasto(gasto.getArticulo())
                 .articuloGasto(gasto.getArticulo())
                 .montoGasto(parseMonto(gasto.getDescripcion()))
@@ -1135,7 +1102,6 @@ public final class DataRepository {
         gastos.clear();
         gastosRecurrentes.clear();
         ingresosOriginales.clear();
-        gastoIngresoLinks.clear();
         conceptoIngresoLinks.clear();
         conceptoGastoLinks.clear();
     }

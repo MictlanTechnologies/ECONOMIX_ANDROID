@@ -11,18 +11,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.R;
 import com.example.economix_android.Vista.menu;
 import com.example.economix_android.databinding.FragmentInicioSesionBinding;
-import com.example.economix_android.network.dto.LoginRequest;
-import com.example.economix_android.network.dto.PersonaDto;
-import com.example.economix_android.network.dto.UsuarioDto;
-import com.example.economix_android.network.repository.PersonaRepository;
-import com.example.economix_android.network.repository.UsuarioRepository;
-
-import java.util.List;
+import com.example.economix_android.network.auth.dto.LoginRequest;
+import com.example.economix_android.network.auth.dto.LoginResponse;
+import com.example.economix_android.network.repository.auth.AuthRepository;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,7 +28,8 @@ import retrofit2.Response;
 public class inicio_sesionFragment extends Fragment {
 
     private FragmentInicioSesionBinding binding;
-    private UsuarioRepository usuarioRepository;
+    private AuthRepository authRepository;
+    private SessionManager sessionManager;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -43,7 +41,8 @@ public class inicio_sesionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        usuarioRepository = new UsuarioRepository();
+        authRepository = new AuthRepository(requireContext());
+        sessionManager = new SessionManager(requireContext());
 
         binding.btnBack.setOnClickListener(v -> requireActivity()
                 .getOnBackPressedDispatcher()
@@ -74,9 +73,9 @@ public class inicio_sesionFragment extends Fragment {
         }
 
         binding.btnSignIn.setEnabled(false);
-        usuarioRepository.login(new LoginRequest(perfil.trim(), contrasena), new Callback<UsuarioDto>() {
+        authRepository.login(new LoginRequest(perfil.trim(), contrasena), new Callback<>() {
             @Override
-            public void onResponse(Call<UsuarioDto> call, Response<UsuarioDto> response) {
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (binding != null) {
                     binding.btnSignIn.setEnabled(true);
                 }
@@ -93,13 +92,27 @@ public class inicio_sesionFragment extends Fragment {
                     return;
                 }
 
+                LoginResponse loginResponse = response.body();
+                if (loginResponse.isRequires2fa()) {
+                    Bundle args = new Bundle();
+                    args.putString("challengeId", loginResponse.getChallengeId());
+                    args.putString("challengeExpiresAt", loginResponse.getChallengeExpiresAt());
+                    NavHostFragment.findNavController(inicio_sesionFragment.this)
+                            .navigate(R.id.action_inicio_sesionFragment_to_twoFactorFragment, args);
+                    return;
+                }
+
                 DataRepository.clearAll();
-                SessionManager.saveSession(requireContext(), response.body());
+                sessionManager.saveAuthSession(
+                        loginResponse.getAccessToken(),
+                        loginResponse.getRefreshToken(),
+                        loginResponse.getUserInfo()
+                );
                 abrirMenu();
             }
 
             @Override
-            public void onFailure(Call<UsuarioDto> call, Throwable t) {
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
                 if (binding != null) {
                     binding.btnSignIn.setEnabled(true);
                 }

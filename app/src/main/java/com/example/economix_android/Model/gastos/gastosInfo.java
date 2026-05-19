@@ -24,7 +24,6 @@ import com.example.economix_android.Model.data.Gasto;
 import com.example.economix_android.Model.data.RegistroAdapter;
 import com.example.economix_android.Model.data.RegistroFinanciero;
 import com.example.economix_android.util.ProfileImageUtils;
-import com.example.economix_android.util.UsuarioAnimationNavigator;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -62,7 +61,7 @@ public class gastosInfo extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.btnPerfil.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario));
+        binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaGasInf.setOnClickListener(v -> mostrarAyuda());
 
@@ -76,8 +75,6 @@ public class gastosInfo extends Fragment {
                 navigateSafely(v, R.id.navigation_ahorro);
             } else if (viewId == R.id.navGraficas) {
                 navigateSafely(v, R.id.navigation_graficas);
-            } else if (viewId == R.id.navMenuMini) {
-                navigateSafely(v, R.id.menu);
             }
         };
 
@@ -85,7 +82,6 @@ public class gastosInfo extends Fragment {
         binding.navIngresos.setOnClickListener(bottomNavListener);
         binding.navAhorro.setOnClickListener(bottomNavListener);
         binding.navGraficas.setOnClickListener(bottomNavListener);
-        binding.navMenuMini.setOnClickListener(bottomNavListener);
 
         configurarListas();
         configurarFiltros();
