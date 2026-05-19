@@ -21,7 +21,6 @@ import com.example.economix_android.Model.data.RegistroFinanciero;
 import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentGraficaCircularIngresosVsGastosBinding;
 import com.example.economix_android.util.ProfileImageUtils;
-import com.example.economix_android.util.UsuarioAnimationNavigator;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
@@ -60,7 +59,7 @@ public class graficaCircularIngresosVsGastos extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.btnPerfil.setOnClickListener(v ->
-                UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario));
+                Navigation.findNavController(v).navigate(R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaIngInf.setOnClickListener(v -> mostrarAyuda());
         binding.buttonBack.setOnClickListener(v ->

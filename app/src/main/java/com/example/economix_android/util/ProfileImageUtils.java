@@ -2,7 +2,6 @@ package com.example.economix_android.util;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 import android.widget.ImageView;
 import android.view.ViewOutlineProvider;
 
@@ -27,25 +26,19 @@ public final class ProfileImageUtils {
         }
         String uriString = SessionManager.getProfilePhotoUri(context);
         if (uriString != null && !uriString.trim().isEmpty()) {
-            try {
-                imageView.setImageURI(Uri.parse(uriString));
-                imageView.setImageTintList(null);
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                imageView.setPadding(0, 0, 0, 0);
-                imageView.setBackgroundResource(R.drawable.bg_avatar_circle);
-                imageView.setClipToOutline(true);
-                imageView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
-                return;
-            } catch (SecurityException | IllegalArgumentException exception) {
-                Log.w("ProfileImageUtils", "No se pudo leer la foto de perfil guardada", exception);
-                SessionManager.clearProfilePhoto(context);
-            }
+            imageView.setImageURI(Uri.parse(uriString));
+            imageView.setImageTintList(null);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setPadding(0, 0, 0, 0);
+            imageView.setBackgroundResource(R.drawable.bg_avatar_circle);
+            imageView.setClipToOutline(true);
+            imageView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
+        } else {
+            imageView.setImageResource(fallbackResId);
+            imageView.setImageTintList(ContextCompat.getColorStateList(context, R.color.white));
+            imageView.setBackgroundResource(R.drawable.bg_avatar_circle);
+            imageView.setClipToOutline(true);
+            imageView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
         }
-
-        imageView.setImageResource(fallbackResId);
-        imageView.setImageTintList(ContextCompat.getColorStateList(context, R.color.white));
-        imageView.setBackgroundResource(R.drawable.bg_avatar_circle);
-        imageView.setClipToOutline(true);
-        imageView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
     }
 }

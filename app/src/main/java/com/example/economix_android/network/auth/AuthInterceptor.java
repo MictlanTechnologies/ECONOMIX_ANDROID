@@ -23,7 +23,7 @@ public class AuthInterceptor implements Interceptor {
     public Response intercept(@NonNull Chain chain) throws IOException {
         Request request = chain.request();
         String path = request.url().encodedPath();
-        if (path.endsWith("/auth/login")
+        if (path.endsWith("/auth/login") || path.endsWith("/auth/2fa/verify")
                 || path.endsWith("/auth/refresh")) {
             return chain.proceed(request);
         }

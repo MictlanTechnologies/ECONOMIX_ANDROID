@@ -55,7 +55,8 @@ public class usuario extends Fragment {
         binding.btnInfo.setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.usuario_info));
-        binding.btnSeguridad.setVisibility(View.GONE);
+        binding.btnSeguridad.setOnClickListener(v ->
+                Navigation.findNavController(v).navigate(R.id.action_usuario_to_seguridad2faFragment));
         binding.btnAyudaUs.setOnClickListener(v -> mostrarAyuda());
         binding.btnGuardar.setOnClickListener(v -> cerrarSesion());
 
@@ -69,8 +70,6 @@ public class usuario extends Fragment {
                 navigateSafely(v, R.id.navigation_ahorro);
             } else if (viewId == R.id.navGraficas) {
                 navigateSafely(v, R.id.navigation_graficas);
-            } else if (viewId == R.id.navMenuMini) {
-                navigateSafely(v, R.id.menu);
             }
         };
 
@@ -78,10 +77,7 @@ public class usuario extends Fragment {
         binding.navIngresos.setOnClickListener(bottomNavListener);
         binding.navAhorro.setOnClickListener(bottomNavListener);
         binding.navGraficas.setOnClickListener(bottomNavListener);
-        binding.navMenuMini.setOnClickListener(bottomNavListener);
-
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -150,7 +146,6 @@ public class usuario extends Fragment {
         startActivity(intent);
         requireActivity().finish();
     }
-
 
     @Override
     public void onDestroyView() {
