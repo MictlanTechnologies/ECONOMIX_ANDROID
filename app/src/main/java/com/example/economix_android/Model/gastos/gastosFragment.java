@@ -71,6 +71,9 @@ public class gastosFragment extends Fragment {
         binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaGas.setOnClickListener(v -> mostrarAyuda());
+        binding.btnAgregarEtiquetaGas.setVisibility(View.GONE);
+        binding.chipGroupEtiquetasGas.setVisibility(View.GONE);
+        binding.etEtiquetasGas.setVisibility(View.GONE);
 
         binding.btnGuardarGas.setOnClickListener(v -> guardarGasto());
         binding.btnEliminarGas.setOnClickListener(v -> eliminarGasto());
