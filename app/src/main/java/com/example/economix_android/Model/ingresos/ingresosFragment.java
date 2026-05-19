@@ -62,9 +62,6 @@ public class ingresosFragment extends Fragment {
         binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaIng.setOnClickListener(v -> mostrarAyuda());
-        binding.btnAgregarEtiquetaIng.setVisibility(View.GONE);
-        binding.chipGroupEtiquetasIng.setVisibility(View.GONE);
-        binding.etEtiquetasIng.setVisibility(View.GONE);
 
         binding.btnGuardarIng.setOnClickListener(v -> guardarIngreso());
         binding.btnEliminarIng.setOnClickListener(v -> eliminarIngreso());
