@@ -16,18 +16,12 @@
         android:usesCleartextTraffic="true">
 
         <activity
-            android:name=".auth.ui.TwoFactorActivity"
-            android:exported="false" />
-        <activity
             android:name=".auth.ui.LoginActivity"
             android:exported="false" />
         <activity
             android:name=".auth.ui.SplashActivity"
             android:exported="false" />
 
-        <activity
-            android:name=".chat.ChatActivity"
-            android:exported="false" />
         <activity
             android:name=".activity_inicio"
             android:exported="false" />

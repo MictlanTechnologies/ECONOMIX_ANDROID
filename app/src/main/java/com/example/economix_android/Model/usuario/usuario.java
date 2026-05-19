@@ -55,8 +55,7 @@ public class usuario extends Fragment {
         binding.btnInfo.setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.usuario_info));
-        binding.btnSeguridad.setOnClickListener(v ->
-                Navigation.findNavController(v).navigate(R.id.action_usuario_to_seguridad2faFragment));
+        binding.btnSeguridad.setVisibility(View.GONE);
         binding.btnAyudaUs.setOnClickListener(v -> mostrarAyuda());
         binding.btnGuardar.setOnClickListener(v -> cerrarSesion());
 

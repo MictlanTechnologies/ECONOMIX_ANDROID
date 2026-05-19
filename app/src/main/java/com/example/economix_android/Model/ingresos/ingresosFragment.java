@@ -78,6 +78,9 @@ public class ingresosFragment extends Fragment {
         binding.btnPerfil.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaIng.setOnClickListener(v -> mostrarAyuda());
+        binding.btnAgregarEtiquetaIng.setVisibility(View.GONE);
+        binding.chipGroupEtiquetasIng.setVisibility(View.GONE);
+        binding.etEtiquetasIng.setVisibility(View.GONE);
 
         binding.btnGuardarIng.setOnClickListener(v -> guardarIngreso());
         binding.btnEliminarIng.setOnClickListener(v -> eliminarIngreso());
@@ -134,7 +137,6 @@ public class ingresosFragment extends Fragment {
 
     private void configurarEntradasDinamicas() {
         binding.btnAgregarCategoriaIng.setOnClickListener(v -> solicitarCategoriaPersonalizada());
-        binding.btnAgregarEtiquetaIng.setOnClickListener(v -> solicitarEtiquetaPersonalizada());
     }
 
     private void solicitarCategoriaPersonalizada() {

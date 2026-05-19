@@ -63,7 +63,7 @@ public class TokenAuthenticator implements Authenticator {
 
     private boolean isAuthEndpoint(String path) {
         return path.endsWith("/auth/login")
-                || path.endsWith("/auth/2fa/verify")
+               
                 || path.endsWith("/auth/refresh");
     }
 

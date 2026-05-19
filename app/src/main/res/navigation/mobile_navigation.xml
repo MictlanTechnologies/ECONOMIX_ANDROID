@@ -254,9 +254,6 @@
         <action
             android:id="@+id/action_usuario_to_usuario_info"
             app:destination="@id/usuario_info" />
-        <action
-            android:id="@+id/action_usuario_to_seguridad2faFragment"
-            app:destination="@id/seguridad2faFragment" />
     </fragment>
     <fragment
         android:id="@+id/usuario_info"
@@ -280,10 +277,5 @@
         android:label="Presupuestos"
         tools:layout="@layout/fragment_presupuestos" />
 
-    <fragment
-        android:id="@+id/seguridad2faFragment"
-        android:name="com.example.economix_android.Model.usuario.Seguridad2faFragment"
-        android:label="Seguridad 2FA"
-        tools:layout="@layout/fragment_seguridad_2fa" />
 
 </navigation>
