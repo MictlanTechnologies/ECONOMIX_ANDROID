@@ -1,17 +1,20 @@
 package com.example.economix_android.network;
 
+import static com.example.economix_android.network.NetworkConfig.BASE_URL;
+
+import android.content.Context;
+
 import com.example.economix_android.network.api.AhorroApi;
-import com.example.economix_android.network.api.CategoriaGastoApi;
 import com.example.economix_android.network.api.ConceptoGastoApi;
 import com.example.economix_android.network.api.ConceptoIngresoApi;
 import com.example.economix_android.network.api.ContactoApi;
 import com.example.economix_android.network.api.DomicilioApi;
 import com.example.economix_android.network.api.GastoApi;
 import com.example.economix_android.network.api.IngresoApi;
-import com.example.economix_android.network.api.MovimientoAhorroApi;
-import com.example.economix_android.network.api.PresupuestoApi;
 import com.example.economix_android.network.api.PersonaApi;
 import com.example.economix_android.network.api.UsuarioApi;
+import com.example.economix_android.network.auth.AuthApi;
+import com.example.economix_android.network.auth.AuthServiceFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
@@ -33,9 +36,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public final class ApiClient {
 
     // IMPORTANTE: la URL base debe terminar con "/" para Retrofit
-    private static final String BASE_URL = "http://192.168.0.42" +
-            ":8080/";
     private static final Retrofit retrofit;
+    private static Context appContext;
 
     static {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -78,13 +80,29 @@ public final class ApiClient {
     private ApiClient() {
     }
 
-    public static AhorroApi getAhorroApi() {
-        return retrofit.create(AhorroApi.class);
+
+    /**
+     * Inicializa dependencias que requieren Context de aplicación.
+     * Mantiene compatibilidad con código existente que invoca ApiClient.init(...).
+     */
+    public static void init(Context context) {
+        if (context != null) {
+            appContext = context.getApplicationContext();
+        }
     }
 
+    /**
+     * Punto de acceso de compatibilidad para AuthApi sin parámetro Context.
+     */
+    public static AuthApi getAuthApi() {
+        if (appContext == null) {
+            throw new IllegalStateException("ApiClient no está inicializado. Llama ApiClient.init(context) en Application.onCreate().");
+        }
+        return AuthServiceFactory.getAuthApi(appContext);
+    }
 
-    public static CategoriaGastoApi getCategoriaGastoApi() {
-        return retrofit.create(CategoriaGastoApi.class);
+    public static AhorroApi getAhorroApi() {
+        return retrofit.create(AhorroApi.class);
     }
 
     public static ConceptoGastoApi getConceptoGastoApi() {
@@ -109,15 +127,6 @@ public final class ApiClient {
 
     public static IngresoApi getIngresoApi() {
         return retrofit.create(IngresoApi.class);
-    }
-
-
-    public static MovimientoAhorroApi getMovimientoAhorroApi() {
-        return retrofit.create(MovimientoAhorroApi.class);
-    }
-
-    public static PresupuestoApi getPresupuestoApi() {
-        return retrofit.create(PresupuestoApi.class);
     }
 
     public static PersonaApi getPersonaApi() {

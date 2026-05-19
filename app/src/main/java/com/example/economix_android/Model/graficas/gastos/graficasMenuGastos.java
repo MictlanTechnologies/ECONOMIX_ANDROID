@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RawRes;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
@@ -16,7 +15,6 @@ import androidx.navigation.Navigation;
 import com.example.economix_android.R;
 import com.example.economix_android.databinding.FragmentGraficasMenuGastosBinding;
 import com.example.economix_android.util.ProfileImageUtils;
-import com.example.economix_android.util.UsuarioAnimationNavigator;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class graficasMenuGastos extends Fragment {
@@ -34,21 +32,16 @@ public class graficasMenuGastos extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.btnPerfil.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario));
+        binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyuda.setOnClickListener(v -> mostrarAyuda());
         binding.btnGraficaBarras.setOnClickListener(v ->
-                UsuarioAnimationNavigator.playAndNavigate(v, R.id.graficaBarrasGastos, resolverAnimacionRaw("barras")));
+                Navigation.findNavController(v)
+                        .navigate(R.id.graficaBarrasGastos));
         binding.btnGraficaCircular.setOnClickListener(v ->
-                UsuarioAnimationNavigator.playAndNavigate(v, R.id.graficaCircularGastos, resolverAnimacionRaw("pastel")));
+                Navigation.findNavController(v)
+                        .navigate(R.id.graficaCircularGastos));
         binding.btnVolverMenuGraficas.setOnClickListener(v -> navigateSafely(v, R.id.navigation_graficas));
-    }
-
-    @RawRes
-    private int resolverAnimacionRaw(@NonNull String nombre) {
-        int id = requireContext().getResources().getIdentifier(
-                nombre.toLowerCase(java.util.Locale.ROOT), "raw", requireContext().getPackageName());
-        return id != 0 ? id : R.raw.usuario;
     }
 
     private void navigateSafely(View view, int destinationId) {
