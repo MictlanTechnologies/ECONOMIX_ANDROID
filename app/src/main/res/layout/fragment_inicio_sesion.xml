@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_app_gradient"
+    android:background="@drawable/bg_menu_gradient"
     android:padding="24dp"
     tools:context=".auth.inicio_sesionFragment">
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/btnBack"
+        android:tint="@color/white"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:background="?attr/selectableItemBackgroundBorderless"
@@ -26,7 +27,7 @@
         android:fontFamily="sans-serif-medium"
         android:text="Bienvenido de nuevo"
         android:textAlignment="center"
-        android:textColor="@color/softWhite"
+        android:textColor="@color/economix_text_primary"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/btnBack"
@@ -81,8 +82,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:textColor="@color/softWhite"
+                    android:textColor="@color/economix_text_primary"
                     android:textCursorDrawable="@null"
+                    android:textColorHint="@color/economix_text_secondary"
                     android:hint="Usuario o perfil" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -103,7 +105,8 @@
                     android:layout_height="wrap_content"
                     android:hint="Contraseña"
                     android:inputType="textPassword"
-                    android:textColor="@color/softWhite"
+                    android:textColor="@color/economix_text_primary"
+                    android:textColorHint="@color/economix_text_secondary"
                     android:textCursorDrawable="@null" />
             </com.google.android.material.textfield.TextInputLayout>
 
