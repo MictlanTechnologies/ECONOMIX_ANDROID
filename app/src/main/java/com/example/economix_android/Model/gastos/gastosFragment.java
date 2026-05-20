@@ -27,6 +27,8 @@ import com.example.economix_android.util.UsuarioAnimationNavigator;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -99,9 +101,54 @@ public class gastosFragment extends Fragment {
         binding.navMenuMini.setOnClickListener(bottomNavListener);
 
         setupDatePicker(binding.etFechaGas);
+        configurarCategorias();
         configurarIngresos();
         cargarIngresos();
         cargarDatosEdicion();
+    }
+
+
+    private void configurarCategorias() {
+        ChipGroup[] grupos = new ChipGroup[]{binding.chipGroupCategoriaGas, binding.chipGroupEtiquetasGas};
+        for (ChipGroup grupo : grupos) {
+            for (int i = 0; i < grupo.getChildCount(); i++) {
+                View child = grupo.getChildAt(i);
+                if (child instanceof Chip) {
+                    Chip chip = (Chip) child;
+                    chip.setOnClickListener(v -> binding.etArticuloGas.setText(chip.getText()));
+                }
+            }
+        }
+
+        binding.btnAgregarCategoriaGas.setOnClickListener(v -> mostrarDialogoNuevaCategoria(
+                binding.chipGroupEtiquetasGas, binding.etArticuloGas
+        ));
+    }
+
+    private void mostrarDialogoNuevaCategoria(ChipGroup chipGroup, TextInputEditText destinoArticulo) {
+        TextInputEditText input = new TextInputEditText(requireContext());
+        input.setHint(R.string.label_agregar_categoria);
+        input.setSingleLine();
+
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.label_agregar_categoria)
+                .setView(input)
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    String texto = input.getText() != null ? input.getText().toString().trim() : "";
+                    if (texto.isEmpty()) {
+                        Toast.makeText(requireContext(), R.string.error_campos_obligatorios_gasto, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Chip nuevo = new Chip(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice);
+                    nuevo.setText(texto);
+                    nuevo.setCheckable(true);
+                    nuevo.setOnClickListener(v -> destinoArticulo.setText(texto));
+                    chipGroup.addView(nuevo);
+                    nuevo.setChecked(true);
+                    destinoArticulo.setText(texto);
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
     }
 
     private void mostrarAyuda() {
@@ -225,6 +272,8 @@ public class gastosFragment extends Fragment {
         binding.etIngresoSeleccionGasto.setText("");
         ingresoSeleccionado = null;
         actualizarIngresoDisponible();
+        binding.chipGroupCategoriaGas.clearCheck();
+        binding.chipGroupEtiquetasGas.clearCheck();
         enModoPlantilla = false;
         establecerModoEdicion(false, null, false);
     }
@@ -251,7 +300,9 @@ public class gastosFragment extends Fragment {
             binding.rbRecurrenteGas.setEnabled(false);
             establecerModoEdicion(false, null, false);
         } else {
-            enModoPlantilla = false;
+            binding.chipGroupCategoriaGas.clearCheck();
+        binding.chipGroupEtiquetasGas.clearCheck();
+        enModoPlantilla = false;
             binding.rbRecurrenteGas.setChecked(recurrente);
             int id = args.getInt(ARG_GASTO_ID, -1);
             if (id > 0) {
