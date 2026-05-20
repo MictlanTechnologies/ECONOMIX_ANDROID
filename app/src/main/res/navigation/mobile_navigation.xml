@@ -109,6 +109,9 @@
         <action
             android:id="@+id/action_menu_to_usuario2"
             app:destination="@id/usuario" />
+        <action
+            android:id="@+id/action_menu_to_recentActivity"
+            app:destination="@id/recentActivity" />
     </fragment>
     <fragment
         android:id="@+id/gastosInfo"
@@ -256,4 +259,9 @@
         android:name="com.example.economix_android.Model.usuario.Seguridad2faFragment"
         android:label="seguridad2faFragment"
         tools:layout="@layout/fragment_seguridad_2fa" />
+    <fragment
+        android:id="@+id/recentActivity"
+        android:name="com.example.economix_android.RecentActivityFragment"
+        android:label="recentActivity"
+        tools:layout="@layout/fragment_recent_activity" />
 </navigation>

@@ -47,6 +47,7 @@ public class menu extends Fragment implements View.OnClickListener {
         View graficasButton = view.findViewById(R.id.tileGraficas);
         ImageView perfilButton = view.findViewById(R.id.btnPerfil);
         TextView saludoUsuario = view.findViewById(R.id.txtHolaUsuario);
+        TextView recentActivityText = view.findViewById(R.id.tvRecentActivity);
 
         if (perfilButton != null) {
             ProfileImageUtils.applyProfileImage(requireContext(), perfilButton);
@@ -65,9 +66,10 @@ public class menu extends Fragment implements View.OnClickListener {
         if (ingresosButton != null) ingresosButton.setOnClickListener(this);
         if (ahorroButton != null) ahorroButton.setOnClickListener(this);
         if (graficasButton != null) graficasButton.setOnClickListener(this);
+        cargarActividadRecienteEnCard(recentActivityText);
         View recentActivityCard = view.findViewById(R.id.recentActivityCard);
         if (recentActivityCard != null) {
-            recentActivityCard.setOnClickListener(v -> mostrarActividadReciente());
+            recentActivityCard.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_menu_to_recentActivity));
         }
     }
 
@@ -88,19 +90,19 @@ public class menu extends Fragment implements View.OnClickListener {
     }
 
 
-    private void mostrarActividadReciente() {
+    private void cargarActividadRecienteEnCard(TextView recentActivityText) {
         DataRepository.refreshIngresos(requireContext(), new DataRepository.RepositoryCallback<List<Ingreso>>() {
             @Override
             public void onSuccess(List<Ingreso> result) {
                 DataRepository.refreshGastos(requireContext(), new DataRepository.RepositoryCallback<List<Gasto>>() {
                     @Override
                     public void onSuccess(List<Gasto> gastos) {
-                        mostrarDialogoActividadReciente(DataRepository.getIngresos(), DataRepository.getGastos());
+                        actualizarCardActividadReciente(recentActivityText, DataRepository.getIngresos(), DataRepository.getGastos());
                     }
 
                     @Override
                     public void onError(String message) {
-                        mostrarDialogoActividadReciente(DataRepository.getIngresos(), DataRepository.getGastos());
+                        actualizarCardActividadReciente(recentActivityText, DataRepository.getIngresos(), DataRepository.getGastos());
                     }
                 });
             }
@@ -110,19 +112,19 @@ public class menu extends Fragment implements View.OnClickListener {
                 DataRepository.refreshGastos(requireContext(), new DataRepository.RepositoryCallback<List<Gasto>>() {
                     @Override
                     public void onSuccess(List<Gasto> gastos) {
-                        mostrarDialogoActividadReciente(DataRepository.getIngresos(), DataRepository.getGastos());
+                        actualizarCardActividadReciente(recentActivityText, DataRepository.getIngresos(), DataRepository.getGastos());
                     }
 
                     @Override
                     public void onError(String error) {
-                        mostrarDialogoActividadReciente(DataRepository.getIngresos(), DataRepository.getGastos());
+                        actualizarCardActividadReciente(recentActivityText, DataRepository.getIngresos(), DataRepository.getGastos());
                     }
                 });
             }
         });
     }
 
-    private void mostrarDialogoActividadReciente(List<Ingreso> ingresos, List<Gasto> gastos) {
+    private void actualizarCardActividadReciente(TextView recentActivityText, List<Ingreso> ingresos, List<Gasto> gastos) {
         LocalDate limite = LocalDate.now().minusDays(2);
         List<ActividadItem> items = new ArrayList<>();
 
@@ -145,7 +147,9 @@ public class menu extends Fragment implements View.OnClickListener {
         if (items.isEmpty()) {
             mensaje.append(getString(R.string.label_no_recent_activity));
         } else {
-            for (ActividadItem item : items) {
+            int limiteItems = Math.min(items.size(), 4);
+            for (int idx = 0; idx < limiteItems; idx++) {
+                ActividadItem item = items.get(idx);
                 mensaje.append("• ")
                         .append(item.tipo)
                         .append(": ")
@@ -158,11 +162,10 @@ public class menu extends Fragment implements View.OnClickListener {
             }
         }
 
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.title_recent_activity)
-                .setMessage(mensaje.toString().trim())
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
+        if (recentActivityText != null) {
+            recentActivityText.setText(mensaje.toString().trim());
+        }
+
     }
 
     private LocalDate parseFecha(String fecha) {
