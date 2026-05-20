@@ -46,12 +46,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="12dp">
 
-        <TextView
-            android:id="@+id/tvRecentActivityDetail"
+        <LinearLayout
+            android:id="@+id/recentActivityListContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/economix_text_secondary"
-            android:textSize="15sp"/>
+            android:orientation="vertical"/>
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

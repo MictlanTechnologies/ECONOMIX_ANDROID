@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -48,23 +50,23 @@ public class RecentActivityFragment extends Fragment {
             backButton.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
         }
 
-        TextView content = view.findViewById(R.id.tvRecentActivityDetail);
-        cargarDetalle(content);
+        LinearLayout container = view.findViewById(R.id.recentActivityListContainer);
+        cargarDetalle(container);
     }
 
-    private void cargarDetalle(TextView content) {
+    private void cargarDetalle(LinearLayout container) {
         DataRepository.refreshIngresos(requireContext(), new DataRepository.RepositoryCallback<List<Ingreso>>() {
             @Override
             public void onSuccess(List<Ingreso> result) {
                 DataRepository.refreshGastos(requireContext(), new DataRepository.RepositoryCallback<List<Gasto>>() {
                     @Override
                     public void onSuccess(List<Gasto> gastos) {
-                        renderizar(content, DataRepository.getIngresos(), DataRepository.getGastos());
+                        renderizar(container, DataRepository.getIngresos(), DataRepository.getGastos());
                     }
 
                     @Override
                     public void onError(String message) {
-                        renderizar(content, DataRepository.getIngresos(), DataRepository.getGastos());
+                        renderizar(container, DataRepository.getIngresos(), DataRepository.getGastos());
                     }
                 });
             }
@@ -74,35 +76,58 @@ public class RecentActivityFragment extends Fragment {
                 DataRepository.refreshGastos(requireContext(), new DataRepository.RepositoryCallback<List<Gasto>>() {
                     @Override
                     public void onSuccess(List<Gasto> gastos) {
-                        renderizar(content, DataRepository.getIngresos(), DataRepository.getGastos());
+                        renderizar(container, DataRepository.getIngresos(), DataRepository.getGastos());
                     }
 
                     @Override
                     public void onError(String error) {
-                        renderizar(content, DataRepository.getIngresos(), DataRepository.getGastos());
+                        renderizar(container, DataRepository.getIngresos(), DataRepository.getGastos());
                     }
                 });
             }
         });
     }
 
-    private void renderizar(TextView content, List<Ingreso> ingresos, List<Gasto> gastos) {
-        if (content == null) return;
+    private void renderizar(LinearLayout container, List<Ingreso> ingresos, List<Gasto> gastos) {
+        if (container == null) return;
+        container.removeAllViews();
         List<Item> items = colectar(ingresos, gastos);
         if (items.isEmpty()) {
-            content.setText(R.string.label_no_recent_activity);
+            TextView empty = new TextView(requireContext());
+            empty.setText(R.string.label_no_recent_activity);
+            empty.setTextColor(getResources().getColor(R.color.economix_text_secondary));
+            empty.setTextSize(15f);
+            container.addView(empty);
             return;
         }
-        StringBuilder sb = new StringBuilder();
+
         DateTimeFormatter out = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
         for (Item item : items) {
-            sb.append("• ").append(item.tipo)
-                    .append("\n  Categoría: ").append(item.categoria)
-                    .append("\n  Monto: $").append(item.monto)
-                    .append("\n  Fecha: ").append(item.fecha.format(out))
-                    .append("\n\n");
+            LinearLayout row = new LinearLayout(requireContext());
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setPadding(20, 18, 20, 18);
+            row.setBackgroundResource(R.drawable.bg_recent_activity);
+
+            ImageView icon = new ImageView(requireContext());
+            icon.setImageResource("Ingreso".equals(item.tipo) ? R.drawable.ic_trending_up_green : R.drawable.ic_trending_down_red);
+            LinearLayout.LayoutParams iconLp = new LinearLayout.LayoutParams(54, 54);
+            iconLp.rightMargin = 18;
+            icon.setLayoutParams(iconLp);
+
+            TextView text = new TextView(requireContext());
+            text.setText(item.tipo + "\n" + "Categoría: " + item.categoria + "\nMonto: $" + item.monto + "\nFecha: " + item.fecha.format(out));
+            text.setTextColor(getResources().getColor(R.color.economix_text_primary));
+            text.setTextSize(14f);
+
+            row.addView(icon);
+            row.addView(text);
+
+            LinearLayout.LayoutParams rowLp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            rowLp.bottomMargin = 12;
+            row.setLayoutParams(rowLp);
+            container.addView(row);
         }
-        content.setText(sb.toString().trim());
     }
 
     private List<Item> colectar(List<Ingreso> ingresos, List<Gasto> gastos) {
