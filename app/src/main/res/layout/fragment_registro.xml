@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_app_gradient"
+    android:background="@drawable/bg_menu_gradient"
     android:padding="24dp"
     tools:context=".auth.registroFragment">
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/btnBack"
+        android:tint="@color/white"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:background="?attr/selectableItemBackgroundBorderless"
@@ -26,7 +27,7 @@
         android:fontFamily="sans-serif-medium"
         android:text="Crea tu cuenta"
         android:textAlignment="center"
-        android:textColor="@color/softWhite"
+        android:textColor="@color/economix_text_primary"
         android:textSize="28sp"
         android:textStyle="bold"
         android:layout_marginTop="16dp"
@@ -81,7 +82,8 @@
                     android:layout_height="wrap_content"
                     android:hint="Usuario o perfil"
                     android:inputType="text"
-                    android:textColor="@color/softWhite"
+                    android:textColor="@color/economix_text_primary"
+                    android:textColorHint="@color/economix_text_secondary"
                     android:textCursorDrawable="@null" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -102,7 +104,8 @@
                     android:layout_height="wrap_content"
                     android:hint="Contraseña"
                     android:inputType="textPassword"
-                    android:textColor="@color/softWhite"
+                    android:textColor="@color/economix_text_primary"
+                    android:textColorHint="@color/economix_text_secondary"
                     android:textCursorDrawable="@null" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -123,7 +126,8 @@
                     android:layout_height="wrap_content"
                     android:hint="Confirmar contraseña"
                     android:inputType="textPassword"
-                    android:textColor="@color/softWhite"
+                    android:textColor="@color/economix_text_primary"
+                    android:textColorHint="@color/economix_text_secondary"
                     android:textCursorDrawable="@null" />
             </com.google.android.material.textfield.TextInputLayout>
 
