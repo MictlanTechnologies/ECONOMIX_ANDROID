@@ -43,6 +43,7 @@ public class graficasMenu extends Fragment {
                 Navigation.findNavController(v)
                         .navigate(R.id.graficasMenuIngresosVsGastos));
         binding.btnVolverGraficas.setOnClickListener(v -> navigateSafely(v, R.id.menu));
+        binding.navMenuMini.setOnClickListener(v -> navigateSafely(v, R.id.menu));
     }
 
     private void navigateSafely(View view, int destinationId) {
