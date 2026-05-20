@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,25 +30,31 @@ public class menu extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ImageButton ayudaButton = view.findViewById(R.id.btnAyuda);
+        View ayudaButton = view.findViewById(R.id.btnAyuda);
         View gastosButton = view.findViewById(R.id.tileGastos);
         View ingresosButton = view.findViewById(R.id.tileIngresos);
         View ahorroButton = view.findViewById(R.id.tileAhorro);
         View graficasButton = view.findViewById(R.id.tileGraficas);
-        ImageButton perfilButton = view.findViewById(R.id.btnPerfil);
+        ImageView perfilButton = view.findViewById(R.id.btnPerfil);
         TextView saludoUsuario = view.findViewById(R.id.txtHolaUsuario);
 
-        ProfileImageUtils.applyProfileImage(requireContext(), perfilButton);
+        if (perfilButton != null) {
+            ProfileImageUtils.applyProfileImage(requireContext(), perfilButton);
+            perfilButton.setOnClickListener(this);
+        }
         String perfil = SessionManager.getPerfil(requireContext());
         String saludo = perfil != null ? getString(R.string.label_hola_usuario, perfil) : getString(R.string.label_hola);
-        saludoUsuario.setText(saludo);
+        if (saludoUsuario != null) {
+            saludoUsuario.setText(saludo);
+        }
 
-        ayudaButton.setOnClickListener(v -> mostrarAyuda());
-        gastosButton.setOnClickListener(this);
-        ingresosButton.setOnClickListener(this);
-        ahorroButton.setOnClickListener(this);
-        graficasButton.setOnClickListener(this);
-        perfilButton.setOnClickListener(this);
+        if (ayudaButton != null) {
+            ayudaButton.setOnClickListener(v -> mostrarAyuda());
+        }
+        if (gastosButton != null) gastosButton.setOnClickListener(this);
+        if (ingresosButton != null) ingresosButton.setOnClickListener(this);
+        if (ahorroButton != null) ahorroButton.setOnClickListener(this);
+        if (graficasButton != null) graficasButton.setOnClickListener(this);
         View recentActivityCard = view.findViewById(R.id.recentActivityCard);
         if (recentActivityCard != null) {
             recentActivityCard.setOnClickListener(v -> Toast.makeText(requireContext(), R.string.label_no_recent_activity, Toast.LENGTH_SHORT).show());
