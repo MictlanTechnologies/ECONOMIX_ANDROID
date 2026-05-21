@@ -3,6 +3,7 @@ package com.example.economix_android.auth;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +74,7 @@ public class inicio_sesionFragment extends Fragment {
         }
 
         binding.btnSignIn.setEnabled(false);
+        Log.d("LOGIN_DEBUG", "URL base: " + com.example.economix_android.network.NetworkConfig.BASE_URL);
         authRepository.login(new LoginRequest(perfil.trim(), contrasena), new Callback<>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
@@ -83,11 +85,17 @@ public class inicio_sesionFragment extends Fragment {
                     return;
                 }
 
+                Log.d("LOGIN_DEBUG", "Login response code: " + response.code());
                 if (!response.isSuccessful() || response.body() == null) {
-                    if (response.code() == 401) {
+                    int code = response.code();
+                    if (code == 401) {
                         Toast.makeText(requireContext(), getString(R.string.error_credenciales_invalidas), Toast.LENGTH_SHORT).show();
+                    } else if (code == 404) {
+                        Toast.makeText(requireContext(), "Código login: 404 (endpoint /auth/login no existe en backend)", Toast.LENGTH_SHORT).show();
+                    } else if (code == 500) {
+                        Toast.makeText(requireContext(), "Código login: 500", Toast.LENGTH_SHORT).show();
                     } else {
-                        mostrarMensajeError(null);
+                        Toast.makeText(requireContext(), "Código login: " + code, Toast.LENGTH_SHORT).show();
                     }
                     return;
                 }
@@ -119,7 +127,8 @@ public class inicio_sesionFragment extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
-                mostrarMensajeError(null);
+                Log.e("LOGIN_DEBUG", "Error login", t);
+                mostrarMensajeError("No se pudo contactar con el servidor");
             }
         });
     }
