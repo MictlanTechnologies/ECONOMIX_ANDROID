@@ -137,14 +137,14 @@
                         android:layout_marginTop="8dp"
                         app:singleSelection="true">
 
-                        <com.google.android.material.chip.Chip android:id="@+id/chipPresAlimentacion" style="@style/Widget.MaterialComponents.Chip.Choice" android:text="@string/cat_alimentacion" />
-                        <com.google.android.material.chip.Chip android:id="@+id/chipPresTransporte" style="@style/Widget.MaterialComponents.Chip.Choice" android:text="@string/cat_transporte" />
-                        <com.google.android.material.chip.Chip android:id="@+id/chipPresEntretenimiento" style="@style/Widget.MaterialComponents.Chip.Choice" android:text="@string/cat_entretenimiento" />
-                        <com.google.android.material.chip.Chip android:id="@+id/chipPresSalud" style="@style/Widget.MaterialComponents.Chip.Choice" android:text="@string/cat_salud" />
-                        <com.google.android.material.chip.Chip android:id="@+id/chipPresEducacion" style="@style/Widget.MaterialComponents.Chip.Choice" android:text="@string/cat_educacion" />
-                        <com.google.android.material.chip.Chip android:id="@+id/chipPresServicios" style="@style/Widget.MaterialComponents.Chip.Choice" android:text="@string/cat_servicios" />
-                        <com.google.android.material.chip.Chip android:id="@+id/chipPresHogar" style="@style/Widget.MaterialComponents.Chip.Choice" android:text="@string/cat_hogar" />
-                        <com.google.android.material.chip.Chip android:id="@+id/chipPresOtro" style="@style/Widget.MaterialComponents.Chip.Choice" android:text="@string/cat_otro" />
+                        <com.google.android.material.chip.Chip android:id="@+id/chipPresAlimentacion" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_alimentacion" />
+                        <com.google.android.material.chip.Chip android:id="@+id/chipPresTransporte" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_transporte" />
+                        <com.google.android.material.chip.Chip android:id="@+id/chipPresEntretenimiento" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_entretenimiento" />
+                        <com.google.android.material.chip.Chip android:id="@+id/chipPresSalud" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_salud" />
+                        <com.google.android.material.chip.Chip android:id="@+id/chipPresEducacion" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_educacion" />
+                        <com.google.android.material.chip.Chip android:id="@+id/chipPresServicios" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_servicios" />
+                        <com.google.android.material.chip.Chip android:id="@+id/chipPresHogar" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_hogar" />
+                        <com.google.android.material.chip.Chip android:id="@+id/chipPresOtro" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_otro" />
                     </com.google.android.material.chip.ChipGroup>
 
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/label_paso_2" android:textColor="@color/economix_text_primary" android:textStyle="bold" />
