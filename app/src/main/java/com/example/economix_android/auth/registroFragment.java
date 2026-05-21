@@ -2,6 +2,7 @@ package com.example.economix_android.auth;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,12 +89,15 @@ public class registroFragment extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
+                Log.d("REGISTER_DEBUG", "Register response code: " + response.code());
                 if (response.isSuccessful() && response.body() != null) {
                     Toast.makeText(requireContext(), getString(R.string.mensaje_registro_exitoso), Toast.LENGTH_SHORT).show();
                     requireActivity().getOnBackPressedDispatcher().onBackPressed();
                 } else if (response.code() == 409) {
                     binding.tilPerfil.setError(getString(R.string.error_perfil_registrado));
                     Toast.makeText(requireContext(), getString(R.string.error_perfil_registrado), Toast.LENGTH_SHORT).show();
+                } else if (response.code() == 500) {
+                    Toast.makeText(requireContext(), "Error interno del servidor al crear usuario o iniciar sesión", Toast.LENGTH_SHORT).show();
                 } else {
                     mostrarMensajeError(null);
                 }

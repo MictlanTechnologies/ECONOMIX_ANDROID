@@ -93,7 +93,7 @@ public class inicio_sesionFragment extends Fragment {
                     } else if (code == 404) {
                         Toast.makeText(requireContext(), "Código login: 404 (endpoint /auth/login no existe en backend)", Toast.LENGTH_SHORT).show();
                     } else if (code == 500) {
-                        Toast.makeText(requireContext(), "Código login: 500", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "Error interno del servidor al crear usuario o iniciar sesión", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(requireContext(), "Código login: " + code, Toast.LENGTH_SHORT).show();
                     }
