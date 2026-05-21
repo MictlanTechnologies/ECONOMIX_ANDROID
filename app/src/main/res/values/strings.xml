@@ -255,4 +255,18 @@
 Fecha: %2$s</string>
     <string name="label_recent_gasto_format">Monto: %1$s
 Fecha: %2$s</string>
+    <string name="mensaje_presupuesto_actualizado">Presupuesto actualizado correctamente.</string>
+    <string name="mensaje_presupuesto_eliminado">Presupuesto eliminado correctamente.</string>
+    <string name="error_presupuesto_duplicado">Ya existe un presupuesto para esa categoría, mes y año.</string>
+    <string name="label_presupuestos_registrados">Presupuestos registrados</string>
+    <string name="label_monto_maximo_presupuesto">Límite: $%1$s</string>
+    <string name="label_monto_gastado_presupuesto">Gastado: $%1$s</string>
+    <string name="label_monto_restante_presupuesto">Restante: $%1$s</string>
+    <string name="label_porcentaje_presupuesto">Uso: %1$s%%</string>
+    <string name="label_estado_presupuesto">Estado: %1$s</string>
+    <string name="label_sin_presupuestos">No hay presupuestos registrados para este periodo.</string>
+    <string name="titulo_alerta_presupuesto">Alerta de presupuesto</string>
+    <string name="titulo_presupuesto_excedido">Presupuesto excedido</string>
+    <string name="mensaje_alerta_presupuesto">Ya usaste el %1$s%% del presupuesto de %2$s.</string>
+    <string name="mensaje_presupuesto_excedido">Ya superaste el presupuesto de %1$s. Límite: $%2$s. Gastado: $%3$s.</string>
 </resources>

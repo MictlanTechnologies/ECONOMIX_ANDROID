@@ -23,6 +23,9 @@ import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.Model.data.Gasto;
 import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.util.ProfileImageUtils;
+import com.example.economix_android.auth.SessionManager;
+import com.example.economix_android.network.dto.PresupuestoDto;
+import com.example.economix_android.network.repository.PresupuestoRepository;
 import com.example.economix_android.util.UsuarioAnimationNavigator;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -37,6 +40,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class gastosFragment extends Fragment {
 
@@ -57,6 +62,7 @@ public class gastosFragment extends Fragment {
     private boolean gastoEnEdicionRecurrente;
     private boolean enModoPlantilla;
     private boolean enModoEdicion;
+    private final PresupuestoRepository presupuestoRepository = new PresupuestoRepository();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -158,6 +164,39 @@ public class gastosFragment extends Fragment {
                 .show();
     }
 
+
+    private void verificarPresupuestoDespuesDeGasto(Gasto gasto) {
+        Integer idUsuario = SessionManager.getUserId(requireContext());
+        if (idUsuario == null || gasto == null) return;
+        String categoria = gasto.getPeriodo();
+        if (categoria == null || categoria.trim().isEmpty()) return;
+        LocalDate fecha;
+        try { fecha = LocalDate.parse(gasto.getFecha(), DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())); }
+        catch (Exception e) { fecha = LocalDate.now(); }
+        int mes = fecha.getMonthValue();
+        int anio = fecha.getYear();
+        presupuestoRepository.obtenerPresupuestoCategoria(idUsuario, categoria, mes, anio, new retrofit2.Callback<PresupuestoDto>() {
+            @Override public void onResponse(retrofit2.Call<PresupuestoDto> call, retrofit2.Response<PresupuestoDto> response) {
+                if (!response.isSuccessful() || response.body() == null) return;
+                PresupuestoDto p = response.body();
+                if (p.getPorcentajeUso() == null) return;
+                int porcentaje = p.getPorcentajeUso().intValue();
+                if (porcentaje >= 100) {
+                    new MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(R.string.titulo_presupuesto_excedido)
+                            .setMessage(getString(R.string.mensaje_presupuesto_excedido, categoria, p.getMontoMaximo(), p.getMontoGastado()))
+                            .setPositiveButton(android.R.string.ok, null).show();
+                } else if (porcentaje >= 80) {
+                    new MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(R.string.titulo_alerta_presupuesto)
+                            .setMessage(getString(R.string.mensaje_alerta_presupuesto, porcentaje, categoria))
+                            .setPositiveButton(android.R.string.ok, null).show();
+                }
+            }
+            @Override public void onFailure(retrofit2.Call<PresupuestoDto> call, Throwable t) {}
+        });
+    }
+
     private void mostrarAyuda() {
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.titulo_ayuda_gastos)
@@ -236,6 +275,7 @@ public class gastosFragment extends Fragment {
                     return;
                 }
                 Toast.makeText(requireContext(), R.string.mensaje_gasto_guardado, Toast.LENGTH_SHORT).show();
+                verificarPresupuestoDespuesDeGasto(result);
                 UsuarioAnimationNavigator.playOnly(binding.getRoot(), R.raw.gasto, 1000f, 2500f, () -> {
                     if (!isAdded()) return;
                     limpiarCampos();
