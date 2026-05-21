@@ -136,6 +136,7 @@
     <string name="label_guardar">Guardar</string>
     <string name="label_actualizar">Actualizar</string>
     <string name="label_eliminar">Eliminar</string>
+    <string name="label_limpiar">Limpiar</string>
     <string name="label_progreso_ahorro">Avance: $%1$s de $%2$s (%3$d%%)</string>
     <string name="label_disponible_valor">Disponible: $%1$s</string>
     <string name="mensaje_ingreso_actualizado">Ingreso actualizado correctamente.</string>
