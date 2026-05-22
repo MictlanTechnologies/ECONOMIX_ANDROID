@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_menu_gradient">
+
+    <ImageButton
+        android:id="@+id/btnAyudaPres"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Ayuda"
+        android:padding="8dp"
+        android:src="@drawable/ayuda"
+        android:tint="@color/economix_text_primary"
+        tools:ignore="UseAppTint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/btnPerfilPres"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Perfil"
+        android:padding="8dp"
+        android:src="@drawable/usuario"
+        android:tint="@color/economix_text_primary"
+        tools:ignore="UseAppTint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtTituloPres"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/title_presupuestos"
+        android:textColor="@color/economix_text_primary"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnAyudaPres" />
+
+    <TextView
+        android:id="@+id/tvPresSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/subtitulo_presupuesto"
+        android:textColor="@color/economix_text_secondary"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtTituloPres" />
+
+    <LinearLayout
+        android:id="@+id/stepIndicators"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvPresSubtitle">
+
+        <View
+            android:id="@+id/step1Dot"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:background="@color/tealAccent" />
+
+        <View
+            android:id="@+id/step2Dot"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginStart="8dp"
+            android:background="@color/tealLight" />
+
+        <View
+            android:id="@+id/step3Dot"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginStart="8dp"
+            android:background="@color/goldAccent" />
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:clipToPadding="false"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomBarContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/stepIndicators">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/tealSurface"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_paso_1"
+                        android:textColor="@color/economix_text_primary"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/chipGroupCategoriaPres"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:singleSelection="true">
+
+                        <com.google.android.material.chip.Chip android:id="@+id/chipPresAlimentacion" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_alimentacion" />
+                        <com.google.android.material.chip.Chip android:id="@+id/chipPresTransporte" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_transporte" />
+                        <com.google.android.material.chip.Chip android:id="@+id/chipPresEntretenimiento" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_entretenimiento" />
+                        <com.google.android.material.chip.Chip android:id="@+id/chipPresSalud" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_salud" />
+                        <com.google.android.material.chip.Chip android:id="@+id/chipPresEducacion" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_educacion" />
+                        <com.google.android.material.chip.Chip android:id="@+id/chipPresServicios" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_servicios" />
+                        <com.google.android.material.chip.Chip android:id="@+id/chipPresHogar" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_hogar" />
+                        <com.google.android.material.chip.Chip android:id="@+id/chipPresOtro" style="@style/Widget.MaterialComponents.Chip.Choice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/cat_otro" />
+                    </com.google.android.material.chip.ChipGroup>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/label_paso_2" android:textColor="@color/economix_text_primary" android:textStyle="bold" />
+                    <com.google.android.material.textfield.TextInputEditText android:id="@+id/etMontoMaxPres" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="@string/hint_monto_maximo" android:inputType="numberDecimal" />
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:orientation="horizontal">
+                        <com.google.android.material.button.MaterialButton android:id="@+id/btnMonto500" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="500" app:cornerRadius="12dp" />
+                        <com.google.android.material.button.MaterialButton android:id="@+id/btnMonto1000" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" android:text="1000" app:cornerRadius="12dp" />
+                        <com.google.android.material.button.MaterialButton android:id="@+id/btnMonto2500" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" android:text="2500" app:cornerRadius="12dp" />
+                        <com.google.android.material.button.MaterialButton android:id="@+id/btnMonto5000" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" android:text="5000" app:cornerRadius="12dp" />
+                    </LinearLayout>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/label_paso_3" android:textColor="@color/economix_text_primary" android:textStyle="bold" />
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            app:endIconMode="dropdown_menu"
+                            app:boxBackgroundMode="filled"
+                            app:boxBackgroundColor="@color/tealDark"
+                            app:hintTextColor="@color/softWhite">
+
+                            <androidx.appcompat.widget.AppCompatSpinner
+                                android:id="@+id/etMesPres"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:popupBackground="@color/tealSurface" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp"
+                            app:endIconMode="dropdown_menu"
+                            app:boxBackgroundMode="filled"
+                            app:boxBackgroundColor="@color/tealDark"
+                            app:hintTextColor="@color/softWhite">
+
+                            <androidx.appcompat.widget.AppCompatSpinner
+                                android:id="@+id/etAnioPres"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:popupBackground="@color/tealSurface" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton android:id="@+id/btnGuardarPres" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/label_guardar" app:backgroundTint="@color/tealAccent" />
+                    <com.google.android.material.button.MaterialButton android:id="@+id/btnEliminarPres" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/label_eliminar" app:backgroundTint="@color/module_gastos" />
+                    <com.google.android.material.button.MaterialButton android:id="@+id/btnLimpiarPres" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/label_limpiar" app:backgroundTint="@color/tealLight" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/label_presupuestos_registrados"
+                android:textColor="@color/economix_text_primary"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvPresupuestos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/tvPresupuestosVacio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/label_sin_presupuestos"
+                android:textColor="@color/economix_text_secondary" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/bottomBarContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="16dp"
+        app:cardBackgroundColor="@color/tealSurfaceVariant"
+        app:cardCornerRadius="28dp"
+        app:cardElevation="8dp"
+        app:strokeColor="@color/softWhite"
+        app:strokeWidth="1dp"
+        app:layout_constraintBottom_toTopOf="@id/navMenuMini"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="12dp">
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center">
+                <ImageButton android:id="@+id/navGastos" android:layout_width="70dp" android:layout_height="70dp" android:background="@drawable/bottom_nav_icon_background" android:padding="12dp" android:scaleType="centerInside" android:src="@drawable/gastosop2texto2" tools:ignore="UseAppTint" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center">
+                <ImageButton android:id="@+id/navIngresos" android:layout_width="70dp" android:layout_height="70dp" android:background="@drawable/bottom_nav_icon_background" android:padding="12dp" android:scaleType="centerInside" android:src="@drawable/ingresosconletras" tools:ignore="UseAppTint" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center">
+                <ImageButton android:id="@+id/navAhorro" android:layout_width="70dp" android:layout_height="70dp" android:background="@drawable/bottom_nav_icon_background" android:padding="12dp" android:scaleType="centerInside" android:src="@drawable/ahorrotexto2" tools:ignore="UseAppTint" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center">
+                <ImageButton android:id="@+id/navGraficas" android:layout_width="70dp" android:layout_height="70dp" android:background="@drawable/bottom_nav_icon_background" android:padding="12dp" android:scaleType="centerInside" android:src="@drawable/graficastexto2" tools:ignore="UseAppTint" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/navMenuMini"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="Menú"
+        app:backgroundTint="@color/tealAccent"
+        app:srcCompat="@drawable/ic_home_filled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

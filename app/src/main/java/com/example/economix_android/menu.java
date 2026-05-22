@@ -4,9 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,9 +13,20 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.example.economix_android.auth.SessionManager;
+import com.example.economix_android.Model.data.DataRepository;
+import com.example.economix_android.Model.data.Gasto;
+import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.util.ProfileImageUtils;
 import com.example.economix_android.util.UsuarioAnimationNavigator;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
 
 public class menu extends Fragment implements View.OnClickListener {
 
@@ -30,28 +40,38 @@ public class menu extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ImageButton ayudaButton = view.findViewById(R.id.btnAyuda);
+        View ayudaButton = view.findViewById(R.id.btnAyuda);
         View gastosButton = view.findViewById(R.id.tileGastos);
         View ingresosButton = view.findViewById(R.id.tileIngresos);
         View ahorroButton = view.findViewById(R.id.tileAhorro);
         View graficasButton = view.findViewById(R.id.tileGraficas);
-        ImageButton perfilButton = view.findViewById(R.id.btnPerfil);
+        View tilePresupuestos = view.findViewById(R.id.tilePresupuestos);
+        ImageView perfilButton = view.findViewById(R.id.btnPerfil);
         TextView saludoUsuario = view.findViewById(R.id.txtHolaUsuario);
+        TextView recentActivityText = view.findViewById(R.id.tvRecentActivity);
 
-        ProfileImageUtils.applyProfileImage(requireContext(), perfilButton);
+        if (perfilButton != null) {
+            ProfileImageUtils.applyProfileImage(requireContext(), perfilButton);
+            perfilButton.setOnClickListener(this);
+        }
         String perfil = SessionManager.getPerfil(requireContext());
         String saludo = perfil != null ? getString(R.string.label_hola_usuario, perfil) : getString(R.string.label_hola);
-        saludoUsuario.setText(saludo);
+        if (saludoUsuario != null) {
+            saludoUsuario.setText(saludo);
+        }
 
-        ayudaButton.setOnClickListener(v -> mostrarAyuda());
-        gastosButton.setOnClickListener(this);
-        ingresosButton.setOnClickListener(this);
-        ahorroButton.setOnClickListener(this);
-        graficasButton.setOnClickListener(this);
-        perfilButton.setOnClickListener(this);
+        if (ayudaButton != null) {
+            ayudaButton.setOnClickListener(v -> mostrarAyuda());
+        }
+        if (gastosButton != null) gastosButton.setOnClickListener(this);
+        if (ingresosButton != null) ingresosButton.setOnClickListener(this);
+        if (ahorroButton != null) ahorroButton.setOnClickListener(this);
+        if (graficasButton != null) graficasButton.setOnClickListener(this);
+        if (tilePresupuestos != null) tilePresupuestos.setOnClickListener(this);
+        cargarActividadRecienteEnCard(recentActivityText);
         View recentActivityCard = view.findViewById(R.id.recentActivityCard);
         if (recentActivityCard != null) {
-            recentActivityCard.setOnClickListener(v -> Toast.makeText(requireContext(), R.string.label_no_recent_activity, Toast.LENGTH_SHORT).show());
+            recentActivityCard.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_menu_to_recentActivity));
         }
     }
 
@@ -66,8 +86,119 @@ public class menu extends Fragment implements View.OnClickListener {
             Navigation.findNavController(v).navigate(R.id.action_menu_to_navigation_ahorro);
         } else if (viewId == R.id.tileGraficas) {
             Navigation.findNavController(v).navigate(R.id.action_menu_to_navigation_graficas);
+        } else if (viewId == R.id.tilePresupuestos) {
+            Navigation.findNavController(v).navigate(R.id.action_menu_to_navigation_presupuestos);
         } else if (viewId == R.id.btnPerfil) {
             UsuarioAnimationNavigator.playAndNavigate(v, R.id.action_menu_to_usuario, R.raw.usuario, 6500f, 8000f);
+        }
+    }
+
+
+    private void cargarActividadRecienteEnCard(TextView recentActivityText) {
+        DataRepository.refreshIngresos(requireContext(), new DataRepository.RepositoryCallback<List<Ingreso>>() {
+            @Override
+            public void onSuccess(List<Ingreso> result) {
+                DataRepository.refreshGastos(requireContext(), new DataRepository.RepositoryCallback<List<Gasto>>() {
+                    @Override
+                    public void onSuccess(List<Gasto> gastos) {
+                        actualizarCardActividadReciente(recentActivityText, DataRepository.getIngresos(), DataRepository.getGastos());
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        actualizarCardActividadReciente(recentActivityText, DataRepository.getIngresos(), DataRepository.getGastos());
+                    }
+                });
+            }
+
+            @Override
+            public void onError(String message) {
+                DataRepository.refreshGastos(requireContext(), new DataRepository.RepositoryCallback<List<Gasto>>() {
+                    @Override
+                    public void onSuccess(List<Gasto> gastos) {
+                        actualizarCardActividadReciente(recentActivityText, DataRepository.getIngresos(), DataRepository.getGastos());
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        actualizarCardActividadReciente(recentActivityText, DataRepository.getIngresos(), DataRepository.getGastos());
+                    }
+                });
+            }
+        });
+    }
+
+    private void actualizarCardActividadReciente(TextView recentActivityText, List<Ingreso> ingresos, List<Gasto> gastos) {
+        LocalDate limite = LocalDate.now().minusDays(2);
+        List<ActividadItem> items = new ArrayList<>();
+
+        for (Ingreso ingreso : ingresos) {
+            LocalDate fecha = parseFecha(ingreso.getFecha());
+            if (fecha != null && !fecha.isBefore(limite)) {
+                items.add(new ActividadItem(fecha, "Ingreso", ingreso.getArticulo(), ingreso.getDescripcion()));
+            }
+        }
+        for (Gasto gasto : gastos) {
+            LocalDate fecha = parseFecha(gasto.getFecha());
+            if (fecha != null && !fecha.isBefore(limite)) {
+                items.add(new ActividadItem(fecha, "Gasto", gasto.getArticulo(), gasto.getDescripcion()));
+            }
+        }
+
+        items.sort(Comparator.comparing((ActividadItem i) -> i.fecha).reversed());
+
+        StringBuilder mensaje = new StringBuilder();
+        if (items.isEmpty()) {
+            mensaje.append(getString(R.string.label_no_recent_activity));
+        } else {
+            int limiteItems = Math.min(items.size(), 4);
+            for (int idx = 0; idx < limiteItems; idx++) {
+                ActividadItem item = items.get(idx);
+                mensaje.append("• ")
+                        .append(item.tipo)
+                        .append(": ")
+                        .append(item.articulo != null ? item.articulo : "-")
+                        .append(" · $")
+                        .append(item.monto != null ? item.monto : "0")
+                        .append(" · ")
+                        .append(item.fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())))
+                        .append("\n");
+            }
+        }
+
+        if (recentActivityText != null) {
+            recentActivityText.setText(mensaje.toString().trim());
+        }
+
+    }
+
+    private LocalDate parseFecha(String fecha) {
+        if (fecha == null || fecha.trim().isEmpty()) return null;
+        String value = fecha.trim();
+        DateTimeFormatter[] formatters = new DateTimeFormatter[]{
+                DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault()),
+                DateTimeFormatter.ISO_LOCAL_DATE
+        };
+        for (DateTimeFormatter formatter : formatters) {
+            try {
+                return LocalDate.parse(value, formatter);
+            } catch (DateTimeParseException ignored) {
+            }
+        }
+        return null;
+    }
+
+    private static class ActividadItem {
+        final LocalDate fecha;
+        final String tipo;
+        final String articulo;
+        final String monto;
+
+        ActividadItem(LocalDate fecha, String tipo, String articulo, String monto) {
+            this.fecha = fecha;
+            this.tipo = tipo;
+            this.articulo = articulo;
+            this.monto = monto;
         }
     }
 

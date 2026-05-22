@@ -24,6 +24,8 @@ import com.example.economix_android.util.UsuarioAnimationNavigator;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -78,6 +80,8 @@ public class ingresosFragment extends Fragment {
                 navigateSafely(v, R.id.navigation_ahorro);
             } else if (viewId == R.id.navGraficas) {
                 navigateSafely(v, R.id.navigation_graficas);
+            } else if (viewId == R.id.navMenuMini) {
+                navigateSafely(v, R.id.menu);
             }
         };
 
@@ -85,9 +89,62 @@ public class ingresosFragment extends Fragment {
         binding.navIngresos.setOnClickListener(bottomNavListener);
         binding.navAhorro.setOnClickListener(bottomNavListener);
         binding.navGraficas.setOnClickListener(bottomNavListener);
+        binding.navMenuMini.setOnClickListener(bottomNavListener);
 
         setupDatePicker(binding.etFechaIng);
+        configurarCategorias();
         cargarDatosEdicion();
+    }
+
+
+    private void configurarCategorias() {
+        ChipGroup[] grupos = new ChipGroup[]{binding.chipGroupCategoriaIng, binding.chipGroupEtiquetasIng};
+        for (ChipGroup grupo : grupos) {
+            for (int i = 0; i < grupo.getChildCount(); i++) {
+                View child = grupo.getChildAt(i);
+                if (child instanceof Chip) {
+                    Chip chip = (Chip) child;
+                    chip.setOnClickListener(v -> {
+                        binding.etArticuloIng.setText(chip.getText());
+                        binding.etPeriodoIng.setText(chip.getText());
+                    });
+                }
+            }
+        }
+
+        binding.btnAgregarCategoriaIng.setOnClickListener(v -> mostrarDialogoNuevaCategoria(
+                binding.chipGroupEtiquetasIng, binding.etArticuloIng
+        ));
+    }
+
+    private void mostrarDialogoNuevaCategoria(ChipGroup chipGroup, TextInputEditText destinoArticulo) {
+        TextInputEditText input = new TextInputEditText(requireContext());
+        input.setHint(R.string.label_agregar_categoria);
+        input.setSingleLine();
+
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.label_agregar_categoria)
+                .setView(input)
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    String texto = input.getText() != null ? input.getText().toString().trim() : "";
+                    if (texto.isEmpty()) {
+                        Toast.makeText(requireContext(), R.string.error_campos_obligatorios_ingreso, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Chip nuevo = new Chip(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice);
+                    nuevo.setText(texto);
+                    nuevo.setCheckable(true);
+                    nuevo.setOnClickListener(v -> {
+                        destinoArticulo.setText(texto);
+                        binding.etPeriodoIng.setText(texto);
+                    });
+                    chipGroup.addView(nuevo);
+                    nuevo.setChecked(true);
+                    destinoArticulo.setText(texto);
+                    binding.etPeriodoIng.setText(texto);
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
     }
 
     private void mostrarAyuda() {
@@ -170,6 +227,8 @@ public class ingresosFragment extends Fragment {
         binding.etPeriodoIng.setText("");
         binding.rbRecurrenteIng.setChecked(false);
         binding.rbRecurrenteIng.setEnabled(true);
+        binding.chipGroupCategoriaIng.clearCheck();
+        binding.chipGroupEtiquetasIng.clearCheck();
         enModoPlantilla = false;
         establecerModoEdicion(false, null, false);
     }
@@ -196,7 +255,9 @@ public class ingresosFragment extends Fragment {
             binding.rbRecurrenteIng.setEnabled(false);
             establecerModoEdicion(false, null, false);
         } else {
-            enModoPlantilla = false;
+            binding.chipGroupCategoriaIng.clearCheck();
+        binding.chipGroupEtiquetasIng.clearCheck();
+        enModoPlantilla = false;
             binding.rbRecurrenteIng.setChecked(recurrente);
             int id = args.getInt(ARG_INGRESO_ID, -1);
             if (id > 0) {

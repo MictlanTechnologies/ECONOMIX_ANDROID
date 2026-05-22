@@ -77,6 +77,8 @@ public class ingresosInfo extends Fragment {
                 navigateSafely(v, R.id.navigation_ahorro);
             } else if (viewId == R.id.navGraficas) {
                 navigateSafely(v, R.id.navigation_graficas);
+            } else if (viewId == R.id.navMenuMini) {
+                navigateSafely(v, R.id.menu);
             }
         };
 
@@ -84,6 +86,7 @@ public class ingresosInfo extends Fragment {
         binding.navIngresos.setOnClickListener(bottomNavListener);
         binding.navAhorro.setOnClickListener(bottomNavListener);
         binding.navGraficas.setOnClickListener(bottomNavListener);
+        binding.navMenuMini.setOnClickListener(bottomNavListener);
 
         configurarListas();
         configurarFiltros();
@@ -111,6 +114,20 @@ public class ingresosInfo extends Fragment {
         };
         ingresosAdapter.setOnRegistroDoubleClickListener(listener);
         recurrentesAdapter.setOnRegistroDoubleClickListener(listener);
+        RegistroAdapter.OnRegistroActionListener actionListener = new RegistroAdapter.OnRegistroActionListener() {
+            @Override
+            public void onEdit(RegistroFinanciero registro) {
+                if (registro instanceof Ingreso) abrirEdicionIngreso((Ingreso) registro);
+            }
+
+            @Override
+            public void onDelete(RegistroFinanciero registro) {
+                if (registro instanceof Ingreso) eliminarIngreso((Ingreso) registro);
+            }
+        };
+        ingresosAdapter.setOnRegistroActionListener(actionListener);
+        recurrentesAdapter.setOnRegistroActionListener(actionListener);
+        historialAdapter.setOnRegistroActionListener(actionListener);
 
         binding.tablaGastos.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.tablaGastos.setAdapter(ingresosAdapter);
@@ -304,6 +321,28 @@ public class ingresosInfo extends Fragment {
         args.putString(ingresosFragment.ARG_INGRESO_PERIODO, ingreso.getPeriodo());
         args.putBoolean(ingresosFragment.ARG_INGRESO_PLANTILLA, true);
         navigateSafely(binding.getRoot(), R.id.action_ingresosInfo_to_navigation_ingresos, args);
+    }
+
+
+    private void eliminarIngreso(Ingreso ingreso) {
+        if (ingreso == null || ingreso.getId() == null) {
+            mostrarMensaje(getString(R.string.error_ingreso_id));
+            return;
+        }
+        DataRepository.removeIngresoById(ingreso.getId(), new DataRepository.RepositoryCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean result) {
+                if (!isAdded()) return;
+                mostrarMensaje(getString(R.string.mensaje_ingreso_eliminado));
+                actualizarDatos();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) return;
+                mostrarMensaje(message);
+            }
+        });
     }
 
     private void mostrarAyuda() {

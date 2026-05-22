@@ -3,6 +3,7 @@ package com.example.economix_android.Model.data;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.os.SystemClock;
 
@@ -16,6 +17,11 @@ import java.util.List;
 
 public class RegistroAdapter extends RecyclerView.Adapter<RegistroAdapter.RegistroViewHolder> {
 
+    public interface OnRegistroActionListener {
+        void onEdit(RegistroFinanciero registro);
+        void onDelete(RegistroFinanciero registro);
+    }
+
     public interface OnRegistroDoubleClickListener {
         void onRegistroDoubleClick(RegistroFinanciero registro);
     }
@@ -23,6 +29,7 @@ public class RegistroAdapter extends RecyclerView.Adapter<RegistroAdapter.Regist
     private static final long DOUBLE_CLICK_DELAY_MS = 400;
     private final List<RegistroFinanciero> registros = new ArrayList<>();
     private OnRegistroDoubleClickListener doubleClickListener;
+    private OnRegistroActionListener actionListener;
 
     @NonNull
     @Override
@@ -34,7 +41,7 @@ public class RegistroAdapter extends RecyclerView.Adapter<RegistroAdapter.Regist
     @Override
     public void onBindViewHolder(@NonNull RegistroViewHolder holder, int position) {
         RegistroFinanciero registro = registros.get(position);
-        holder.bind(registro, doubleClickListener);
+        holder.bind(registro, doubleClickListener, actionListener);
     }
 
     @Override
@@ -54,6 +61,10 @@ public class RegistroAdapter extends RecyclerView.Adapter<RegistroAdapter.Regist
         this.doubleClickListener = listener;
     }
 
+    public void setOnRegistroActionListener(OnRegistroActionListener listener) {
+        this.actionListener = listener;
+    }
+
     static class RegistroViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView tvTipo;
@@ -62,6 +73,8 @@ public class RegistroAdapter extends RecyclerView.Adapter<RegistroAdapter.Regist
         private final TextView tvFecha;
         private final TextView tvPeriodo;
         private final TextView tvRecurrente;
+        private final ImageButton btnEditar;
+        private final ImageButton btnEliminar;
         private long lastClickTime;
 
         RegistroViewHolder(@NonNull View itemView) {
@@ -72,9 +85,11 @@ public class RegistroAdapter extends RecyclerView.Adapter<RegistroAdapter.Regist
             tvFecha = itemView.findViewById(R.id.tvFecha);
             tvPeriodo = itemView.findViewById(R.id.tvPeriodo);
             tvRecurrente = itemView.findViewById(R.id.tvRecurrente);
+            btnEditar = itemView.findViewById(R.id.btnEditarRegistro);
+            btnEliminar = itemView.findViewById(R.id.btnEliminarRegistro);
         }
 
-        void bind(RegistroFinanciero registro, OnRegistroDoubleClickListener listener) {
+        void bind(RegistroFinanciero registro, OnRegistroDoubleClickListener listener, OnRegistroActionListener actionListener) {
             tvTipo.setText(registro.getTipo());
             tvArticulo.setText(registro.getArticulo());
             String descripcion = registro.getDescripcion();
@@ -88,6 +103,8 @@ public class RegistroAdapter extends RecyclerView.Adapter<RegistroAdapter.Regist
                     ? itemView.getContext().getString(R.string.label_periodo_desconocido)
                     : periodo);
             tvRecurrente.setVisibility(registro.isRecurrente() ? View.VISIBLE : View.GONE);
+            btnEditar.setOnClickListener(v -> { if (actionListener != null) actionListener.onEdit(registro); });
+            btnEliminar.setOnClickListener(v -> { if (actionListener != null) actionListener.onDelete(registro); });
             itemView.setOnClickListener(v -> {
                 long now = SystemClock.elapsedRealtime();
                 if (now - lastClickTime < DOUBLE_CLICK_DELAY_MS) {

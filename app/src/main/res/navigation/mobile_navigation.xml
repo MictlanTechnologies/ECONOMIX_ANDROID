@@ -109,6 +109,12 @@
         <action
             android:id="@+id/action_menu_to_usuario2"
             app:destination="@id/usuario" />
+        <action
+            android:id="@+id/action_menu_to_navigation_presupuestos"
+            app:destination="@id/navigation_presupuestos" />
+        <action
+            android:id="@+id/action_menu_to_recentActivity"
+            app:destination="@id/recentActivity" />
     </fragment>
     <fragment
         android:id="@+id/gastosInfo"
@@ -256,4 +262,18 @@
         android:name="com.example.economix_android.Model.usuario.Seguridad2faFragment"
         android:label="seguridad2faFragment"
         tools:layout="@layout/fragment_seguridad_2fa" />
+    <fragment
+        android:id="@+id/recentActivity"
+        android:name="com.example.economix_android.RecentActivityFragment"
+        android:label="recentActivity"
+        tools:layout="@layout/fragment_recent_activity" />
+    <fragment
+        android:id="@+id/navigation_presupuestos"
+        android:name="com.example.economix_android.Model.presupuestos.PresupuestosFragment"
+        android:label="@string/title_presupuestos"
+        tools:layout="@layout/fragment_presupuestos" >
+        <action
+            android:id="@+id/action_navigation_presupuestos_to_usuario"
+            app:destination="@id/usuario" />
+    </fragment>
 </navigation>

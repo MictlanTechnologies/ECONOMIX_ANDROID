@@ -23,10 +23,15 @@ import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.Model.data.Gasto;
 import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.util.ProfileImageUtils;
+import com.example.economix_android.auth.SessionManager;
+import com.example.economix_android.network.dto.PresupuestoDto;
+import com.example.economix_android.network.repository.PresupuestoRepository;
 import com.example.economix_android.util.UsuarioAnimationNavigator;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -35,6 +40,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class gastosFragment extends Fragment {
 
@@ -55,6 +62,7 @@ public class gastosFragment extends Fragment {
     private boolean gastoEnEdicionRecurrente;
     private boolean enModoPlantilla;
     private boolean enModoEdicion;
+    private final PresupuestoRepository presupuestoRepository = new PresupuestoRepository();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -87,6 +95,8 @@ public class gastosFragment extends Fragment {
                 navigateSafely(v, R.id.navigation_ahorro);
             } else if (viewId == R.id.navGraficas) {
                 navigateSafely(v, R.id.navigation_graficas);
+            } else if (viewId == R.id.navMenuMini) {
+                navigateSafely(v, R.id.menu);
             }
         };
 
@@ -94,11 +104,97 @@ public class gastosFragment extends Fragment {
         binding.navIngresos.setOnClickListener(bottomNavListener);
         binding.navAhorro.setOnClickListener(bottomNavListener);
         binding.navGraficas.setOnClickListener(bottomNavListener);
+        binding.navMenuMini.setOnClickListener(bottomNavListener);
 
         setupDatePicker(binding.etFechaGas);
+        configurarCategorias();
         configurarIngresos();
         cargarIngresos();
         cargarDatosEdicion();
+    }
+
+
+    private void configurarCategorias() {
+        ChipGroup[] grupos = new ChipGroup[]{binding.chipGroupCategoriaGas, binding.chipGroupEtiquetasGas};
+        for (ChipGroup grupo : grupos) {
+            for (int i = 0; i < grupo.getChildCount(); i++) {
+                View child = grupo.getChildAt(i);
+                if (child instanceof Chip) {
+                    Chip chip = (Chip) child;
+                    chip.setOnClickListener(v -> {
+                        binding.etArticuloGas.setText(chip.getText());
+                        binding.etPeriodoGas.setText(chip.getText());
+                    });
+                }
+            }
+        }
+
+        binding.btnAgregarCategoriaGas.setOnClickListener(v -> mostrarDialogoNuevaCategoria(
+                binding.chipGroupEtiquetasGas, binding.etArticuloGas
+        ));
+    }
+
+    private void mostrarDialogoNuevaCategoria(ChipGroup chipGroup, TextInputEditText destinoArticulo) {
+        TextInputEditText input = new TextInputEditText(requireContext());
+        input.setHint(R.string.label_agregar_categoria);
+        input.setSingleLine();
+
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.label_agregar_categoria)
+                .setView(input)
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    String texto = input.getText() != null ? input.getText().toString().trim() : "";
+                    if (texto.isEmpty()) {
+                        Toast.makeText(requireContext(), R.string.error_campos_obligatorios_gasto, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Chip nuevo = new Chip(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice);
+                    nuevo.setText(texto);
+                    nuevo.setCheckable(true);
+                    nuevo.setOnClickListener(v -> {
+                        destinoArticulo.setText(texto);
+                        binding.etPeriodoGas.setText(texto);
+                    });
+                    chipGroup.addView(nuevo);
+                    nuevo.setChecked(true);
+                    destinoArticulo.setText(texto);
+                    binding.etPeriodoGas.setText(texto);
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+
+    private void verificarPresupuestoDespuesDeGasto(Gasto gasto) {
+        Integer idUsuario = SessionManager.getUserId(requireContext());
+        if (idUsuario == null || gasto == null) return;
+        String categoria = gasto.getPeriodo();
+        if (categoria == null || categoria.trim().isEmpty()) return;
+        LocalDate fecha;
+        try { fecha = LocalDate.parse(gasto.getFecha(), DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())); }
+        catch (Exception e) { fecha = LocalDate.now(); }
+        int mes = fecha.getMonthValue();
+        int anio = fecha.getYear();
+        presupuestoRepository.obtenerPresupuestoCategoria(idUsuario, categoria, mes, anio, new retrofit2.Callback<PresupuestoDto>() {
+            @Override public void onResponse(retrofit2.Call<PresupuestoDto> call, retrofit2.Response<PresupuestoDto> response) {
+                if (!response.isSuccessful() || response.body() == null) return;
+                PresupuestoDto p = response.body();
+                if (p.getPorcentajeUso() == null) return;
+                int porcentaje = p.getPorcentajeUso().intValue();
+                if (porcentaje >= 100) {
+                    new MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(R.string.titulo_presupuesto_excedido)
+                            .setMessage(getString(R.string.mensaje_presupuesto_excedido, categoria, p.getMontoMaximo(), p.getMontoGastado()))
+                            .setPositiveButton(android.R.string.ok, null).show();
+                } else if (porcentaje >= 80) {
+                    new MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(R.string.titulo_alerta_presupuesto)
+                            .setMessage(getString(R.string.mensaje_alerta_presupuesto, porcentaje, categoria))
+                            .setPositiveButton(android.R.string.ok, null).show();
+                }
+            }
+            @Override public void onFailure(retrofit2.Call<PresupuestoDto> call, Throwable t) {}
+        });
     }
 
     private void mostrarAyuda() {
@@ -179,6 +275,7 @@ public class gastosFragment extends Fragment {
                     return;
                 }
                 Toast.makeText(requireContext(), R.string.mensaje_gasto_guardado, Toast.LENGTH_SHORT).show();
+                verificarPresupuestoDespuesDeGasto(result);
                 UsuarioAnimationNavigator.playOnly(binding.getRoot(), R.raw.gasto, 1000f, 2500f, () -> {
                     if (!isAdded()) return;
                     limpiarCampos();
@@ -222,6 +319,8 @@ public class gastosFragment extends Fragment {
         binding.etIngresoSeleccionGasto.setText("");
         ingresoSeleccionado = null;
         actualizarIngresoDisponible();
+        binding.chipGroupCategoriaGas.clearCheck();
+        binding.chipGroupEtiquetasGas.clearCheck();
         enModoPlantilla = false;
         establecerModoEdicion(false, null, false);
     }
@@ -248,7 +347,9 @@ public class gastosFragment extends Fragment {
             binding.rbRecurrenteGas.setEnabled(false);
             establecerModoEdicion(false, null, false);
         } else {
-            enModoPlantilla = false;
+            binding.chipGroupCategoriaGas.clearCheck();
+        binding.chipGroupEtiquetasGas.clearCheck();
+        enModoPlantilla = false;
             binding.rbRecurrenteGas.setChecked(recurrente);
             int id = args.getInt(ARG_GASTO_ID, -1);
             if (id > 0) {
@@ -377,7 +478,7 @@ public class gastosFragment extends Fragment {
     private void configurarIngresos() {
         AutoCompleteTextView ingresoView = (AutoCompleteTextView) binding.etIngresoSeleccionGasto;
         ingresosAdapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, new ArrayList<>());
+                R.layout.item_dropdown_dark, new ArrayList<>());
         ingresoView.setAdapter(ingresosAdapter);
         ingresoView.setThreshold(0);
         ingresoView.setOnItemClickListener((parent, view, position, id) -> {

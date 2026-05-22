@@ -43,6 +43,27 @@ public class graficasMenu extends Fragment {
                 Navigation.findNavController(v)
                         .navigate(R.id.graficasMenuIngresosVsGastos));
         binding.btnVolverGraficas.setOnClickListener(v -> navigateSafely(v, R.id.menu));
+
+        View.OnClickListener bottomNavListener = v -> {
+            int viewId = v.getId();
+            if (viewId == R.id.navGastos) {
+                navigateSafely(v, R.id.navigation_gastos);
+            } else if (viewId == R.id.navIngresos) {
+                navigateSafely(v, R.id.navigation_ingresos);
+            } else if (viewId == R.id.navAhorro) {
+                navigateSafely(v, R.id.navigation_ahorro);
+            } else if (viewId == R.id.navGraficas) {
+                navigateSafely(v, R.id.navigation_graficas);
+            } else if (viewId == R.id.navMenuMini) {
+                navigateSafely(v, R.id.menu);
+            }
+        };
+
+        binding.navGastos.setOnClickListener(bottomNavListener);
+        binding.navIngresos.setOnClickListener(bottomNavListener);
+        binding.navAhorro.setOnClickListener(bottomNavListener);
+        binding.navGraficas.setOnClickListener(bottomNavListener);
+        binding.navMenuMini.setOnClickListener(bottomNavListener);
     }
 
     private void navigateSafely(View view, int destinationId) {

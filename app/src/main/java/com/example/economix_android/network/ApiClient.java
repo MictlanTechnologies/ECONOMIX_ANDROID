@@ -12,6 +12,7 @@ import com.example.economix_android.network.api.DomicilioApi;
 import com.example.economix_android.network.api.GastoApi;
 import com.example.economix_android.network.api.IngresoApi;
 import com.example.economix_android.network.api.PersonaApi;
+import com.example.economix_android.network.api.PresupuestoApi;
 import com.example.economix_android.network.api.UsuarioApi;
 import com.example.economix_android.network.auth.AuthApi;
 import com.example.economix_android.network.auth.AuthServiceFactory;
@@ -135,5 +136,9 @@ public final class ApiClient {
 
     public static UsuarioApi getUsuarioApi() {
         return retrofit.create(UsuarioApi.class);
+    }
+
+    public static PresupuestoApi getPresupuestoApi() {
+        return retrofit.create(PresupuestoApi.class);
     }
 }

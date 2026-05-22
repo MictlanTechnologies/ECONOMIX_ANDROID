@@ -3,6 +3,7 @@ package com.example.economix_android.Model.usuario;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +23,15 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import okhttp3.ResponseBody;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Seguridad2faFragment extends Fragment {
+
+    private static final String TAG = "2FA_SETUP_DEBUG";
 
     private FragmentSeguridad2faBinding binding;
     private AuthRepository authRepository;
@@ -57,8 +62,28 @@ public class Seguridad2faFragment extends Fragment {
             @Override
             public void onResponse(Call<TwoFaSetupResponse> call, Response<TwoFaSetupResponse> response) {
                 binding.progress2fa.setVisibility(View.GONE);
-                if (!response.isSuccessful() || response.body() == null || TextUtils.isEmpty(response.body().getOtpauthUri())) {
-                    Toast.makeText(requireContext(), "No se pudo generar la configuración 2FA", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "setup2fa response code: " + response.code());
+                Log.d(TAG, "setup2fa body null: " + (response.body() == null));
+
+                if (!response.isSuccessful()) {
+                    ResponseBody errorBody = response.errorBody();
+                    if (errorBody != null) {
+                        try {
+                            Log.d(TAG, "setup2fa error body: " + errorBody.string());
+                        } catch (Exception e) {
+                            Log.e(TAG, "No se pudo leer errorBody de setup2fa", e);
+                        }
+                    }
+                    Toast.makeText(
+                            requireContext(),
+                            "No se pudo generar QR. Código: " + response.code(),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                    return;
+                }
+
+                if (response.body() == null || TextUtils.isEmpty(response.body().getOtpauthUri())) {
+                    Toast.makeText(requireContext(), "Respuesta 2FA inválida: falta otpauthUri", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -69,6 +94,7 @@ public class Seguridad2faFragment extends Fragment {
             @Override
             public void onFailure(Call<TwoFaSetupResponse> call, Throwable t) {
                 binding.progress2fa.setVisibility(View.GONE);
+                Log.e(TAG, "Error setup2fa", t);
                 Toast.makeText(requireContext(), "Error de red al generar QR", Toast.LENGTH_SHORT).show();
             }
         });
