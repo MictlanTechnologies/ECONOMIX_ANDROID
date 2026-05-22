@@ -132,10 +132,10 @@ public class PresupuestosFragment extends Fragment {
         });
 
         int currentYear = LocalDate.now().getYear();
-        String[] opcionesAnio = new String[8];
-        for (int i = 0; i < opcionesAnio.length; i++) {
-            opcionesAnio[i] = String.valueOf(currentYear - 3 + i);
-        }
+        String[] opcionesAnio = new String[] {
+                String.valueOf(currentYear),
+                String.valueOf(currentYear + 1)
+        };
         ArrayAdapter<String> anioAdapter = new ArrayAdapter<>(
                 requireContext(), R.layout.item_dropdown_dark, opcionesAnio);
         binding.etAnioPres.setAdapter(anioAdapter);
