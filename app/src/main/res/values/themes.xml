@@ -12,6 +12,7 @@
         <item name="materialCardViewStyle">@style/Widget.Economix.Card</item>
         <item name="chipStyle">@style/Widget.Economix.Chip</item>
         <item name="textInputStyle">@style/Widget.Economix.TextInputLayout</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.Economix.MaterialAlertDialog</item>
     </style>
     <style name="Theme.ECONOMIX_ANDROID" parent="Base.Theme.ECONOMIX_ANDROID" />
 
@@ -41,7 +42,6 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/economix_text_secondary</item>
         <item name="materialAlertDialogBodyTextStyle">@style/TextAppearance.Material3.BodyMedium</item>
-        <item name="materialAlertDialogBackgroundTint">@color/tealSurface</item>
     </style>
 
 </resources>
