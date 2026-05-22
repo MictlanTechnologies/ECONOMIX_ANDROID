@@ -234,7 +234,7 @@ public class ahorroInfo extends Fragment {
         AutoCompleteTextView etIngreso = dialogView.findViewById(R.id.etIngresoAporte);
         TextView tvDisponible = dialogView.findViewById(R.id.tvDisponibleIngreso);
         ingresosAdapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, new ArrayList<>());
+                R.layout.item_dropdown_dark, new ArrayList<>());
         etIngreso.setAdapter(ingresosAdapter);
         etIngreso.setThreshold(0);
         etIngreso.setOnItemClickListener((parent, view, position, id) -> {

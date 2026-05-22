@@ -21,10 +21,13 @@ import com.example.economix_android.network.dto.PresupuestoDto;
 import com.example.economix_android.network.repository.PresupuestoRepository;
 import com.example.economix_android.util.ProfileImageUtils;
 import com.example.economix_android.util.UsuarioAnimationNavigator;
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -118,12 +121,29 @@ public class PresupuestosFragment extends Fragment {
     }
 
     private void setupMonthYearDropdowns() {
-        binding.etMesPres.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) cargarPresupuestosPeriodoActual();
+        binding.etMesPres.setShowSoftInputOnFocus(false);
+        binding.etAnioPres.setShowSoftInputOnFocus(false);
+        View.OnClickListener openCalendar = v -> mostrarSelectorMesAnio();
+        binding.etMesPres.setOnClickListener(openCalendar);
+        binding.etAnioPres.setOnClickListener(openCalendar);
+        binding.etMesPres.setOnFocusChangeListener((v, hasFocus) -> { if (hasFocus) mostrarSelectorMesAnio(); });
+        binding.etAnioPres.setOnFocusChangeListener((v, hasFocus) -> { if (hasFocus) mostrarSelectorMesAnio(); });
+    }
+
+    private void mostrarSelectorMesAnio() {
+        MaterialDatePicker<Long> picker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText(R.string.titulo_seleccionar_periodo)
+                .build();
+        picker.addOnPositiveButtonClickListener(selection -> {
+            if (selection == null || binding == null) return;
+            LocalDate selectedDate = Instant.ofEpochMilli(selection)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            binding.etMesPres.setText(String.valueOf(selectedDate.getMonthValue()));
+            binding.etAnioPres.setText(String.valueOf(selectedDate.getYear()));
+            cargarPresupuestosPeriodoActual();
         });
-        binding.etAnioPres.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) cargarPresupuestosPeriodoActual();
-        });
+        picker.show(getParentFragmentManager(), "presupuesto_month_year_picker");
     }
 
     private void setupQuickAmountButtons() {
