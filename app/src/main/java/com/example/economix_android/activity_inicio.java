@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+//ya jala cuate, tomen esta version con cuidado
 
 public class activity_inicio extends AppCompatActivity {
 
