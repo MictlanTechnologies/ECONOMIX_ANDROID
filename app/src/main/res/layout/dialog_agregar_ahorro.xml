@@ -48,6 +48,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/label_disponible_ingreso"
-        android:textColor="@color/economix_text_secondary"
+        android:textColor="@color/white"
         android:textSize="12sp" />
 </LinearLayout>

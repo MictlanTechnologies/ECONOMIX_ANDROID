@@ -41,6 +41,7 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/economix_text_secondary</item>
         <item name="materialAlertDialogBodyTextStyle">@style/TextAppearance.Material3.BodyMedium</item>
+        <item name="materialAlertDialogBackgroundTint">@color/tealSurface</item>
     </style>
 
 </resources>

@@ -2,6 +2,7 @@ package com.example.economix_android.Model.presupuestos;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,6 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -101,8 +101,8 @@ public class PresupuestosFragment extends Fragment {
         binding.navMenuMini.setOnClickListener(bottomNavListener);
 
         LocalDate now = LocalDate.now();
-        binding.etMesPres.setText(String.valueOf(now.getMonthValue()));
-        binding.etAnioPres.setText(String.valueOf(now.getYear()));
+        binding.etMesPres.setSelection(now.getMonthValue() - 1);
+        binding.etAnioPres.setSelection(0);
 
         cargarPresupuestosPeriodoActual();
     }
@@ -123,29 +123,30 @@ public class PresupuestosFragment extends Fragment {
         for (int i = 0; i < 12; i++) {
             opcionesMes[i] = String.valueOf(i + 1);
         }
-        ArrayAdapter<String> mesAdapter = new ArrayAdapter<>(
-                requireContext(), R.layout.item_dropdown_dark, opcionesMes);
-        binding.etMesPres.setAdapter(mesAdapter);
-        binding.etMesPres.setOnClickListener(v -> binding.etMesPres.showDropDown());
-        binding.etMesPres.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) binding.etMesPres.showDropDown();
-        });
-
         int currentYear = LocalDate.now().getYear();
         String[] opcionesAnio = new String[] {
                 String.valueOf(currentYear),
                 String.valueOf(currentYear + 1)
         };
-        ArrayAdapter<String> anioAdapter = new ArrayAdapter<>(
-                requireContext(), R.layout.item_dropdown_dark, opcionesAnio);
-        binding.etAnioPres.setAdapter(anioAdapter);
-        binding.etAnioPres.setOnClickListener(v -> binding.etAnioPres.showDropDown());
-        binding.etAnioPres.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) binding.etAnioPres.showDropDown();
-        });
 
-        binding.etMesPres.setOnItemClickListener((parent, view, position, id) -> cargarPresupuestosPeriodoActual());
-        binding.etAnioPres.setOnItemClickListener((parent, view, position, id) -> cargarPresupuestosPeriodoActual());
+        ArrayAdapter<String> mesAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, opcionesMes);
+        mesAdapter.setDropDownViewResource(R.layout.item_dropdown_dark);
+        binding.etMesPres.setAdapter(mesAdapter);
+
+        ArrayAdapter<String> anioAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, opcionesAnio);
+        anioAdapter.setDropDownViewResource(R.layout.item_dropdown_dark);
+        binding.etAnioPres.setAdapter(anioAdapter);
+
+        AdapterView.OnItemSelectedListener reloadListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                cargarPresupuestosPeriodoActual();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        };
+        binding.etMesPres.setOnItemSelectedListener(reloadListener);
+        binding.etAnioPres.setOnItemSelectedListener(reloadListener);
     }
 
     private void setupQuickAmountButtons() {
@@ -194,7 +195,9 @@ public class PresupuestosFragment extends Fragment {
 
     private Integer getMesSeleccionado() {
         try {
-            int m = Integer.parseInt(Objects.requireNonNull(binding.etMesPres.getText()).toString().trim());
+            Object selected = binding.etMesPres.getSelectedItem();
+            if (selected == null) return null;
+            int m = Integer.parseInt(selected.toString());
             return (m >= 1 && m <= 12) ? m : null;
         } catch (Exception e) {
             return null;
@@ -203,7 +206,9 @@ public class PresupuestosFragment extends Fragment {
 
     private Integer getAnioSeleccionado() {
         try {
-            int a = Integer.parseInt(Objects.requireNonNull(binding.etAnioPres.getText()).toString().trim());
+            Object selected = binding.etAnioPres.getSelectedItem();
+            if (selected == null) return null;
+            int a = Integer.parseInt(selected.toString());
             return a > 0 ? a : null;
         } catch (Exception e) {
             return null;
@@ -315,8 +320,8 @@ public class PresupuestosFragment extends Fragment {
         binding.chipGroupCategoriaPres.clearCheck();
         binding.etMontoMaxPres.setText("");
         LocalDate now = LocalDate.now();
-        binding.etMesPres.setText(String.valueOf(now.getMonthValue()));
-        binding.etAnioPres.setText(String.valueOf(now.getYear()));
+        binding.etMesPres.setSelection(now.getMonthValue() - 1);
+        binding.etAnioPres.setSelection(0);
         presupuestoSeleccionado = null;
         binding.btnGuardarPres.setText(R.string.label_guardar);
         binding.btnEliminarPres.setEnabled(false);
@@ -331,8 +336,12 @@ public class PresupuestosFragment extends Fragment {
             }
         }
         binding.etMontoMaxPres.setText(p.getMontoMaximo() != null ? p.getMontoMaximo().toPlainString() : "");
-        binding.etMesPres.setText(String.valueOf(p.getMes()));
-        binding.etAnioPres.setText(String.valueOf(p.getAnio()));
+        if (p.getMes() != null && p.getMes() >= 1 && p.getMes() <= 12) {
+            binding.etMesPres.setSelection(p.getMes() - 1);
+        }
+        LocalDate now2 = LocalDate.now();
+        int yearSel = (p.getAnio() != null && p.getAnio() == now2.getYear() + 1) ? 1 : 0;
+        binding.etAnioPres.setSelection(yearSel);
         binding.btnGuardarPres.setText(R.string.label_actualizar);
         binding.btnEliminarPres.setEnabled(true);
     }

@@ -168,14 +168,11 @@
                             app:boxBackgroundColor="@color/tealDark"
                             app:hintTextColor="@color/softWhite">
 
-                            <AutoCompleteTextView
+                            <androidx.appcompat.widget.AppCompatSpinner
                                 android:id="@+id/etMesPres"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="@string/hint_mes"
-                                android:inputType="none"
-                                android:textColor="@color/white"
-                                android:textColorHint="@color/softWhite" />
+                                android:popupBackground="@color/tealSurface" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -188,14 +185,11 @@
                             app:boxBackgroundColor="@color/tealDark"
                             app:hintTextColor="@color/softWhite">
 
-                            <AutoCompleteTextView
+                            <androidx.appcompat.widget.AppCompatSpinner
                                 android:id="@+id/etAnioPres"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="@string/hint_anio"
-                                android:inputType="none"
-                                android:textColor="@color/white"
-                                android:textColorHint="@color/softWhite" />
+                                android:popupBackground="@color/tealSurface" />
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
 
