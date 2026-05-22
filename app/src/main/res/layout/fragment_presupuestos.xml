@@ -159,8 +159,44 @@
 
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/label_paso_3" android:textColor="@color/economix_text_primary" android:textStyle="bold" />
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-                        <com.google.android.material.textfield.TextInputEditText android:id="@+id/etMesPres" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:hint="@string/hint_mes" android:inputType="number" />
-                        <com.google.android.material.textfield.TextInputEditText android:id="@+id/etAnioPres" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="8dp" android:hint="@string/hint_anio" android:inputType="number" />
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            app:endIconMode="dropdown_menu"
+                            app:boxBackgroundMode="filled"
+                            app:boxBackgroundColor="@color/tealDark"
+                            app:hintTextColor="@color/softWhite">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/etMesPres"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/hint_mes"
+                                android:inputType="none"
+                                android:textColor="@color/white"
+                                android:textColorHint="@color/softWhite" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp"
+                            app:endIconMode="dropdown_menu"
+                            app:boxBackgroundMode="filled"
+                            app:boxBackgroundColor="@color/tealDark"
+                            app:hintTextColor="@color/softWhite">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/etAnioPres"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/hint_anio"
+                                android:inputType="none"
+                                android:textColor="@color/white"
+                                android:textColorHint="@color/softWhite" />
+                        </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton android:id="@+id/btnGuardarPres" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/label_guardar" app:backgroundTint="@color/tealAccent" />
