@@ -204,7 +204,7 @@ public class ahorroInfo extends Fragment {
             etMonto.setText("");
         }
 
-        new MaterialAlertDialogBuilder(requireContext())
+        new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_Economix_MaterialAlertDialog)
                 .setTitle(R.string.titulo_editar_ahorro)
                 .setView(dialogView)
                 .setPositiveButton(R.string.label_modificar, (dialog, which) -> {
@@ -252,7 +252,7 @@ public class ahorroInfo extends Fragment {
         actualizarIngresoAdapter();
         actualizarDisponible(tvDisponible);
 
-        new MaterialAlertDialogBuilder(requireContext())
+        new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_Economix_MaterialAlertDialog)
                 .setTitle(R.string.titulo_agregar_ahorro)
                 .setView(dialogView)
                 .setPositiveButton(R.string.label_agregar, (dialog, which) -> {
@@ -557,7 +557,7 @@ public class ahorroInfo extends Fragment {
         titleView.setText(title);
         messageView.setText(message);
 
-        new MaterialAlertDialogBuilder(requireContext())
+        new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_Economix_MaterialAlertDialog)
                 .setView(dialogView)
                 .setPositiveButton(android.R.string.ok, null)
                 .show();

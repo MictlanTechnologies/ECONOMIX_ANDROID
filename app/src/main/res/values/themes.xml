@@ -33,4 +33,14 @@
         <item name="boxBackgroundColor">@color/softWhite</item>
         <item name="boxStrokeColor">@color/tealAccent</item>
     </style>
+
+
+    <style name="ThemeOverlay.Economix.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">@color/tealSurface</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/economix_text_secondary</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/TextAppearance.Material3.BodyMedium</item>
+    </style>
+
 </resources>

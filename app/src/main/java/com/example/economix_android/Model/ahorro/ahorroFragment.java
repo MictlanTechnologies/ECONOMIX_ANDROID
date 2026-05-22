@@ -941,7 +941,7 @@ public class ahorroFragment extends Fragment {
         titleView.setText(title);
         messageView.setText(message);
 
-        new MaterialAlertDialogBuilder(requireContext())
+        new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_Economix_MaterialAlertDialog)
                 .setView(dialogView)
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                     if (onConfirm != null) {

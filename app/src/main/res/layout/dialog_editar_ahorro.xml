@@ -4,26 +4,31 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/tealSurface">
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:boxBackgroundMode="filled">
+        app:boxBackgroundMode="filled"
+        app:boxBackgroundColor="@color/softWhite">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etTituloAhorro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/label_meta_ahorro"
-            android:inputType="textCapSentences" />
+            android:inputType="textCapSentences"
+            android:textColor="@color/black"
+            android:textColorHint="@color/tealDark" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        app:boxBackgroundMode="filled">
+        app:boxBackgroundMode="filled"
+        app:boxBackgroundColor="@color/softWhite">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etMontoAhorro"
@@ -31,6 +36,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/label_monto_total_ahorro"
             android:inputType="numberDecimal"
-            android:digits="0123456789.," />
+            android:digits="0123456789.,"
+            android:textColor="@color/black"
+            android:textColorHint="@color/tealDark" />
     </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>
