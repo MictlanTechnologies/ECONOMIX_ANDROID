@@ -11,12 +11,12 @@
 
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="14dp">
         <TextView android:id="@+id/tvCategoriaPresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textStyle="bold" android:textColor="@color/economix_text_primary"/>
-        <TextView android:id="@+id/tvPeriodoPresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/economix_text_secondary"/>
-        <TextView android:id="@+id/tvMontoMaximoPresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-        <TextView android:id="@+id/tvMontoGastadoPresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-        <TextView android:id="@+id/tvMontoRestantePresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-        <TextView android:id="@+id/tvPorcentajePresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-        <TextView android:id="@+id/tvEstadoPresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textStyle="bold"/>
+        <TextView android:id="@+id/tvPeriodoPresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/white"/>
+        <TextView android:id="@+id/tvMontoMaximoPresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/white"/>
+        <TextView android:id="@+id/tvMontoGastadoPresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/white"/>
+        <TextView android:id="@+id/tvMontoRestantePresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/white"/>
+        <TextView android:id="@+id/tvPorcentajePresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/white"/>
+        <TextView android:id="@+id/tvEstadoPresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textStyle="bold" android:textColor="@color/white"/>
         <ProgressBar android:id="@+id/progressPresupuesto" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:max="100"/>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

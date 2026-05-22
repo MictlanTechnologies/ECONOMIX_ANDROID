@@ -478,7 +478,7 @@ public class gastosFragment extends Fragment {
     private void configurarIngresos() {
         AutoCompleteTextView ingresoView = (AutoCompleteTextView) binding.etIngresoSeleccionGasto;
         ingresosAdapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, new ArrayList<>());
+                R.layout.item_dropdown_dark, new ArrayList<>());
         ingresoView.setAdapter(ingresosAdapter);
         ingresoView.setThreshold(0);
         ingresoView.setOnItemClickListener((parent, view, position, id) -> {

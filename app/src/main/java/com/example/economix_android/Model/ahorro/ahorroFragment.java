@@ -147,7 +147,7 @@ public class ahorroFragment extends Fragment {
     private void configurarIngresos() {
         AutoCompleteTextView ingresoView = (AutoCompleteTextView) binding.etIngresoSeleccion;
         ingresosAdapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, new ArrayList<>());
+                R.layout.item_dropdown_dark, new ArrayList<>());
         ingresoView.setAdapter(ingresosAdapter);
         ingresoView.setThreshold(0);
         ingresoView.setOnItemClickListener((parent, view, position, id) -> {
@@ -941,7 +941,7 @@ public class ahorroFragment extends Fragment {
         titleView.setText(title);
         messageView.setText(message);
 
-        new MaterialAlertDialogBuilder(requireContext())
+        new MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_Economix_MaterialAlertDialog)
                 .setView(dialogView)
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                     if (onConfirm != null) {
