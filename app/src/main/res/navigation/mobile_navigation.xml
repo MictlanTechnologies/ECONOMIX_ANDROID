@@ -115,6 +115,9 @@
         <action
             android:id="@+id/action_menu_to_recentActivity"
             app:destination="@id/recentActivity" />
+        <action
+            android:id="@+id/action_menu_to_navigation_chatbot"
+            app:destination="@id/navigation_chatbot" />
     </fragment>
     <fragment
         android:id="@+id/gastosInfo"
@@ -276,4 +279,11 @@
             android:id="@+id/action_navigation_presupuestos_to_usuario"
             app:destination="@id/usuario" />
     </fragment>
+
+    <fragment
+        android:id="@+id/navigation_chatbot"
+        android:name="com.example.economix_android.Model.chatbot.ChatbotFragment"
+        android:label="@string/title_chatbot"
+        tools:layout="@layout/fragment_chatbot" />
+
 </navigation>
