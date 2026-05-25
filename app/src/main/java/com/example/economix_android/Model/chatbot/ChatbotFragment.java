@@ -1,6 +1,7 @@
 package com.example.economix_android.Model.chatbot;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,12 @@ import com.example.economix_android.network.dto.ChatbotResponse;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import javax.net.ssl.SSLException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -32,6 +38,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ChatbotFragment extends Fragment {
+    private static final String TAG = "ECONOMIX_CHATBOT";
     private static final int MAX_LEN = 280;
     private final List<ChatMessage> messages = new ArrayList<>();
     private ChatMessageAdapter adapter;
@@ -87,36 +94,76 @@ public class ChatbotFragment extends Fragment {
         addUserMessage(text);
         setLoading(true);
 
-        ApiClient.getChatbotApi().enviarMensajeChatbot(new ChatbotRequest(userId, text, "ANDROID_APP")).enqueue(new Callback<ChatbotResponse>() {
+        ChatbotRequest request = new ChatbotRequest(userId, text, "ANDROID_APP");
+        Call<ChatbotResponse> requestCall = ApiClient.getChatbotApi().enviarMensajeChatbot(request);
+        String endpointUrl = requestCall.request().url().toString();
+        Log.i(TAG, "POST " + endpointUrl + " | idUsuario=" + userId + " | mensajeLength=" + text.length() + " | contextoOpcional=ANDROID_APP");
+
+        requestCall.enqueue(new Callback<ChatbotResponse>() {
             @Override
             public void onResponse(@NonNull Call<ChatbotResponse> call, @NonNull Response<ChatbotResponse> response) {
                 setLoading(false);
-                if (!response.isSuccessful() || response.body() == null) {
-                    addAiMessage("No pude conectar con el asistente en este momento. Intenta de nuevo más tarde.");
+                if (response.isSuccessful()) {
+                    ChatbotResponse body = response.body();
+                    if (body == null) {
+                        Log.w(TAG, "HTTP " + response.code() + " con body nulo en " + endpointUrl);
+                        addAiMessage("El servidor respondió vacío. Revisa el backend.");
+                        return;
+                    }
+                    addAiMessage(buildAssistantMessage(body));
                     return;
                 }
-                ChatbotResponse body = response.body();
-                StringBuilder sb = new StringBuilder();
-                sb.append(body.getRespuesta() != null ? body.getRespuesta() : "Sin respuesta");
-                if (body.getNivelRiesgoFinanciero() != null) sb.append("\n\nRiesgo: ").append(body.getNivelRiesgoFinanciero());
-                appendList(sb, "Alertas", body.getAlertas());
-                appendList(sb, "Recomendaciones", body.getRecomendaciones());
-                appendList(sb, "Acciones sugeridas", body.getAccionesSugeridas());
-                if (Boolean.TRUE.equals(body.getDatosInsuficientes())) {
-                    sb.append("\n\nDatos insuficientes: registra más ingresos, gastos o presupuestos para un análisis más preciso.");
-                }
-                if (!TextUtils.isEmpty(body.getDisclaimer())) {
-                    sb.append("\n\n").append(body.getDisclaimer());
-                }
-                addAiMessage(sb.toString());
+
+                String errorBodyText = readErrorBody(response);
+                Log.e(TAG, "HTTP ERROR | code=" + response.code() + " | endpoint=" + endpointUrl + " | errorBody=" + errorBodyText);
+                addAiMessage("El asistente no pudo responder. Código del servidor: " + response.code() + ".");
             }
 
             @Override
             public void onFailure(@NonNull Call<ChatbotResponse> call, @NonNull Throwable t) {
                 setLoading(false);
+                String category = categorizeFailure(t);
+                Log.e(TAG, "NETWORK FAILURE | type=" + t.getClass().getSimpleName() + " | category=" + category + " | message=" + t.getMessage() + " | endpoint=" + endpointUrl, t);
                 addAiMessage("No pude conectar con el asistente en este momento. Intenta de nuevo más tarde.");
             }
         });
+    }
+
+
+    private String buildAssistantMessage(ChatbotResponse body) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(body.getRespuesta() != null ? body.getRespuesta() : "Sin respuesta");
+        if (body.getNivelRiesgoFinanciero() != null) sb.append("\n\nRiesgo: ").append(body.getNivelRiesgoFinanciero());
+        appendList(sb, "Alertas", body.getAlertas());
+        appendList(sb, "Recomendaciones", body.getRecomendaciones());
+        appendList(sb, "Acciones sugeridas", body.getAccionesSugeridas());
+        if (Boolean.TRUE.equals(body.getDatosInsuficientes())) {
+            sb.append("\n\nDatos insuficientes: registra más ingresos, gastos o presupuestos para un análisis más preciso.");
+        }
+        if (!TextUtils.isEmpty(body.getDisclaimer())) {
+            sb.append("\n\n").append(body.getDisclaimer());
+        }
+        return sb.toString();
+    }
+
+    private String readErrorBody(Response<ChatbotResponse> response) {
+        if (response.errorBody() == null) {
+            return "<sin errorBody>";
+        }
+        try {
+            return response.errorBody().string();
+        } catch (IOException e) {
+            Log.e(TAG, "No se pudo leer errorBody", e);
+            return "<error al leer errorBody: " + e.getMessage() + ">";
+        }
+    }
+
+    private String categorizeFailure(Throwable t) {
+        if (t instanceof SocketTimeoutException) return "TIMEOUT";
+        if (t instanceof UnknownHostException) return "HOST_UNREACHABLE";
+        if (t instanceof ConnectException) return "CONNECTION_REFUSED_OR_UNREACHABLE";
+        if (t instanceof SSLException) return "SSL_ERROR";
+        return "OTHER_NETWORK_ERROR";
     }
 
     private void appendList(StringBuilder sb, String title, List<String> values) {
