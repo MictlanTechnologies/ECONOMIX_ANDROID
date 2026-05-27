@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -56,6 +57,7 @@ public class ChatbotFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerChat);
         input = view.findViewById(R.id.etMensaje);
         MaterialButton send = view.findViewById(R.id.btnEnviar);
+        MaterialButton volver = view.findViewById(R.id.btnVolverChat);
         progressBar = view.findViewById(R.id.progressChat);
         TextView disclaimer = view.findViewById(R.id.tvDisclaimer);
         disclaimer.setText("Orientación educativa, no asesoría financiera profesional.");
@@ -67,6 +69,7 @@ public class ChatbotFragment extends Fragment {
         addAiMessage("Hola, soy el asistente financiero de ECONOMIX. Puedo ayudarte a entender tus gastos, ingresos, ahorros y presupuestos. ¿Qué quieres revisar hoy?");
 
         send.setOnClickListener(v -> sendMessage(input.getText().toString().trim()));
+        volver.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.menu));
 
         int[] chipIds = {R.id.chipSug1, R.id.chipSug2, R.id.chipSug3, R.id.chipSug4, R.id.chipSug5};
         for (int id : chipIds) {
