@@ -36,7 +36,10 @@ public final class UsuarioAnimationNavigator {
     public static void playOnly(View sourceView, @RawRes int animationRes,
                                 @Nullable Float startMs, @Nullable Float endMs,
                                 @Nullable Runnable onFinished) {
-        if (animationRunning) return;
+        if (animationRunning) {
+            if (onFinished != null) onFinished.run();
+            return;
+        }
         Context context = sourceView.getContext();
         Dialog dialog = new Dialog(context, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
         FrameLayout root = new FrameLayout(context);
