@@ -7,17 +7,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.economix_android.R;
 import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.network.ApiClient;
@@ -44,7 +47,7 @@ public class ChatbotFragment extends Fragment {
     private final List<ChatMessage> messages = new ArrayList<>();
     private ChatMessageAdapter adapter;
     private EditText input;
-    private ProgressBar progressBar;
+    private LottieAnimationView progressBar;
 
     @Nullable
     @Override
@@ -76,6 +79,18 @@ public class ChatbotFragment extends Fragment {
             Chip chip = view.findViewById(id);
             chip.setOnClickListener(v -> sendMessage(chip.getText().toString()));
         }
+
+        ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
+            Insets ime = insets.getInsets(WindowInsetsCompat.Type.ime());
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(
+                    v.getPaddingLeft(),
+                    v.getPaddingTop(),
+                    v.getPaddingRight(),
+                    Math.max(ime.bottom, bars.bottom)
+            );
+            return insets;
+        });
     }
 
     private void sendMessage(String text) {
@@ -184,6 +199,12 @@ public class ChatbotFragment extends Fragment {
     }
 
     private void setLoading(boolean loading) {
-        progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+        if (loading) {
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.playAnimation();
+        } else {
+            progressBar.cancelAnimation();
+            progressBar.setVisibility(View.GONE);
+        }
     }
 }
