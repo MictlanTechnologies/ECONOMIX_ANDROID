@@ -241,30 +241,77 @@ public class gastosFragment extends Fragment {
             return;
         }
 
-        Gasto gasto = new Gasto(null, articulo, montoNormalizado, fecha, periodo, recurrente);
-        setGastoButtonsEnabled(false);
-        BigDecimal nuevoMontoIngreso = disponible.subtract(montoGasto);
-        BigDecimal montoOriginal = disponible;
-        DataRepository.updateIngresoMonto(requireContext(), ingresoSeleccionado, nuevoMontoIngreso,
-                new DataRepository.RepositoryCallback<Ingreso>() {
-                    @Override
-                    public void onSuccess(Ingreso result) {
-                        if (!isAdded()) {
-                            return;
+        validarPresupuestoAntesDeGuardar(periodo, fecha, montoGasto, () -> {
+            Gasto gasto = new Gasto(null, articulo, montoNormalizado, fecha, periodo, recurrente);
+            setGastoButtonsEnabled(false);
+            BigDecimal nuevoMontoIngreso = disponible.subtract(montoGasto);
+            BigDecimal montoOriginal = disponible;
+            DataRepository.updateIngresoMonto(requireContext(), ingresoSeleccionado, nuevoMontoIngreso,
+                    new DataRepository.RepositoryCallback<Ingreso>() {
+                        @Override
+                        public void onSuccess(Ingreso result) {
+                            if (!isAdded()) {
+                                return;
+                            }
+                            mostrarIngresoAgotado(result);
+                            crearGasto(gasto, result, montoOriginal);
                         }
-                        mostrarIngresoAgotado(result);
-                        crearGasto(gasto, result, montoOriginal);
-                    }
 
-                    @Override
-                    public void onError(String message) {
-                        if (!isAdded()) {
-                            return;
+                        @Override
+                        public void onError(String message) {
+                            if (!isAdded()) {
+                                return;
+                            }
+                            setGastoButtonsEnabled(true);
+                            mostrarMensajeError(message);
                         }
-                        setGastoButtonsEnabled(true);
-                        mostrarMensajeError(message);
-                    }
-                });
+                    });
+        });
+    }
+
+    private void validarPresupuestoAntesDeGuardar(String categoria, String fechaTexto, BigDecimal montoGasto, Runnable onValid) {
+        Integer idUsuario = SessionManager.getUserId(requireContext());
+        if (idUsuario == null || TextUtils.isEmpty(categoria) || montoGasto == null) {
+            onValid.run();
+            return;
+        }
+        LocalDate fecha;
+        try {
+            fecha = LocalDate.parse(fechaTexto, DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault()));
+        } catch (Exception e) {
+            fecha = LocalDate.now();
+        }
+        presupuestoRepository.obtenerPresupuestoCategoria(idUsuario, categoria, fecha.getMonthValue(), fecha.getYear(), new retrofit2.Callback<PresupuestoDto>() {
+            @Override
+            public void onResponse(retrofit2.Call<PresupuestoDto> call, retrofit2.Response<PresupuestoDto> response) {
+                if (!isAdded()) {
+                    return;
+                }
+                PresupuestoDto presupuesto = response.body();
+                if (!response.isSuccessful() || presupuesto == null) {
+                    onValid.run();
+                    return;
+                }
+                BigDecimal restante = presupuesto.getMontoRestante() == null ? BigDecimal.ZERO : presupuesto.getMontoRestante();
+                if (montoGasto.compareTo(restante) > 0) {
+                    new MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(R.string.titulo_presupuesto_excedido)
+                            .setMessage(R.string.mensaje_bloqueo_presupuesto_excedido)
+                            .setPositiveButton(android.R.string.ok, null)
+                            .show();
+                    return;
+                }
+                onValid.run();
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<PresupuestoDto> call, Throwable t) {
+                if (!isAdded()) {
+                    return;
+                }
+                onValid.run();
+            }
+        });
     }
 
     private void crearGasto(Gasto gasto, Ingreso ingresoActualizado, BigDecimal montoOriginal) {

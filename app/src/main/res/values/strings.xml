@@ -101,6 +101,7 @@
     <string name="error_perfil_obligatorio">Ingresa tu usuario o perfil.</string>
     <string name="error_perfil_registrado">Este usuario ya está registrado.</string>
     <string name="error_contrasena_obligatoria">Ingresa una contraseña.</string>
+    <string name="error_contrasena_segura">La contraseña debe tener al menos 8 caracteres y un carácter especial.</string>
     <string name="error_confirmar_contrasena">Confirma tu contraseña.</string>
     <string name="error_contrasenas_no_coinciden">Las contraseñas no coinciden.</string>
     <string name="mensaje_registro_exitoso">Cuenta creada correctamente. Ahora puedes iniciar sesión.</string>
@@ -270,6 +271,7 @@ Fecha: %2$s</string>
     <string name="titulo_presupuesto_excedido">Presupuesto excedido</string>
     <string name="mensaje_alerta_presupuesto">Ya usaste el %1$s%% del presupuesto de %2$s.</string>
     <string name="mensaje_presupuesto_excedido">Ya superaste el presupuesto de %1$s. Límite: $%2$s. Gastado: $%3$s.</string>
+    <string name="mensaje_bloqueo_presupuesto_excedido">No puedes registrar este gasto porque excede tu presupuesto disponible. Modifica tu presupuesto para continuar.</string>
     <string name="title_chatbot">Chatbot IA</string>
     <string name="desc_acceso_chatbot">Acceso a chatbot financiero</string>
 </resources>
