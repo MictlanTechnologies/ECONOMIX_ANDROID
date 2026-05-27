@@ -21,6 +21,7 @@ import com.example.economix_android.databinding.FragmentInicioSesionBinding;
 import com.example.economix_android.network.auth.dto.LoginRequest;
 import com.example.economix_android.network.auth.dto.LoginResponse;
 import com.example.economix_android.network.repository.auth.AuthRepository;
+import com.example.economix_android.util.UsuarioAnimationNavigator;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -116,7 +117,8 @@ public class inicio_sesionFragment extends Fragment {
                         loginResponse.getRefreshToken(),
                         loginResponse.getUserInfo()
                 );
-                abrirMenu();
+                View animationAnchor = binding != null ? binding.getRoot() : requireActivity().findViewById(android.R.id.content);
+                UsuarioAnimationNavigator.playOnly(animationAnchor, R.raw.login, null, null, inicio_sesionFragment.this::abrirMenu);
             }
 
             @Override

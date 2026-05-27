@@ -58,8 +58,8 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/progressChat"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
         android:layout_gravity="center"
         android:visibility="gone"
         app:lottie_autoPlay="false"
