@@ -7,16 +7,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.economix_android.R;
 import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.network.ApiClient;
@@ -43,7 +47,7 @@ public class ChatbotFragment extends Fragment {
     private final List<ChatMessage> messages = new ArrayList<>();
     private ChatMessageAdapter adapter;
     private EditText input;
-    private ProgressBar progressBar;
+    private LottieAnimationView progressBar;
 
     @Nullable
     @Override
@@ -56,6 +60,7 @@ public class ChatbotFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerChat);
         input = view.findViewById(R.id.etMensaje);
         MaterialButton send = view.findViewById(R.id.btnEnviar);
+        MaterialButton volver = view.findViewById(R.id.btnVolverChat);
         progressBar = view.findViewById(R.id.progressChat);
         TextView disclaimer = view.findViewById(R.id.tvDisclaimer);
         disclaimer.setText("Orientación educativa, no asesoría financiera profesional.");
@@ -67,12 +72,25 @@ public class ChatbotFragment extends Fragment {
         addAiMessage("Hola, soy el asistente financiero de ECONOMIX. Puedo ayudarte a entender tus gastos, ingresos, ahorros y presupuestos. ¿Qué quieres revisar hoy?");
 
         send.setOnClickListener(v -> sendMessage(input.getText().toString().trim()));
+        volver.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.menu));
 
         int[] chipIds = {R.id.chipSug1, R.id.chipSug2, R.id.chipSug3, R.id.chipSug4, R.id.chipSug5};
         for (int id : chipIds) {
             Chip chip = view.findViewById(id);
             chip.setOnClickListener(v -> sendMessage(chip.getText().toString()));
         }
+
+        ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
+            Insets ime = insets.getInsets(WindowInsetsCompat.Type.ime());
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(
+                    v.getPaddingLeft(),
+                    v.getPaddingTop(),
+                    v.getPaddingRight(),
+                    Math.max(ime.bottom, bars.bottom)
+            );
+            return insets;
+        });
     }
 
     private void sendMessage(String text) {
@@ -181,6 +199,12 @@ public class ChatbotFragment extends Fragment {
     }
 
     private void setLoading(boolean loading) {
-        progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+        if (loading) {
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.playAnimation();
+        } else {
+            progressBar.cancelAnimation();
+            progressBar.setVisibility(View.GONE);
+        }
     }
 }

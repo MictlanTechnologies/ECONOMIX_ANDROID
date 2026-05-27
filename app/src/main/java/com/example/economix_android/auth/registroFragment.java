@@ -22,6 +22,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class registroFragment extends Fragment {
+    private static final String SPECIAL_CHAR_REGEX = ".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?~`].*";
 
     private FragmentRegistroBinding binding;
     private final UsuarioRepository usuarioRepository = new UsuarioRepository();
@@ -58,6 +59,9 @@ public class registroFragment extends Fragment {
 
         if (TextUtils.isEmpty(contrasena)) {
             binding.tilPassword.setError(getString(R.string.error_contrasena_obligatoria));
+            hayError = true;
+        } else if (!esContrasenaSegura(contrasena)) {
+            binding.tilPassword.setError(getString(R.string.error_contrasena_segura));
             hayError = true;
         }
 
@@ -124,6 +128,12 @@ public class registroFragment extends Fragment {
 
     private String obtenerTexto(com.google.android.material.textfield.TextInputEditText editText) {
         return editText.getText() != null ? editText.getText().toString().trim() : "";
+    }
+
+    private boolean esContrasenaSegura(String contrasena) {
+        return contrasena != null
+                && contrasena.length() >= 8
+                && contrasena.matches(SPECIAL_CHAR_REGEX);
     }
 
     private void mostrarMensajeError(String message) {

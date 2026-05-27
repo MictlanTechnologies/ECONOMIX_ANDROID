@@ -294,8 +294,8 @@
 
                 <ImageButton
                     android:id="@+id/navGastos"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Gastos"
                     android:padding="12dp"
@@ -320,8 +320,8 @@
 
                 <ImageButton
                     android:id="@+id/navIngresos"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Ingresos"
                     android:padding="12dp"
@@ -346,8 +346,8 @@
 
                 <ImageButton
                     android:id="@+id/navAhorro"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Ahorro"
                     android:padding="12dp"
@@ -372,8 +372,8 @@
 
                 <ImageButton
                     android:id="@+id/navGraficas"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
                     android:background="@drawable/bottom_nav_icon_background"
                     android:contentDescription="Gráficas"
                     android:padding="12dp"

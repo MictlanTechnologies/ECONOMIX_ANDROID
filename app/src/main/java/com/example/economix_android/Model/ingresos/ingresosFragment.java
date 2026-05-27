@@ -271,8 +271,6 @@ public class ingresosFragment extends Fragment {
         enModoEdicion = habilitar;
         ingresoEnEdicionId = habilitar ? ingresoId : null;
         ingresoEnEdicionRecurrente = habilitar && recurrente;
-        binding.btnGuardarIng.setText(habilitar ? getString(R.string.label_actualizar) : getString(R.string.label_guardar));
-        binding.btnEliminarIng.setText(getString(R.string.label_eliminar));
         binding.rbRecurrenteIng.setEnabled(!habilitar);
     }
 

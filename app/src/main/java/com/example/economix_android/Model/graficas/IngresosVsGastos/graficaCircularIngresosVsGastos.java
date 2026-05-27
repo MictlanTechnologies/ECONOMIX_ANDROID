@@ -58,6 +58,7 @@ public class graficaCircularIngresosVsGastos extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        UsuarioAnimationNavigator.playOnly(binding.getRoot(), R.raw.pastel, 0f, 1600f, null);
 
         binding.btnPerfil.setOnClickListener(v ->
                 UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario, R.raw.usuario, 6500f, 8000f));
