@@ -295,6 +295,24 @@
                 </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/tileChatbot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:clickable="true" android:focusable="true" app:cardBackgroundColor="@android:color/transparent">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:padding="16dp" android:gravity="center_vertical" android:background="@drawable/bg_dashboard_card_graficas">
+                    <ImageView android:layout_width="74dp" android:layout_height="74dp" android:src="@drawable/chatcito" android:contentDescription="@string/desc_acceso_chatbot"/>
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:layout_marginStart="12dp"
+                        android:text="@string/title_chatbot"
+                        android:textColor="@color/menuCardText"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/recentActivityCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

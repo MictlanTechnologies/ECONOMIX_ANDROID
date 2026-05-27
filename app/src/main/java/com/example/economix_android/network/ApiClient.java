@@ -7,6 +7,7 @@ import android.content.Context;
 import com.example.economix_android.network.api.AhorroApi;
 import com.example.economix_android.network.api.ConceptoGastoApi;
 import com.example.economix_android.network.api.ConceptoIngresoApi;
+import com.example.economix_android.network.api.ChatbotApi;
 import com.example.economix_android.network.api.ContactoApi;
 import com.example.economix_android.network.api.DomicilioApi;
 import com.example.economix_android.network.api.GastoApi;
@@ -140,5 +141,9 @@ public final class ApiClient {
 
     public static PresupuestoApi getPresupuestoApi() {
         return retrofit.create(PresupuestoApi.class);
+    }
+
+    public static ChatbotApi getChatbotApi() {
+        return retrofit.create(ChatbotApi.class);
     }
 }

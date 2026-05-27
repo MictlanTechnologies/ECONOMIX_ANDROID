@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@drawable/bg_menu_gradient">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnVolverChat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="Volver"
+            app:backgroundTint="@color/tealLight" />
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:contentDescription="@string/desc_acceso_chatbot"
+            android:src="@drawable/chatcito" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Asistente financiero IA"
+            android:textColor="@color/economix_text_primary"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:singleLine="false">
+        <com.google.android.material.chip.Chip android:id="@+id/chipSug1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Analiza mis gastos"/>
+        <com.google.android.material.chip.Chip android:id="@+id/chipSug2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Dame consejos de ahorro"/>
+        <com.google.android.material.chip.Chip android:id="@+id/chipSug3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Revisa mis presupuestos"/>
+        <com.google.android.material.chip.Chip android:id="@+id/chipSug4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Predice mi gasto del mes"/>
+        <com.google.android.material.chip.Chip android:id="@+id/chipSug5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="¿Qué categoría debo controlar?"/>
+    </com.google.android.material.chip.ChipGroup>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerChat"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="8dp"/>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/progressChat"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/load" />
+
+    <TextView
+        android:id="@+id/tvDisclaimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textSize="12sp"
+        android:textColor="@color/economix_text_secondary"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+        <EditText
+            android:id="@+id/etMensaje"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_field_rounded"
+            android:hint="Escribe tu consulta"
+            android:maxLength="280"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="10dp"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEnviar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enviar"/>
+    </LinearLayout>
+</LinearLayout>

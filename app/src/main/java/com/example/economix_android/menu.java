@@ -46,6 +46,7 @@ public class menu extends Fragment implements View.OnClickListener {
         View ahorroButton = view.findViewById(R.id.tileAhorro);
         View graficasButton = view.findViewById(R.id.tileGraficas);
         View tilePresupuestos = view.findViewById(R.id.tilePresupuestos);
+        View tileChatbot = view.findViewById(R.id.tileChatbot);
         ImageView perfilButton = view.findViewById(R.id.btnPerfil);
         TextView saludoUsuario = view.findViewById(R.id.txtHolaUsuario);
         TextView recentActivityText = view.findViewById(R.id.tvRecentActivity);
@@ -68,6 +69,7 @@ public class menu extends Fragment implements View.OnClickListener {
         if (ahorroButton != null) ahorroButton.setOnClickListener(this);
         if (graficasButton != null) graficasButton.setOnClickListener(this);
         if (tilePresupuestos != null) tilePresupuestos.setOnClickListener(this);
+        if (tileChatbot != null) tileChatbot.setOnClickListener(this);
         cargarActividadRecienteEnCard(recentActivityText);
         View recentActivityCard = view.findViewById(R.id.recentActivityCard);
         if (recentActivityCard != null) {
@@ -88,6 +90,8 @@ public class menu extends Fragment implements View.OnClickListener {
             Navigation.findNavController(v).navigate(R.id.action_menu_to_navigation_graficas);
         } else if (viewId == R.id.tilePresupuestos) {
             Navigation.findNavController(v).navigate(R.id.action_menu_to_navigation_presupuestos);
+        } else if (viewId == R.id.tileChatbot) {
+            Navigation.findNavController(v).navigate(R.id.action_menu_to_navigation_chatbot);
         } else if (viewId == R.id.btnPerfil) {
             UsuarioAnimationNavigator.playAndNavigate(v, R.id.action_menu_to_usuario, R.raw.usuario, 6500f, 8000f);
         }

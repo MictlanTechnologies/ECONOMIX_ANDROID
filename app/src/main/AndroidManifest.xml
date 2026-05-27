@@ -31,7 +31,8 @@
         <activity
             android:name=".Vista.NavBar"
             android:exported="false"
-            android:label="@string/title_activity_usuario" />
+            android:label="@string/title_activity_usuario"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Vista.menu"
             android:exported="false" />
