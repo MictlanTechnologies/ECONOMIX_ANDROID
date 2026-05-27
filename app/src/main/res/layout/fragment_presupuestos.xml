@@ -151,10 +151,10 @@
                     <com.google.android.material.textfield.TextInputEditText android:id="@+id/etMontoMaxPres" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="@string/hint_monto_maximo" android:inputType="numberDecimal" />
 
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:orientation="horizontal">
-                        <com.google.android.material.button.MaterialButton android:id="@+id/btnMonto500" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="500" app:cornerRadius="12dp" />
-                        <com.google.android.material.button.MaterialButton android:id="@+id/btnMonto1000" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" android:text="1000" app:cornerRadius="12dp" />
-                        <com.google.android.material.button.MaterialButton android:id="@+id/btnMonto2500" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" android:text="2500" app:cornerRadius="12dp" />
-                        <com.google.android.material.button.MaterialButton android:id="@+id/btnMonto5000" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" android:text="5000" app:cornerRadius="12dp" />
+                        <com.google.android.material.button.MaterialButton android:id="@+id/btnMonto500" android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" android:text="500" android:textSize="12sp" app:backgroundTint="@color/tealLight" app:cornerRadius="12dp" />
+                        <com.google.android.material.button.MaterialButton android:id="@+id/btnMonto1000" android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" android:layout_marginStart="6dp" android:text="1000" android:textSize="12sp" app:backgroundTint="@color/tealLight" app:cornerRadius="12dp" />
+                        <com.google.android.material.button.MaterialButton android:id="@+id/btnMonto2500" android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" android:layout_marginStart="6dp" android:text="2500" android:textSize="12sp" app:backgroundTint="@color/tealLight" app:cornerRadius="12dp" />
+                        <com.google.android.material.button.MaterialButton android:id="@+id/btnMonto5000" android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" android:layout_marginStart="6dp" android:text="5000" android:textSize="12sp" app:backgroundTint="@color/tealLight" app:cornerRadius="12dp" />
                     </LinearLayout>
 
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/label_paso_3" android:textColor="@color/economix_text_primary" android:textStyle="bold" />
@@ -163,7 +163,6 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            app:endIconMode="dropdown_menu"
                             app:boxBackgroundMode="filled"
                             app:boxBackgroundColor="@color/tealDark"
                             app:hintTextColor="@color/softWhite">
@@ -180,7 +179,6 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginStart="8dp"
-                            app:endIconMode="dropdown_menu"
                             app:boxBackgroundMode="filled"
                             app:boxBackgroundColor="@color/tealDark"
                             app:hintTextColor="@color/softWhite">

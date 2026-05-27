@@ -410,8 +410,6 @@ public class gastosFragment extends Fragment {
         enModoEdicion = habilitar;
         gastoEnEdicionId = habilitar ? gastoId : null;
         gastoEnEdicionRecurrente = habilitar && recurrente;
-        binding.btnGuardarGas.setText(habilitar ? getString(R.string.label_actualizar) : getString(R.string.label_guardar));
-        binding.btnEliminarGas.setText(getString(R.string.label_eliminar));
         binding.rbRecurrenteGas.setEnabled(!habilitar);
     }
 

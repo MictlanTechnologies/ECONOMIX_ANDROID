@@ -324,7 +324,6 @@ public class PresupuestosFragment extends Fragment {
         binding.etMesPres.setSelection(now.getMonthValue() - 1);
         binding.etAnioPres.setSelection(0);
         presupuestoSeleccionado = null;
-        binding.btnGuardarPres.setText(R.string.label_guardar);
         binding.btnEliminarPres.setEnabled(false);
     }
 
@@ -343,7 +342,6 @@ public class PresupuestosFragment extends Fragment {
         LocalDate now2 = LocalDate.now();
         int yearSel = (p.getAnio() != null && p.getAnio() == now2.getYear() + 1) ? 1 : 0;
         binding.etAnioPres.setSelection(yearSel);
-        binding.btnGuardarPres.setText(R.string.label_actualizar);
         binding.btnEliminarPres.setEnabled(true);
     }
 
