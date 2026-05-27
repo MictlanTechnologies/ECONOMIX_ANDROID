@@ -46,7 +46,7 @@ public final class UsuarioAnimationNavigator {
         root.setBackgroundColor(0x88000000);
 
         LottieAnimationView animView = new LottieAnimationView(context);
-        int size = (int) (220f * Resources.getSystem().getDisplayMetrics().density);
+        int size = (int) (320f * Resources.getSystem().getDisplayMetrics().density);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(size, size, Gravity.CENTER);
         root.addView(animView, lp);
         dialog.setContentView(root);
