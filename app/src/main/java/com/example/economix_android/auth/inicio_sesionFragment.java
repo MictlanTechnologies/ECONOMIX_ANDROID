@@ -118,7 +118,7 @@ public class inicio_sesionFragment extends Fragment {
                         loginResponse.getUserInfo()
                 );
                 View animationAnchor = binding != null ? binding.getRoot() : requireActivity().findViewById(android.R.id.content);
-                UsuarioAnimationNavigator.playOnly(animationAnchor, R.raw.login, null, null, this::abrirMenu);
+                UsuarioAnimationNavigator.playOnly(animationAnchor, R.raw.login, null, null, inicio_sesionFragment.this::abrirMenu);
             }
 
             @Override
