@@ -16,6 +16,18 @@ public class PresupuestoRepository {
         presupuestoApi.getAll().enqueue(callback);
     }
 
+    public void obtenerPresupuestosPorUsuario(Integer idUsuario, Callback<List<PresupuestoDto>> callback) {
+        presupuestoApi.getByUsuario(idUsuario).enqueue(callback);
+    }
+
+    public void obtenerPresupuestosPorPeriodo(Integer idUsuario, Integer mes, Integer anio, Callback<List<PresupuestoDto>> callback) {
+        presupuestoApi.getByUsuarioPeriodo(idUsuario, mes, anio).enqueue(callback);
+    }
+
+    public void obtenerPresupuestoCategoria(Integer idUsuario, String categoria, Integer mes, Integer anio, Callback<PresupuestoDto> callback) {
+        presupuestoApi.getByUsuarioCategoriaPeriodo(idUsuario, categoria, mes, anio).enqueue(callback);
+    }
+
     public void guardarPresupuesto(PresupuestoDto dto, Callback<PresupuestoDto> callback) {
         presupuestoApi.create(dto).enqueue(callback);
     }

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_app_gradient"
+    android:background="@drawable/bg_menu_gradient"
     android:padding="20dp">
 
     <ImageButton
@@ -16,7 +16,7 @@
         android:contentDescription="Ayuda"
         android:padding="4dp"
         android:src="@drawable/ayuda"
-        android:tint="@color/economix_text_primary"
+        android:tint="@color/white"
         tools:ignore="UseAppTint"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -69,7 +69,7 @@
             android:padding="12dp"
             android:scaleType="centerCrop"
             android:src="@drawable/usuariog"
-            android:tint="@color/economix_text_primary"
+            android:tint="@color/white"
             tools:ignore="UseAppTint" />
     </com.google.android.material.card.MaterialCardView>
 
@@ -153,7 +153,6 @@
             app:backgroundTint="@color/tealSurfaceVariant"
             app:cornerRadius="24dp" />
     </LinearLayout>
-
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/bottomBarContainer"

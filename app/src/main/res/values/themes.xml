@@ -12,27 +12,36 @@
         <item name="materialCardViewStyle">@style/Widget.Economix.Card</item>
         <item name="chipStyle">@style/Widget.Economix.Chip</item>
         <item name="textInputStyle">@style/Widget.Economix.TextInputLayout</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.Economix.MaterialAlertDialog</item>
     </style>
-
     <style name="Theme.ECONOMIX_ANDROID" parent="Base.Theme.ECONOMIX_ANDROID" />
 
     <style name="Widget.Economix.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/tealSurface</item>
         <item name="cardCornerRadius">20dp</item>
-        <item name="cardElevation">4dp</item>
         <item name="strokeColor">@color/strokeSubtle</item>
         <item name="strokeWidth">1dp</item>
     </style>
 
-    <style name="Widget.Economix.Chip" parent="Widget.Material3.Chip.Assist">
+    <style name="Widget.Economix.Chip" parent="Widget.Material3.Chip.Filter">
         <item name="chipBackgroundColor">@color/tealSurfaceVariant</item>
-        <item name="chipStrokeColor">@color/strokeSubtle</item>
+        <item name="chipStrokeColor">@color/tealLight</item>
         <item name="chipStrokeWidth">1dp</item>
-        <item name="android:textColor">@color/economix_text_primary</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="Widget.Economix.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="boxBackgroundColor">@color/softWhite</item>
-        <item name="boxStrokeColor">@color/strokeSubtle</item>
-        <item name="hintTextColor">@color/economix_text_secondary</item>
+        <item name="boxStrokeColor">@color/tealAccent</item>
     </style>
+
+
+    <style name="ThemeOverlay.Economix.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">@color/tealSurface</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/economix_text_secondary</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/TextAppearance.Material3.BodyMedium</item>
+    </style>
+
 </resources>

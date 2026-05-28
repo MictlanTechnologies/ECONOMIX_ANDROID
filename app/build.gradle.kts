@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -16,20 +14,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        val localProperties = Properties().apply {
-            val localFile = rootProject.file("local.properties")
-            if (localFile.exists()) {
-                localFile.inputStream().use { load(it) }
-            }
-        }
-
-        val geminiApiKey =
-            (project.findProperty("GEMINI_API_KEY") as String?)?.takeIf { it.isNotBlank() }
-                ?: localProperties.getProperty("GEMINI_API_KEY")?.takeIf { it.isNotBlank() }
-                ?: System.getenv("GEMINI_API_KEY")?.takeIf { it.isNotBlank() }
-                ?: "YOUR_GEMINI_API_KEY"
-        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
     }
 
     buildTypes {
@@ -48,7 +32,6 @@ android {
     }
     buildFeatures {
         viewBinding = true
-        buildConfig = true
     }
     packaging {
         resources {
@@ -73,7 +56,6 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
-    implementation("com.google.android.material:material:1.5.0")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     compileOnly("org.projectlombok:lombok:1.18.30")

@@ -2,6 +2,7 @@ package com.example.economix_android.auth;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class registroFragment extends Fragment {
+    private static final String SPECIAL_CHAR_REGEX = ".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?~`].*";
 
     private FragmentRegistroBinding binding;
     private final UsuarioRepository usuarioRepository = new UsuarioRepository();
@@ -58,6 +60,9 @@ public class registroFragment extends Fragment {
         if (TextUtils.isEmpty(contrasena)) {
             binding.tilPassword.setError(getString(R.string.error_contrasena_obligatoria));
             hayError = true;
+        } else if (!esContrasenaSegura(contrasena)) {
+            binding.tilPassword.setError(getString(R.string.error_contrasena_segura));
+            hayError = true;
         }
 
         if (TextUtils.isEmpty(confirmar)) {
@@ -88,12 +93,15 @@ public class registroFragment extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
+                Log.d("REGISTER_DEBUG", "Register response code: " + response.code());
                 if (response.isSuccessful() && response.body() != null) {
                     Toast.makeText(requireContext(), getString(R.string.mensaje_registro_exitoso), Toast.LENGTH_SHORT).show();
                     requireActivity().getOnBackPressedDispatcher().onBackPressed();
                 } else if (response.code() == 409) {
                     binding.tilPerfil.setError(getString(R.string.error_perfil_registrado));
                     Toast.makeText(requireContext(), getString(R.string.error_perfil_registrado), Toast.LENGTH_SHORT).show();
+                } else if (response.code() == 500) {
+                    Toast.makeText(requireContext(), "Error interno del servidor al crear usuario o iniciar sesión", Toast.LENGTH_SHORT).show();
                 } else {
                     mostrarMensajeError(null);
                 }
@@ -120,6 +128,12 @@ public class registroFragment extends Fragment {
 
     private String obtenerTexto(com.google.android.material.textfield.TextInputEditText editText) {
         return editText.getText() != null ? editText.getText().toString().trim() : "";
+    }
+
+    private boolean esContrasenaSegura(String contrasena) {
+        return contrasena != null
+                && contrasena.length() >= 8
+                && contrasena.matches(SPECIAL_CHAR_REGEX);
     }
 
     private void mostrarMensajeError(String message) {

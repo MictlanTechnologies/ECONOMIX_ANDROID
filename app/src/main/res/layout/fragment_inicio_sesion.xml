@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_app_gradient"
+    android:background="@drawable/bg_menu_gradient"
     android:padding="24dp"
     tools:context=".auth.inicio_sesionFragment">
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/btnBack"
+        android:tint="@color/white"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:background="?attr/selectableItemBackgroundBorderless"

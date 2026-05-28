@@ -28,17 +28,20 @@ public class NavBar extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         BottomNavigationView navView = binding.navView;
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.menu, R.id.navigation_gastos, R.id.navigation_presupuestos, R.id.navigation_predictions)
+                R.id.mobile_navigation, R.id.navigation_gastos, R.id.navigation_ingresos, R.id.navigation_ahorro, R.id.navigation_graficas)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_usuario);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
         if (savedInstanceState == null) {
             Intent intent = getIntent();
             int destinationId = intent != null
-                    ? intent.getIntExtra(EXTRA_DESTINATION_ID, R.id.menu)
-                    : R.id.menu;
+                    ? intent.getIntExtra(EXTRA_DESTINATION_ID, R.id.navigation_gastos)
+                    : R.id.navigation_gastos;
             navView.setSelectedItemId(destinationId);
         }
     }

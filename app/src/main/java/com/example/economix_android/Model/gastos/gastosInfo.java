@@ -24,7 +24,6 @@ import com.example.economix_android.Model.data.Gasto;
 import com.example.economix_android.Model.data.RegistroAdapter;
 import com.example.economix_android.Model.data.RegistroFinanciero;
 import com.example.economix_android.util.ProfileImageUtils;
-import com.example.economix_android.util.UsuarioAnimationNavigator;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -62,7 +61,7 @@ public class gastosInfo extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.btnPerfil.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario));
+        binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaGasInf.setOnClickListener(v -> mostrarAyuda());
 
@@ -112,6 +111,19 @@ public class gastosInfo extends Fragment {
         };
         gastosAdapter.setOnRegistroDoubleClickListener(listener);
         recurrentesAdapter.setOnRegistroDoubleClickListener(listener);
+        RegistroAdapter.OnRegistroActionListener actionListener = new RegistroAdapter.OnRegistroActionListener() {
+            @Override
+            public void onEdit(RegistroFinanciero registro) {
+                if (registro instanceof Gasto) abrirEdicionGasto((Gasto) registro);
+            }
+
+            @Override
+            public void onDelete(RegistroFinanciero registro) {
+                if (registro instanceof Gasto) eliminarGasto((Gasto) registro);
+            }
+        };
+        gastosAdapter.setOnRegistroActionListener(actionListener);
+        recurrentesAdapter.setOnRegistroActionListener(actionListener);
 
         binding.tablaGastos.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.tablaGastos.setAdapter(gastosAdapter);
@@ -296,6 +308,34 @@ public class gastosInfo extends Fragment {
         args.putString(gastosFragment.ARG_GASTO_PERIODO, gasto.getPeriodo());
         args.putBoolean(gastosFragment.ARG_GASTO_PLANTILLA, true);
         navigateSafely(binding.getRoot(), R.id.action_gastosInfo_to_navigation_gastos, args);
+    }
+
+
+    private void eliminarGasto(Gasto gasto) {
+        if (gasto == null || gasto.getId() == null) {
+            mostrarMensaje(getString(R.string.error_gasto_id));
+            return;
+        }
+        DataRepository.RepositoryCallback<Boolean> callback = new DataRepository.RepositoryCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean result) {
+                if (!isAdded()) return;
+                mostrarMensaje(getString(R.string.mensaje_gasto_eliminado));
+                actualizarDatos();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) return;
+                mostrarMensaje(message);
+            }
+        };
+
+        if (gasto.isRecurrente()) {
+            DataRepository.removeGastoRecurrenteById(gasto.getId(), callback);
+        } else {
+            DataRepository.removeGastoById(gasto.getId(), callback);
+        }
     }
 
     private void mostrarAyuda() {

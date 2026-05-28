@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/tealSurface"
+    app:cardCornerRadius="16dp">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="14dp">
+        <TextView android:id="@+id/tvCategoriaPresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textStyle="bold" android:textColor="@color/economix_text_primary"/>
+        <TextView android:id="@+id/tvPeriodoPresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/white"/>
+        <TextView android:id="@+id/tvMontoMaximoPresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/white"/>
+        <TextView android:id="@+id/tvMontoGastadoPresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/white"/>
+        <TextView android:id="@+id/tvMontoRestantePresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/white"/>
+        <TextView android:id="@+id/tvPorcentajePresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/white"/>
+        <TextView android:id="@+id/tvEstadoPresupuesto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textStyle="bold" android:textColor="@color/white"/>
+        <ProgressBar android:id="@+id/progressPresupuesto" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:max="100"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

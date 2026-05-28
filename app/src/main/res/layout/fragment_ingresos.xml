@@ -306,43 +306,7 @@
                             app:strokeWidth="1dp" />
                     </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="18dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="@string/label_etiquetas"
-                        android:textColor="@color/economix_text_primary"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="end"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnAgregarEtiquetaIng"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="44dp"
-                            android:minWidth="0dp"
-                            android:paddingHorizontal="12dp"
-                            android:contentDescription="@string/desc_agregar_etiqueta_personalizada"
-                            android:text="@string/label_agregar_etiqueta"
-                            android:textAllCaps="false"
-                            android:textColor="@color/white"
-                            android:textSize="13sp"
-                            app:backgroundTint="@android:color/transparent"
-                            app:cornerRadius="12dp"
-                            app:icon="@drawable/ic_add_24"
-                            app:iconGravity="textStart"
-                            app:iconPadding="6dp"
-                            app:iconTint="@color/white"
-                            app:strokeColor="@color/tealLight"
-                            app:strokeWidth="1dp" />
-                    </LinearLayout>
 
                     <com.google.android.material.chip.ChipGroup
                         android:id="@+id/chipGroupEtiquetasIng"
@@ -374,10 +338,10 @@
                             android:id="@+id/etPeriodoIng"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="text" 
+                            android:inputType="text"
                             android:textColor="@color/economix_background"
                             android:textColorHint="@color/tealDark"
-                        />
+                            />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- Recurrente toggle as switch -->
@@ -434,7 +398,11 @@
             android:layout_height="48dp"
             android:layout_marginEnd="4dp"
             android:layout_weight="1"
-            android:text="Guardar"
+            android:text=""
+            android:contentDescription="Guardar"
+            app:icon="@drawable/ic_save_24"
+            app:iconTint="@color/white"
+            app:iconGravity="textStart"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="13sp"
@@ -447,7 +415,11 @@
             android:layout_height="48dp"
             android:layout_marginHorizontal="4dp"
             android:layout_weight="1"
-            android:text="Eliminar"
+            android:text=""
+            android:contentDescription="Eliminar"
+            app:icon="@drawable/ic_delete_24"
+            app:iconTint="@color/white"
+            app:iconGravity="textStart"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="13sp"
@@ -460,7 +432,11 @@
             android:layout_height="48dp"
             android:layout_marginStart="4dp"
             android:layout_weight="1"
-            android:text="Limpiar"
+            android:text=""
+            android:contentDescription="Limpiar"
+            app:icon="@drawable/ic_broom_24"
+            app:iconTint="@color/white"
+            app:iconGravity="textStart"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="13sp"

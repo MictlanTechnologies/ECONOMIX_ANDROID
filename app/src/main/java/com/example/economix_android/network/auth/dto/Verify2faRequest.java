@@ -2,18 +2,18 @@ package com.example.economix_android.network.auth.dto;
 
 public class Verify2faRequest {
     private String challengeId;
-    private String otpCode;
+    private String code;
 
-    public Verify2faRequest(String challengeId, String otpCode) {
+    public Verify2faRequest(String challengeId, String code) {
         this.challengeId = challengeId;
-        this.otpCode = otpCode;
+        this.code = code;
     }
 
     public String getChallengeId() {
         return challengeId;
     }
 
-    public String getOtpCode() {
-        return otpCode;
+    public String getCode() {
+        return code;
     }
 }

@@ -1,12 +1,11 @@
 package com.example.economix_android.Model.presupuestos;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,19 +14,23 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.economix_android.R;
+import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.databinding.FragmentPresupuestosBinding;
 import com.example.economix_android.network.dto.PresupuestoDto;
 import com.example.economix_android.network.repository.PresupuestoRepository;
 import com.example.economix_android.util.ProfileImageUtils;
-
+import com.example.economix_android.util.UsuarioAnimationNavigator;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,15 +41,18 @@ public class PresupuestosFragment extends Fragment {
     private FragmentPresupuestosBinding binding;
     private final PresupuestoRepository repository = new PresupuestoRepository();
     private final Map<Integer, String> chipCategoryMap = new HashMap<>();
+    private PresupuestoAdapter adapter;
+    private PresupuestoDto presupuestoSeleccionado;
 
     private final String[] meses = {
             "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     };
 
+    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         binding = FragmentPresupuestosBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -58,37 +64,48 @@ public class PresupuestosFragment extends Fragment {
         initChipCategoryMap();
         setupMonthYearDropdowns();
         setupQuickAmountButtons();
+        setupRecycler();
 
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfilPres);
+        binding.btnPerfilPres.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(
+                v,
+                R.id.action_navigation_presupuestos_to_usuario,
+                R.raw.usuario,
+                6500f,
+                8000f
+        ));
+
         binding.btnAyudaPres.setOnClickListener(v -> mostrarAyuda());
         binding.btnGuardarPres.setOnClickListener(v -> guardarPresupuesto());
+        binding.btnEliminarPres.setOnClickListener(v -> eliminarPresupuestoSeleccionado());
+        binding.btnLimpiarPres.setOnClickListener(v -> limpiarCampos());
 
         View.OnClickListener bottomNavListener = v -> {
-            int viewId = v.getId();
-            if (viewId == R.id.navGastos) {
+            int id = v.getId();
+            if (id == R.id.navGastos) {
                 navigateSafely(v, R.id.navigation_gastos);
-            } else if (viewId == R.id.navIngresos) {
+            } else if (id == R.id.navIngresos) {
                 navigateSafely(v, R.id.navigation_ingresos);
-            } else if (viewId == R.id.navAhorro) {
+            } else if (id == R.id.navAhorro) {
                 navigateSafely(v, R.id.navigation_ahorro);
-            } else if (viewId == R.id.navGraficas) {
+            } else if (id == R.id.navGraficas) {
                 navigateSafely(v, R.id.navigation_graficas);
-            } else if (viewId == R.id.navMenuMini) {
+            } else if (id == R.id.navMenuMini) {
                 navigateSafely(v, R.id.menu);
             }
         };
+
         binding.navGastos.setOnClickListener(bottomNavListener);
         binding.navIngresos.setOnClickListener(bottomNavListener);
         binding.navAhorro.setOnClickListener(bottomNavListener);
         binding.navGraficas.setOnClickListener(bottomNavListener);
         binding.navMenuMini.setOnClickListener(bottomNavListener);
 
-        // Pre-select current month and year
-        Calendar now = Calendar.getInstance();
-        AutoCompleteTextView mesView = (AutoCompleteTextView) binding.etMesPres;
-        mesView.setText(meses[now.get(Calendar.MONTH)], false);
-        AutoCompleteTextView anioView = (AutoCompleteTextView) binding.etAnioPres;
-        anioView.setText(String.valueOf(now.get(Calendar.YEAR)), false);
+        LocalDate now = LocalDate.now();
+        binding.etMesPres.setSelection(now.getMonthValue() - 1);
+        binding.etAnioPres.setSelection(0);
+
+        cargarPresupuestosPeriodoActual();
     }
 
     private void initChipCategoryMap() {
@@ -103,20 +120,34 @@ public class PresupuestosFragment extends Fragment {
     }
 
     private void setupMonthYearDropdowns() {
-        ArrayAdapter<String> mesAdapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, meses);
-        AutoCompleteTextView mesView = (AutoCompleteTextView) binding.etMesPres;
-        mesView.setAdapter(mesAdapter);
-
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        String[] years = new String[5];
-        for (int i = 0; i < 5; i++) {
-            years[i] = String.valueOf(currentYear + i);
+        String[] opcionesMes = new String[12];
+        for (int i = 0; i < 12; i++) {
+            opcionesMes[i] = String.valueOf(i + 1);
         }
-        ArrayAdapter<String> anioAdapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, years);
-        AutoCompleteTextView anioView = (AutoCompleteTextView) binding.etAnioPres;
-        anioView.setAdapter(anioAdapter);
+        int currentYear = LocalDate.now().getYear();
+        String[] opcionesAnio = new String[] {
+                String.valueOf(currentYear),
+                String.valueOf(currentYear + 1)
+        };
+
+        ArrayAdapter<String> mesAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, opcionesMes);
+        mesAdapter.setDropDownViewResource(R.layout.item_dropdown_dark);
+        binding.etMesPres.setAdapter(mesAdapter);
+
+        ArrayAdapter<String> anioAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, opcionesAnio);
+        anioAdapter.setDropDownViewResource(R.layout.item_dropdown_dark);
+        binding.etAnioPres.setAdapter(anioAdapter);
+
+        AdapterView.OnItemSelectedListener reloadListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                cargarPresupuestosPeriodoActual();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        };
+        binding.etMesPres.setOnItemSelectedListener(reloadListener);
+        binding.etAnioPres.setOnItemSelectedListener(reloadListener);
     }
 
     private void setupQuickAmountButtons() {
@@ -126,92 +157,162 @@ public class PresupuestosFragment extends Fragment {
         binding.btnMonto5000.setOnClickListener(v -> binding.etMontoMaxPres.setText("5000"));
     }
 
-    private void mostrarAyuda() {
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.titulo_ayuda_presupuestos)
-                .setMessage(R.string.mensaje_ayuda_presupuestos)
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
+    private void setupRecycler() {
+        adapter = new PresupuestoAdapter(this::cargarPresupuestoEnFormulario);
+        binding.rvPresupuestos.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.rvPresupuestos.setAdapter(adapter);
+    }
+
+    private void cargarPresupuestosPeriodoActual() {
+        Integer idUsuario = SessionManager.getUserId(requireContext());
+        Integer mes = getMesSeleccionado();
+        Integer anio = getAnioSeleccionado();
+        if (idUsuario == null || mes == null || anio == null) return;
+
+        repository.obtenerPresupuestosPorPeriodo(idUsuario, mes, anio, new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<java.util.List<PresupuestoDto>> call,
+                                   @NonNull Response<java.util.List<PresupuestoDto>> response) {
+                if (!isAdded() || binding == null) return;
+                java.util.List<PresupuestoDto> body = response.body() == null
+                        ? Collections.emptyList() : response.body();
+                adapter.submitList(body);
+                binding.tvPresupuestosVacio.setVisibility(body.isEmpty() ? View.VISIBLE : View.GONE);
+                binding.rvPresupuestos.setVisibility(body.isEmpty() ? View.GONE : View.VISIBLE);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<java.util.List<PresupuestoDto>> call, @NonNull Throwable t) {
+                if (!isAdded() || binding == null) return;
+                Toast.makeText(requireContext(), R.string.mensaje_error_servidor, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private String getSelectedCategory() {
-        java.util.List<Integer> checkedIds = binding.chipGroupCategoriaPres.getCheckedChipIds();
-        if (checkedIds.isEmpty()) return null;
-        return chipCategoryMap.get(checkedIds.get(0));
+        int id = binding.chipGroupCategoriaPres.getCheckedChipId();
+        return id == -1 ? null : chipCategoryMap.get(id);
     }
 
-    private int getMesSeleccionado() {
-        String mesText = binding.etMesPres.getText().toString();
-        for (int i = 0; i < meses.length; i++) {
-            if (meses[i].equals(mesText)) {
-                return i + 1;
-            }
-        }
-        return -1;
-    }
-
-    private int getAnioSeleccionado() {
-        String anioText = binding.etAnioPres.getText().toString();
-        if (TextUtils.isEmpty(anioText)) return -1;
+    private Integer getMesSeleccionado() {
         try {
-            return Integer.parseInt(anioText);
-        } catch (NumberFormatException e) {
-            return -1;
+            Object selected = binding.etMesPres.getSelectedItem();
+            if (selected == null) return null;
+            int m = Integer.parseInt(selected.toString());
+            return (m >= 1 && m <= 12) ? m : null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Integer getAnioSeleccionado() {
+        try {
+            Object selected = binding.etAnioPres.getSelectedItem();
+            if (selected == null) return null;
+            int a = Integer.parseInt(selected.toString());
+            return a > 0 ? a : null;
+        } catch (Exception e) {
+            return null;
         }
     }
 
     private void guardarPresupuesto() {
-        String categoria = getSelectedCategory();
-        String montoText = binding.etMontoMaxPres.getText() != null
-                ? binding.etMontoMaxPres.getText().toString().trim() : "";
-        int mes = getMesSeleccionado();
-        int anio = getAnioSeleccionado();
+        Integer idUsuario = SessionManager.getUserId(requireContext());
+        if (idUsuario == null) {
+            Toast.makeText(requireContext(), R.string.error_usuario_no_autenticado, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        if (categoria == null || TextUtils.isEmpty(montoText) || mes < 1 || anio < 1) {
+        String categoria = getSelectedCategory();
+        String montoTxt = binding.etMontoMaxPres.getText() != null
+                ? binding.etMontoMaxPres.getText().toString().trim() : "";
+        Integer mes = getMesSeleccionado();
+        Integer anio = getAnioSeleccionado();
+
+        if (categoria == null || montoTxt.isEmpty() || mes == null || anio == null) {
             Toast.makeText(requireContext(), R.string.error_campos_presupuesto, Toast.LENGTH_SHORT).show();
             return;
         }
 
         BigDecimal monto;
         try {
-            String normalizado = montoText.replace(",", ".");
-            monto = new BigDecimal(normalizado);
-            if (monto.compareTo(BigDecimal.ZERO) <= 0) {
-                Toast.makeText(requireContext(), R.string.error_monto_presupuesto, Toast.LENGTH_SHORT).show();
-                return;
-            }
-        } catch (NumberFormatException e) {
+            monto = new BigDecimal(montoTxt);
+        } catch (Exception e) {
+            Toast.makeText(requireContext(), R.string.error_monto_presupuesto, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (monto.compareTo(BigDecimal.ZERO) <= 0) {
             Toast.makeText(requireContext(), R.string.error_monto_presupuesto, Toast.LENGTH_SHORT).show();
             return;
         }
 
         PresupuestoDto dto = PresupuestoDto.builder()
+                .idUsuario(idUsuario)
                 .categoria(categoria)
                 .montoMaximo(monto)
-                .montoGastado(BigDecimal.ZERO)
                 .mes(mes)
                 .anio(anio)
                 .build();
 
-        binding.btnGuardarPres.setEnabled(false);
-        repository.guardarPresupuesto(dto, new Callback<PresupuestoDto>() {
+        Callback<PresupuestoDto> cb = new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<PresupuestoDto> call, @NonNull Response<PresupuestoDto> response) {
-                if (!isAdded()) return;
+                if (!isAdded() || binding == null) return;
                 if (response.isSuccessful()) {
-                    Toast.makeText(requireContext(), R.string.mensaje_presupuesto_guardado, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(),
+                            presupuestoSeleccionado == null ? R.string.mensaje_presupuesto_guardado : R.string.mensaje_presupuesto_actualizado,
+                            Toast.LENGTH_SHORT).show();
                     limpiarCampos();
+                    cargarPresupuestosPeriodoActual();
+                } else if (response.code() == 409) {
+                    Toast.makeText(requireContext(), R.string.error_presupuesto_duplicado, Toast.LENGTH_SHORT).show();
+                } else if (response.code() == 400) {
+                    Toast.makeText(requireContext(), R.string.error_campos_presupuesto, Toast.LENGTH_SHORT).show();
+                } else if (response.code() == 404) {
+                    Toast.makeText(requireContext(), "No se encontró el presupuesto.", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(requireContext(), R.string.mensaje_error_operacion, Toast.LENGTH_SHORT).show();
                 }
-                binding.btnGuardarPres.setEnabled(true);
             }
 
             @Override
             public void onFailure(@NonNull Call<PresupuestoDto> call, @NonNull Throwable t) {
-                if (!isAdded()) return;
+                if (!isAdded() || binding == null) return;
                 Toast.makeText(requireContext(), R.string.mensaje_error_servidor, Toast.LENGTH_SHORT).show();
-                binding.btnGuardarPres.setEnabled(true);
+            }
+        };
+
+        if (presupuestoSeleccionado == null) {
+            repository.guardarPresupuesto(dto, cb);
+        } else {
+            repository.actualizarPresupuesto(presupuestoSeleccionado.getIdPresupuesto(), dto, cb);
+        }
+    }
+
+    private void eliminarPresupuestoSeleccionado() {
+        if (presupuestoSeleccionado == null || presupuestoSeleccionado.getIdPresupuesto() == null) {
+            Toast.makeText(requireContext(), "Selecciona un presupuesto para eliminar.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        repository.eliminarPresupuesto(presupuestoSeleccionado.getIdPresupuesto(), new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                if (!isAdded() || binding == null) return;
+                if (response.isSuccessful()) {
+                    Toast.makeText(requireContext(), R.string.mensaje_presupuesto_eliminado, Toast.LENGTH_SHORT).show();
+                    limpiarCampos();
+                    cargarPresupuestosPeriodoActual();
+                } else {
+                    Toast.makeText(requireContext(), R.string.mensaje_error_operacion, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                if (!isAdded() || binding == null) return;
+                Toast.makeText(requireContext(), R.string.mensaje_error_servidor, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -219,11 +320,37 @@ public class PresupuestosFragment extends Fragment {
     private void limpiarCampos() {
         binding.chipGroupCategoriaPres.clearCheck();
         binding.etMontoMaxPres.setText("");
-        Calendar now = Calendar.getInstance();
-        AutoCompleteTextView mesView = (AutoCompleteTextView) binding.etMesPres;
-        mesView.setText(meses[now.get(Calendar.MONTH)], false);
-        AutoCompleteTextView anioView = (AutoCompleteTextView) binding.etAnioPres;
-        anioView.setText(String.valueOf(now.get(Calendar.YEAR)), false);
+        LocalDate now = LocalDate.now();
+        binding.etMesPres.setSelection(now.getMonthValue() - 1);
+        binding.etAnioPres.setSelection(0);
+        presupuestoSeleccionado = null;
+        binding.btnEliminarPres.setEnabled(false);
+    }
+
+    private void cargarPresupuestoEnFormulario(PresupuestoDto p) {
+        presupuestoSeleccionado = p;
+        for (Map.Entry<Integer, String> e : chipCategoryMap.entrySet()) {
+            if (Objects.equals(e.getValue(), p.getCategoria())) {
+                binding.chipGroupCategoriaPres.check(e.getKey());
+                break;
+            }
+        }
+        binding.etMontoMaxPres.setText(p.getMontoMaximo() != null ? p.getMontoMaximo().toPlainString() : "");
+        if (p.getMes() != null && p.getMes() >= 1 && p.getMes() <= 12) {
+            binding.etMesPres.setSelection(p.getMes() - 1);
+        }
+        LocalDate now2 = LocalDate.now();
+        int yearSel = (p.getAnio() != null && p.getAnio() == now2.getYear() + 1) ? 1 : 0;
+        binding.etAnioPres.setSelection(yearSel);
+        binding.btnEliminarPres.setEnabled(true);
+    }
+
+    private void mostrarAyuda() {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.titulo_ayuda_presupuestos)
+                .setMessage(R.string.mensaje_ayuda_presupuestos)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 
     private void navigateSafely(View view, int destinationId) {

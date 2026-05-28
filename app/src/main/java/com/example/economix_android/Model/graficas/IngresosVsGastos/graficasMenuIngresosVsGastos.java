@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RawRes;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
@@ -34,21 +33,16 @@ public class graficasMenuIngresosVsGastos extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.btnPerfil.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario));
+        binding.btnPerfil.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario, R.raw.usuario, 6500f, 8000f));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyuda.setOnClickListener(v -> mostrarAyuda());
         binding.btnGraficaCircular.setOnClickListener(v ->
-                UsuarioAnimationNavigator.playAndNavigate(v, R.id.graficaCircularIngresosVsGastos, resolverAnimacionRaw("pastel")));
+                Navigation.findNavController(v)
+                        .navigate(R.id.graficaCircularIngresosVsGastos));
         binding.btnGraficaBarras.setOnClickListener(v ->
-                UsuarioAnimationNavigator.playAndNavigate(v, R.id.graficaBarrasIngreosVsGastos, resolverAnimacionRaw("barras")));
+                Navigation.findNavController(v)
+                        .navigate(R.id.graficaBarrasIngreosVsGastos));
         binding.btnVolverMenuGraficas.setOnClickListener(v -> navigateSafely(v, R.id.navigation_graficas));
-    }
-
-    @RawRes
-    private int resolverAnimacionRaw(@NonNull String nombre) {
-        int id = requireContext().getResources().getIdentifier(
-                nombre.toLowerCase(java.util.Locale.ROOT), "raw", requireContext().getPackageName());
-        return id != 0 ? id : R.raw.usuario;
     }
 
     private void navigateSafely(View view, int destinationId) {

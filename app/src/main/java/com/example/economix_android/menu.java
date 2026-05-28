@@ -1,7 +1,6 @@
 package com.example.economix_android;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,30 +13,22 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.example.economix_android.auth.SessionManager;
-import com.example.economix_android.network.dto.GastoDto;
-import com.example.economix_android.network.dto.IngresoDto;
-import com.example.economix_android.network.repository.GastoRepository;
-import com.example.economix_android.network.repository.IngresoRepository;
+import com.example.economix_android.Model.data.DataRepository;
+import com.example.economix_android.Model.data.Gasto;
+import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.util.ProfileImageUtils;
 import com.example.economix_android.util.UsuarioAnimationNavigator;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import java.math.BigDecimal;
-import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class menu extends Fragment implements View.OnClickListener {
-
-    private final IngresoRepository ingresoRepository = new IngresoRepository();
-    private final GastoRepository gastoRepository = new GastoRepository();
-    private TextView tvRecentActivity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,40 +40,41 @@ public class menu extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        View tileGastos = view.findViewById(R.id.tileGastos);
-        View tileIngresos = view.findViewById(R.id.tileIngresos);
-        View tileAhorro = view.findViewById(R.id.tileAhorro);
-        View tileGraficas = view.findViewById(R.id.tileGraficas);
-        View recentActivityCard = view.findViewById(R.id.recentActivityCard);
-        tvRecentActivity = view.findViewById(R.id.tvRecentActivity);
+        View ayudaButton = view.findViewById(R.id.btnAyuda);
+        View gastosButton = view.findViewById(R.id.tileGastos);
+        View ingresosButton = view.findViewById(R.id.tileIngresos);
+        View ahorroButton = view.findViewById(R.id.tileAhorro);
+        View graficasButton = view.findViewById(R.id.tileGraficas);
+        View tilePresupuestos = view.findViewById(R.id.tilePresupuestos);
+        View tileChatbot = view.findViewById(R.id.tileChatbot);
         ImageView perfilButton = view.findViewById(R.id.btnPerfil);
         TextView saludoUsuario = view.findViewById(R.id.txtHolaUsuario);
+        TextView recentActivityText = view.findViewById(R.id.tvRecentActivity);
 
-        ProfileImageUtils.applyProfileImage(requireContext(), perfilButton);
-
-        String nombreVisible = SessionManager.getDisplayName(requireContext());
-        if (TextUtils.isEmpty(nombreVisible)) {
-            nombreVisible = SessionManager.getPerfil(requireContext());
+        if (perfilButton != null) {
+            ProfileImageUtils.applyProfileImage(requireContext(), perfilButton);
+            perfilButton.setOnClickListener(this);
         }
-        if (TextUtils.isEmpty(nombreVisible)) {
-            nombreVisible = getString(R.string.label_usuario_generico);
+        String perfil = SessionManager.getPerfil(requireContext());
+        String saludo = perfil != null ? getString(R.string.label_hola_usuario, perfil) : getString(R.string.label_hola);
+        if (saludoUsuario != null) {
+            saludoUsuario.setText(saludo);
         }
-        saludoUsuario.setText(getString(R.string.label_hola_usuario, nombreVisible));
 
-        tileGastos.setOnClickListener(this);
-        tileIngresos.setOnClickListener(this);
-        tileAhorro.setOnClickListener(this);
-        tileGraficas.setOnClickListener(this);
-        recentActivityCard.setOnClickListener(this);
-        perfilButton.setOnClickListener(this);
-
-        cargarActividadRecienteWidget();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        cargarActividadRecienteWidget();
+        if (ayudaButton != null) {
+            ayudaButton.setOnClickListener(v -> mostrarAyuda());
+        }
+        if (gastosButton != null) gastosButton.setOnClickListener(this);
+        if (ingresosButton != null) ingresosButton.setOnClickListener(this);
+        if (ahorroButton != null) ahorroButton.setOnClickListener(this);
+        if (graficasButton != null) graficasButton.setOnClickListener(this);
+        if (tilePresupuestos != null) tilePresupuestos.setOnClickListener(this);
+        if (tileChatbot != null) tileChatbot.setOnClickListener(this);
+        cargarActividadRecienteEnCard(recentActivityText);
+        View recentActivityCard = view.findViewById(R.id.recentActivityCard);
+        if (recentActivityCard != null) {
+            recentActivityCard.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_menu_to_recentActivity));
+        }
     }
 
     @Override
@@ -96,159 +88,129 @@ public class menu extends Fragment implements View.OnClickListener {
             Navigation.findNavController(v).navigate(R.id.action_menu_to_navigation_ahorro);
         } else if (viewId == R.id.tileGraficas) {
             Navigation.findNavController(v).navigate(R.id.action_menu_to_navigation_graficas);
+        } else if (viewId == R.id.tilePresupuestos) {
+            Navigation.findNavController(v).navigate(R.id.action_menu_to_navigation_presupuestos);
+        } else if (viewId == R.id.tileChatbot) {
+            Navigation.findNavController(v).navigate(R.id.action_menu_to_navigation_chatbot);
         } else if (viewId == R.id.btnPerfil) {
-            UsuarioAnimationNavigator.playAndNavigate(v, R.id.action_menu_to_usuario);
-        } else if (viewId == R.id.recentActivityCard) {
-            UsuarioAnimationNavigator.playAndNavigate(v, R.id.action_menu_to_recentActivity, R.raw.act_reci, 1000f, 2500f);
+            UsuarioAnimationNavigator.playAndNavigate(v, R.id.action_menu_to_usuario, R.raw.usuario, 6500f, 8000f);
         }
     }
 
-    private void cargarActividadRecienteWidget() {
-        if (!isAdded() || tvRecentActivity == null) {
-            return;
-        }
-        Integer userId = SessionManager.getUserId(requireContext());
-        if (userId == null) {
-            tvRecentActivity.setText(getString(R.string.label_no_recent_activity));
-            return;
-        }
 
-        AtomicReference<MovimientoReciente> ultimoMovimiento = new AtomicReference<>(null);
-        AtomicInteger pendientes = new AtomicInteger(2);
-
-        ingresoRepository.obtenerIngresos(new Callback<List<IngresoDto>>() {
+    private void cargarActividadRecienteEnCard(TextView recentActivityText) {
+        DataRepository.refreshIngresos(requireContext(), new DataRepository.RepositoryCallback<List<Ingreso>>() {
             @Override
-            public void onResponse(Call<List<IngresoDto>> call, Response<List<IngresoDto>> response) {
-                if (!isAdded()) {
-                    return;
-                }
-                if (response.isSuccessful() && response.body() != null) {
-                    IngresoDto ingreso = obtenerUltimoIngresoReciente(userId, response.body());
-                    actualizarMovimientoReciente(ultimoMovimiento, convertirIngreso(ingreso));
-                }
-                finalizarCarga(ultimoMovimiento, pendientes);
+            public void onSuccess(List<Ingreso> result) {
+                DataRepository.refreshGastos(requireContext(), new DataRepository.RepositoryCallback<List<Gasto>>() {
+                    @Override
+                    public void onSuccess(List<Gasto> gastos) {
+                        actualizarCardActividadReciente(recentActivityText, DataRepository.getIngresos(), DataRepository.getGastos());
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        actualizarCardActividadReciente(recentActivityText, DataRepository.getIngresos(), DataRepository.getGastos());
+                    }
+                });
             }
 
             @Override
-            public void onFailure(Call<List<IngresoDto>> call, Throwable t) {
-                if (!isAdded()) {
-                    return;
-                }
-                finalizarCarga(ultimoMovimiento, pendientes);
-            }
-        });
+            public void onError(String message) {
+                DataRepository.refreshGastos(requireContext(), new DataRepository.RepositoryCallback<List<Gasto>>() {
+                    @Override
+                    public void onSuccess(List<Gasto> gastos) {
+                        actualizarCardActividadReciente(recentActivityText, DataRepository.getIngresos(), DataRepository.getGastos());
+                    }
 
-        gastoRepository.obtenerGastos(new Callback<List<GastoDto>>() {
-            @Override
-            public void onResponse(Call<List<GastoDto>> call, Response<List<GastoDto>> response) {
-                if (!isAdded()) {
-                    return;
-                }
-                if (response.isSuccessful() && response.body() != null) {
-                    GastoDto gasto = obtenerUltimoGastoReciente(userId, response.body());
-                    actualizarMovimientoReciente(ultimoMovimiento, convertirGasto(gasto));
-                }
-                finalizarCarga(ultimoMovimiento, pendientes);
-            }
-
-            @Override
-            public void onFailure(Call<List<GastoDto>> call, Throwable t) {
-                if (!isAdded()) {
-                    return;
-                }
-                finalizarCarga(ultimoMovimiento, pendientes);
+                    @Override
+                    public void onError(String error) {
+                        actualizarCardActividadReciente(recentActivityText, DataRepository.getIngresos(), DataRepository.getGastos());
+                    }
+                });
             }
         });
     }
 
-    private void finalizarCarga(@NonNull AtomicReference<MovimientoReciente> ultimoMovimiento,
-                                @NonNull AtomicInteger pendientes) {
-        if (pendientes.decrementAndGet() > 0 || !isAdded() || tvRecentActivity == null) {
-            return;
-        }
-        MovimientoReciente movimiento = ultimoMovimiento.get();
-        if (movimiento == null) {
-            tvRecentActivity.setText(getString(R.string.label_no_recent_activity));
-            return;
-        }
-        String monto = NumberFormat.getCurrencyInstance(new Locale("es", "MX"))
-                .format(movimiento.monto != null ? movimiento.monto : BigDecimal.ZERO);
-        String fecha = movimiento.fecha != null
-                ? movimiento.fecha.toString()
-                : getString(R.string.label_fecha_desconocida);
-
-        tvRecentActivity.setText(movimiento.esIngreso
-                ? getString(R.string.label_recent_widget_ingreso, monto, fecha)
-                : getString(R.string.label_recent_widget_gasto, monto, fecha));
-    }
-
-    private IngresoDto obtenerUltimoIngresoReciente(@NonNull Integer userId, @NonNull List<IngresoDto> ingresos) {
-        IngresoDto ultimo = null;
+    private void actualizarCardActividadReciente(TextView recentActivityText, List<Ingreso> ingresos, List<Gasto> gastos) {
         LocalDate limite = LocalDate.now().minusDays(2);
-        for (IngresoDto ingreso : ingresos) {
-            if (!userId.equals(ingreso.getIdUsuario()) || ingreso.getFechaIngresos() == null
-                    || ingreso.getFechaIngresos().isBefore(limite)) {
-                continue;
-            }
-            if (ultimo == null || ingreso.getFechaIngresos().isAfter(ultimo.getFechaIngresos())) {
-                ultimo = ingreso;
-            }
-        }
-        return ultimo;
-    }
+        List<ActividadItem> items = new ArrayList<>();
 
-    private GastoDto obtenerUltimoGastoReciente(@NonNull Integer userId, @NonNull List<GastoDto> gastos) {
-        GastoDto ultimo = null;
-        LocalDate limite = LocalDate.now().minusDays(2);
-        for (GastoDto gasto : gastos) {
-            if (!userId.equals(gasto.getIdUsuario()) || gasto.getFechaGastos() == null
-                    || gasto.getFechaGastos().isBefore(limite)) {
-                continue;
-            }
-            if (ultimo == null || gasto.getFechaGastos().isAfter(ultimo.getFechaGastos())) {
-                ultimo = gasto;
+        for (Ingreso ingreso : ingresos) {
+            LocalDate fecha = parseFecha(ingreso.getFecha());
+            if (fecha != null && !fecha.isBefore(limite)) {
+                items.add(new ActividadItem(fecha, "Ingreso", ingreso.getArticulo(), ingreso.getDescripcion()));
             }
         }
-        return ultimo;
+        for (Gasto gasto : gastos) {
+            LocalDate fecha = parseFecha(gasto.getFecha());
+            if (fecha != null && !fecha.isBefore(limite)) {
+                items.add(new ActividadItem(fecha, "Gasto", gasto.getArticulo(), gasto.getDescripcion()));
+            }
+        }
+
+        items.sort(Comparator.comparing((ActividadItem i) -> i.fecha).reversed());
+
+        StringBuilder mensaje = new StringBuilder();
+        if (items.isEmpty()) {
+            mensaje.append(getString(R.string.label_no_recent_activity));
+        } else {
+            int limiteItems = Math.min(items.size(), 4);
+            for (int idx = 0; idx < limiteItems; idx++) {
+                ActividadItem item = items.get(idx);
+                mensaje.append("• ")
+                        .append(item.tipo)
+                        .append(": ")
+                        .append(item.articulo != null ? item.articulo : "-")
+                        .append(" · $")
+                        .append(item.monto != null ? item.monto : "0")
+                        .append(" · ")
+                        .append(item.fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())))
+                        .append("\n");
+            }
+        }
+
+        if (recentActivityText != null) {
+            recentActivityText.setText(mensaje.toString().trim());
+        }
+
     }
 
-    private void actualizarMovimientoReciente(@NonNull AtomicReference<MovimientoReciente> actual,
-                                              @Nullable MovimientoReciente candidato) {
-        if (candidato == null) {
-            return;
+    private LocalDate parseFecha(String fecha) {
+        if (fecha == null || fecha.trim().isEmpty()) return null;
+        String value = fecha.trim();
+        DateTimeFormatter[] formatters = new DateTimeFormatter[]{
+                DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault()),
+                DateTimeFormatter.ISO_LOCAL_DATE
+        };
+        for (DateTimeFormatter formatter : formatters) {
+            try {
+                return LocalDate.parse(value, formatter);
+            } catch (DateTimeParseException ignored) {
+            }
         }
-        MovimientoReciente previo = actual.get();
-        if (previo == null || (candidato.fecha != null && previo.fecha != null && candidato.fecha.isAfter(previo.fecha))
-                || (candidato.fecha != null && previo.fecha == null)) {
-            actual.set(candidato);
-        }
+        return null;
     }
 
-    @Nullable
-    private MovimientoReciente convertirIngreso(@Nullable IngresoDto ingreso) {
-        if (ingreso == null) {
-            return null;
-        }
-        return new MovimientoReciente(true, ingreso.getMontoIngreso(), ingreso.getFechaIngresos());
-    }
+    private static class ActividadItem {
+        final LocalDate fecha;
+        final String tipo;
+        final String articulo;
+        final String monto;
 
-    @Nullable
-    private MovimientoReciente convertirGasto(@Nullable GastoDto gasto) {
-        if (gasto == null) {
-            return null;
-        }
-        return new MovimientoReciente(false, gasto.getMontoGasto(), gasto.getFechaGastos());
-    }
-
-    private static final class MovimientoReciente {
-        private final boolean esIngreso;
-        private final BigDecimal monto;
-        private final LocalDate fecha;
-
-        private MovimientoReciente(boolean esIngreso, @Nullable BigDecimal monto, @Nullable LocalDate fecha) {
-            this.esIngreso = esIngreso;
-            this.monto = monto;
+        ActividadItem(LocalDate fecha, String tipo, String articulo, String monto) {
             this.fecha = fecha;
+            this.tipo = tipo;
+            this.articulo = articulo;
+            this.monto = monto;
         }
+    }
+
+    private void mostrarAyuda() {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.titulo_ayuda_menu)
+                .setMessage(R.string.mensaje_ayuda_menu)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 }

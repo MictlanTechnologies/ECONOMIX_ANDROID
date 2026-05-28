@@ -1,11 +1,11 @@
 package com.example.economix_android.network.dto;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
 
 @Data
 @Builder
@@ -18,6 +18,9 @@ public class PresupuestoDto {
     private String categoria;
     private BigDecimal montoMaximo;
     private BigDecimal montoGastado;
+    private BigDecimal montoRestante;
+    private BigDecimal porcentajeUso;
+    private String estado;
     private Integer mes;
     private Integer anio;
 }

@@ -1,29 +1,32 @@
 package com.example.economix_android.network;
 
+import static com.example.economix_android.network.NetworkConfig.BASE_URL;
+
 import android.content.Context;
 
-import com.example.economix_android.ai.AiApi;
 import com.example.economix_android.network.api.AhorroApi;
-import com.example.economix_android.network.api.CategoriaGastoApi;
 import com.example.economix_android.network.api.ConceptoGastoApi;
 import com.example.economix_android.network.api.ConceptoIngresoApi;
+import com.example.economix_android.network.api.ChatbotApi;
 import com.example.economix_android.network.api.ContactoApi;
 import com.example.economix_android.network.api.DomicilioApi;
 import com.example.economix_android.network.api.GastoApi;
 import com.example.economix_android.network.api.IngresoApi;
-import com.example.economix_android.network.api.MovimientoAhorroApi;
-import com.example.economix_android.network.api.PresupuestoApi;
 import com.example.economix_android.network.api.PersonaApi;
+import com.example.economix_android.network.api.PresupuestoApi;
 import com.example.economix_android.network.api.UsuarioApi;
 import com.example.economix_android.network.auth.AuthApi;
 import com.example.economix_android.network.auth.AuthServiceFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -71,7 +74,7 @@ public final class ApiClient {
                 .create();
 
         retrofit = new Retrofit.Builder()
-                .baseUrl(NetworkConfig.BASE_URL)
+                .baseUrl(BASE_URL)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
@@ -104,15 +107,6 @@ public final class ApiClient {
         return retrofit.create(AhorroApi.class);
     }
 
-    public static AiApi getAiApi() {
-        return retrofit.create(AiApi.class);
-    }
-
-
-    public static CategoriaGastoApi getCategoriaGastoApi() {
-        return retrofit.create(CategoriaGastoApi.class);
-    }
-
     public static ConceptoGastoApi getConceptoGastoApi() {
         return retrofit.create(ConceptoGastoApi.class);
     }
@@ -137,20 +131,19 @@ public final class ApiClient {
         return retrofit.create(IngresoApi.class);
     }
 
-
-    public static MovimientoAhorroApi getMovimientoAhorroApi() {
-        return retrofit.create(MovimientoAhorroApi.class);
-    }
-
-    public static PresupuestoApi getPresupuestoApi() {
-        return retrofit.create(PresupuestoApi.class);
-    }
-
     public static PersonaApi getPersonaApi() {
         return retrofit.create(PersonaApi.class);
     }
 
     public static UsuarioApi getUsuarioApi() {
         return retrofit.create(UsuarioApi.class);
+    }
+
+    public static PresupuestoApi getPresupuestoApi() {
+        return retrofit.create(PresupuestoApi.class);
+    }
+
+    public static ChatbotApi getChatbotApi() {
+        return retrofit.create(ChatbotApi.class);
     }
 }

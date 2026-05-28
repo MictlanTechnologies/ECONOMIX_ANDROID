@@ -11,9 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.economix_android.Vista.menu;
 import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.databinding.ActivityLoginBinding;
-import com.example.economix_android.network.dto.LoginRequest;
-import com.example.economix_android.network.dto.UsuarioDto;
-import com.example.economix_android.network.repository.UsuarioRepository;
+import com.example.economix_android.network.auth.dto.LoginRequest;
+import com.example.economix_android.network.auth.dto.LoginResponse;
+import com.example.economix_android.network.repository.auth.AuthRepository;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,7 +22,8 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
-    private UsuarioRepository usuarioRepository;
+    private AuthRepository authRepository;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,7 +31,8 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        usuarioRepository = new UsuarioRepository();
+        authRepository = new AuthRepository(this);
+        sessionManager = new SessionManager(this);
 
         binding.btnSignIn.setOnClickListener(v -> submitLogin());
     }
@@ -53,9 +55,9 @@ public class LoginActivity extends AppCompatActivity {
 
         binding.btnSignIn.setEnabled(false);
 
-        usuarioRepository.login(new LoginRequest(username, password), new Callback<UsuarioDto>() {
+        authRepository.login(new LoginRequest(username, password), new Callback<>() {
             @Override
-            public void onResponse(Call<UsuarioDto> call, Response<UsuarioDto> response) {
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 binding.btnSignIn.setEnabled(true);
                 if (!response.isSuccessful() || response.body() == null) {
                     if (response.code() == 401) {
@@ -66,12 +68,25 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                SessionManager.saveSession(LoginActivity.this, response.body());
+                LoginResponse body = response.body();
+                if (body.isRequires2fa()) {
+                    Intent intent = new Intent(LoginActivity.this, TwoFactorActivity.class);
+                    intent.putExtra(TwoFactorActivity.EXTRA_CHALLENGE_ID, body.getChallengeId());
+                    intent.putExtra(TwoFactorActivity.EXTRA_CHALLENGE_EXPIRES_AT, body.getChallengeExpiresAt());
+                    startActivity(intent);
+                    return;
+                }
+
+                sessionManager.saveAuthSession(
+                        body.getAccessToken(),
+                        body.getRefreshToken(),
+                        body.getUserInfo()
+                );
                 openHome();
             }
 
             @Override
-            public void onFailure(Call<UsuarioDto> call, Throwable t) {
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
                 binding.btnSignIn.setEnabled(true);
                 Toast.makeText(LoginActivity.this, "Error de red", Toast.LENGTH_SHORT).show();
             }

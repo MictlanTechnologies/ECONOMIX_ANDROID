@@ -24,7 +24,6 @@ import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.Model.data.RegistroAdapter;
 import com.example.economix_android.Model.data.RegistroFinanciero;
 import com.example.economix_android.util.ProfileImageUtils;
-import com.example.economix_android.util.UsuarioAnimationNavigator;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -64,7 +63,7 @@ public class ingresosInfo extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.btnPerfil.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario));
+        binding.btnPerfil.setOnClickListener(v -> navigateSafely(v, R.id.usuario));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaIngInf.setOnClickListener(v -> mostrarAyuda());
 
@@ -115,6 +114,20 @@ public class ingresosInfo extends Fragment {
         };
         ingresosAdapter.setOnRegistroDoubleClickListener(listener);
         recurrentesAdapter.setOnRegistroDoubleClickListener(listener);
+        RegistroAdapter.OnRegistroActionListener actionListener = new RegistroAdapter.OnRegistroActionListener() {
+            @Override
+            public void onEdit(RegistroFinanciero registro) {
+                if (registro instanceof Ingreso) abrirEdicionIngreso((Ingreso) registro);
+            }
+
+            @Override
+            public void onDelete(RegistroFinanciero registro) {
+                if (registro instanceof Ingreso) eliminarIngreso((Ingreso) registro);
+            }
+        };
+        ingresosAdapter.setOnRegistroActionListener(actionListener);
+        recurrentesAdapter.setOnRegistroActionListener(actionListener);
+        historialAdapter.setOnRegistroActionListener(actionListener);
 
         binding.tablaGastos.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.tablaGastos.setAdapter(ingresosAdapter);
@@ -308,6 +321,28 @@ public class ingresosInfo extends Fragment {
         args.putString(ingresosFragment.ARG_INGRESO_PERIODO, ingreso.getPeriodo());
         args.putBoolean(ingresosFragment.ARG_INGRESO_PLANTILLA, true);
         navigateSafely(binding.getRoot(), R.id.action_ingresosInfo_to_navigation_ingresos, args);
+    }
+
+
+    private void eliminarIngreso(Ingreso ingreso) {
+        if (ingreso == null || ingreso.getId() == null) {
+            mostrarMensaje(getString(R.string.error_ingreso_id));
+            return;
+        }
+        DataRepository.removeIngresoById(ingreso.getId(), new DataRepository.RepositoryCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean result) {
+                if (!isAdded()) return;
+                mostrarMensaje(getString(R.string.mensaje_ingreso_eliminado));
+                actualizarDatos();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) return;
+                mostrarMensaje(message);
+            }
+        });
     }
 
     private void mostrarAyuda() {

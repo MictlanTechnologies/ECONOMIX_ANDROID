@@ -3,6 +3,7 @@ package com.example.economix_android.auth;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,18 +12,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.R;
 import com.example.economix_android.Vista.menu;
 import com.example.economix_android.databinding.FragmentInicioSesionBinding;
-import com.example.economix_android.network.dto.LoginRequest;
-import com.example.economix_android.network.dto.PersonaDto;
-import com.example.economix_android.network.dto.UsuarioDto;
-import com.example.economix_android.network.repository.PersonaRepository;
-import com.example.economix_android.network.repository.UsuarioRepository;
-
-import java.util.List;
+import com.example.economix_android.network.auth.dto.LoginRequest;
+import com.example.economix_android.network.auth.dto.LoginResponse;
+import com.example.economix_android.network.repository.auth.AuthRepository;
+import com.example.economix_android.util.UsuarioAnimationNavigator;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,7 +30,8 @@ import retrofit2.Response;
 public class inicio_sesionFragment extends Fragment {
 
     private FragmentInicioSesionBinding binding;
-    private UsuarioRepository usuarioRepository;
+    private AuthRepository authRepository;
+    private SessionManager sessionManager;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -43,7 +43,8 @@ public class inicio_sesionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        usuarioRepository = new UsuarioRepository();
+        authRepository = new AuthRepository(requireContext());
+        sessionManager = new SessionManager(requireContext());
 
         binding.btnBack.setOnClickListener(v -> requireActivity()
                 .getOnBackPressedDispatcher()
@@ -74,9 +75,10 @@ public class inicio_sesionFragment extends Fragment {
         }
 
         binding.btnSignIn.setEnabled(false);
-        usuarioRepository.login(new LoginRequest(perfil.trim(), contrasena), new Callback<UsuarioDto>() {
+        Log.d("LOGIN_DEBUG", "URL base: " + com.example.economix_android.network.NetworkConfig.BASE_URL);
+        authRepository.login(new LoginRequest(perfil.trim(), contrasena), new Callback<>() {
             @Override
-            public void onResponse(Call<UsuarioDto> call, Response<UsuarioDto> response) {
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (binding != null) {
                     binding.btnSignIn.setEnabled(true);
                 }
@@ -84,29 +86,51 @@ public class inicio_sesionFragment extends Fragment {
                     return;
                 }
 
+                Log.d("LOGIN_DEBUG", "Login response code: " + response.code());
                 if (!response.isSuccessful() || response.body() == null) {
-                    if (response.code() == 401) {
+                    int code = response.code();
+                    if (code == 401) {
                         Toast.makeText(requireContext(), getString(R.string.error_credenciales_invalidas), Toast.LENGTH_SHORT).show();
+                    } else if (code == 404) {
+                        Toast.makeText(requireContext(), "Código login: 404 (endpoint /auth/login no existe en backend)", Toast.LENGTH_SHORT).show();
+                    } else if (code == 500) {
+                        Toast.makeText(requireContext(), "Error interno del servidor al crear usuario o iniciar sesión", Toast.LENGTH_SHORT).show();
                     } else {
-                        mostrarMensajeError(null);
+                        Toast.makeText(requireContext(), "Código login: " + code, Toast.LENGTH_SHORT).show();
                     }
                     return;
                 }
 
+                LoginResponse loginResponse = response.body();
+                if (loginResponse.isRequires2fa()) {
+                    Bundle args = new Bundle();
+                    args.putString("challengeId", loginResponse.getChallengeId());
+                    args.putString("challengeExpiresAt", loginResponse.getChallengeExpiresAt());
+                    NavHostFragment.findNavController(inicio_sesionFragment.this)
+                            .navigate(R.id.action_inicio_sesionFragment_to_twoFactorFragment, args);
+                    return;
+                }
+
                 DataRepository.clearAll();
-                SessionManager.saveSession(requireContext(), response.body());
-                abrirMenu();
+                sessionManager.saveAuthSession(
+                        loginResponse.getAccessToken(),
+                        loginResponse.getRefreshToken(),
+                        loginResponse.getUserInfo()
+                );
+                View animationAnchor = binding != null ? binding.getRoot() : requireActivity().findViewById(android.R.id.content);
+                UsuarioAnimationNavigator.playOnly(animationAnchor, R.raw.login, null, null, inicio_sesionFragment.this::abrirMenu);
             }
 
             @Override
-            public void onFailure(Call<UsuarioDto> call, Throwable t) {
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
                 if (binding != null) {
                     binding.btnSignIn.setEnabled(true);
                 }
                 if (!isAdded()) {
                     return;
                 }
-                mostrarMensajeError(null);
+                Log.e("LOGIN_DEBUG", "Error login", t);
+                mostrarMensajeError("No se pudo contactar con el servidor");
             }
         });
     }

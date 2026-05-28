@@ -1,21 +1,15 @@
 package com.example.economix_android.Model.ingresos;
 
 import android.app.DatePickerDialog;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 import com.example.economix_android.Model.data.RegistroFinanciero;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RawRes;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
@@ -28,18 +22,15 @@ import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.util.ProfileImageUtils;
 import com.example.economix_android.util.UsuarioAnimationNavigator;
 
-import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
 public class ingresosFragment extends Fragment {
 
@@ -58,8 +49,6 @@ public class ingresosFragment extends Fragment {
     private boolean enModoPlantilla;
     private boolean enModoEdicion;
 
-    private final Map<Integer, String> chipCategoryMap = new HashMap<>();
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentIngresosBinding.inflate(inflater, container, false);
@@ -70,12 +59,10 @@ public class ingresosFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initChipCategoryMap();
-
         binding.btnVerIng.setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.action_navigation_ingresos_to_ingresosInfo));
-        binding.btnPerfil.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario));
+        binding.btnPerfil.setOnClickListener(v -> UsuarioAnimationNavigator.playAndNavigate(v, R.id.usuario, R.raw.usuario, 6500f, 8000f));
         ProfileImageUtils.applyProfileImage(requireContext(), binding.btnPerfil);
         binding.btnAyudaIng.setOnClickListener(v -> mostrarAyuda());
 
@@ -105,196 +92,59 @@ public class ingresosFragment extends Fragment {
         binding.navMenuMini.setOnClickListener(bottomNavListener);
 
         setupDatePicker(binding.etFechaIng);
-        setupChipGroupSync();
-        configurarEntradasDinamicas();
+        configurarCategorias();
         cargarDatosEdicion();
     }
 
-    private void initChipCategoryMap() {
-        chipCategoryMap.put(R.id.chipSalario, getString(R.string.cat_ing_salario));
-        chipCategoryMap.put(R.id.chipFreelance, getString(R.string.cat_ing_freelance));
-        chipCategoryMap.put(R.id.chipNegocio, getString(R.string.cat_ing_negocio));
-        chipCategoryMap.put(R.id.chipInversiones, getString(R.string.cat_ing_inversiones));
-        chipCategoryMap.put(R.id.chipVenta, getString(R.string.cat_ing_venta));
-        chipCategoryMap.put(R.id.chipOtroIng, getString(R.string.cat_ing_otro));
-    }
 
-    private void setupChipGroupSync() {
-        binding.chipGroupCategoriaIng.setOnCheckedStateChangeListener((group, checkedIds) -> {
-            if (!checkedIds.isEmpty()) {
-                String category = chipCategoryMap.get(checkedIds.get(0));
-                if (category != null) {
-                    binding.etPeriodoIng.setText(category);
+    private void configurarCategorias() {
+        ChipGroup[] grupos = new ChipGroup[]{binding.chipGroupCategoriaIng, binding.chipGroupEtiquetasIng};
+        for (ChipGroup grupo : grupos) {
+            for (int i = 0; i < grupo.getChildCount(); i++) {
+                View child = grupo.getChildAt(i);
+                if (child instanceof Chip) {
+                    Chip chip = (Chip) child;
+                    chip.setOnClickListener(v -> {
+                        binding.etArticuloIng.setText(chip.getText());
+                        binding.etPeriodoIng.setText(chip.getText());
+                    });
                 }
-            } else {
-                binding.etPeriodoIng.setText("");
             }
-        });
-    }
-
-    private void configurarEntradasDinamicas() {
-        binding.btnAgregarCategoriaIng.setOnClickListener(v -> solicitarCategoriaPersonalizada());
-        binding.btnAgregarEtiquetaIng.setOnClickListener(v -> solicitarEtiquetaPersonalizada());
-    }
-
-    private void solicitarCategoriaPersonalizada() {
-        mostrarDialogoEntrada(
-                R.string.titulo_nueva_categoria,
-                R.string.hint_nueva_categoria,
-                R.string.error_categoria_vacia,
-                this::agregarCategoriaPersonalizada
-        );
-    }
-
-    private void agregarCategoriaPersonalizada(String categoriaInput) {
-        String categoria = categoriaInput != null ? categoriaInput.trim() : "";
-        if (TextUtils.isEmpty(categoria)) {
-            Toast.makeText(requireContext(), R.string.error_categoria_vacia, Toast.LENGTH_SHORT).show();
-            return;
         }
-        Chip chip = new Chip(requireContext());
-        chip.setId(View.generateViewId());
-        chip.setText(categoria);
-        chip.setCheckable(true);
-        chip.setCheckedIconVisible(true);
-        chip.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-        chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.tealSurfaceVariant)));
-        chip.setChipStrokeColor(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.tealLight)));
-        chip.setChipStrokeWidth(getResources().getDisplayMetrics().density);
-        binding.chipGroupCategoriaIng.addView(chip);
-        chipCategoryMap.put(chip.getId(), categoria);
-        chip.setChecked(true);
+
+        binding.btnAgregarCategoriaIng.setOnClickListener(v -> mostrarDialogoNuevaCategoria(
+                binding.chipGroupEtiquetasIng, binding.etArticuloIng
+        ));
     }
 
-    private void solicitarEtiquetaPersonalizada() {
-        mostrarDialogoEntrada(
-                R.string.titulo_nueva_etiqueta,
-                R.string.hint_nueva_etiqueta,
-                R.string.error_etiqueta_vacia,
-                this::agregarEtiquetaPersonalizada
-        );
-    }
+    private void mostrarDialogoNuevaCategoria(ChipGroup chipGroup, TextInputEditText destinoArticulo) {
+        TextInputEditText input = new TextInputEditText(requireContext());
+        input.setHint(R.string.label_agregar_categoria);
+        input.setSingleLine();
 
-    private void agregarEtiquetaPersonalizada(String etiquetaInput) {
-        String etiqueta = normalizarEtiqueta(etiquetaInput);
-        if (TextUtils.isEmpty(etiqueta)) {
-            Toast.makeText(requireContext(), R.string.error_etiqueta_vacia, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (existeEtiqueta(etiqueta)) {
-            return;
-        }
-        Chip chip = new Chip(requireContext());
-        chip.setId(View.generateViewId());
-        chip.setText(etiqueta);
-        chip.setCheckable(false);
-        chip.setCloseIconVisible(true);
-        chip.setOnCloseIconClickListener(v -> {
-            binding.chipGroupEtiquetasIng.removeView(chip);
-            sincronizarEtiquetasOcultas();
-        });
-        chip.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-        chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.tealAccent)));
-        chip.setChipStrokeColor(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.tealLight)));
-        chip.setChipStrokeWidth(getResources().getDisplayMetrics().density);
-        binding.chipGroupEtiquetasIng.addView(chip);
-        sincronizarEtiquetasOcultas();
-    }
-
-    private void mostrarDialogoEntrada(int tituloRes, int hintRes, int errorRes, OnTextoConfirmado onTextoConfirmado) {
-        final com.google.android.material.textfield.TextInputEditText input = new com.google.android.material.textfield.TextInputEditText(requireContext());
-        input.setHint(hintRes);
-        input.setSingleLine(true);
-        input.setTextColor(ContextCompat.getColor(requireContext(), R.color.economix_text_primary));
-        input.setHintTextColor(ContextCompat.getColor(requireContext(), R.color.economix_text_secondary));
-
-        int horizontal = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                20,
-                getResources().getDisplayMetrics()
-        );
-        FrameLayout container = new FrameLayout(requireContext());
-        container.setPadding(horizontal, 0, horizontal, 0);
-        container.addView(input);
-
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(tituloRes)
-                .setView(container)
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.label_agregar_categoria)
+                .setView(input)
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    String texto = input.getText() != null ? input.getText().toString().trim() : "";
+                    if (texto.isEmpty()) {
+                        Toast.makeText(requireContext(), R.string.error_campos_obligatorios_ingreso, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Chip nuevo = new Chip(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice);
+                    nuevo.setText(texto);
+                    nuevo.setCheckable(true);
+                    nuevo.setOnClickListener(v -> {
+                        destinoArticulo.setText(texto);
+                        binding.etPeriodoIng.setText(texto);
+                    });
+                    chipGroup.addView(nuevo);
+                    nuevo.setChecked(true);
+                    destinoArticulo.setText(texto);
+                    binding.etPeriodoIng.setText(texto);
+                })
                 .setNegativeButton(android.R.string.cancel, null)
-                .setPositiveButton(R.string.label_agregar, null);
-
-        androidx.appcompat.app.AlertDialog dialog = builder.create();
-        dialog.show();
-
-        Button positiveButton = dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE);
-        positiveButton.setOnClickListener(v -> {
-            String valor = obtenerTexto(input);
-            if (TextUtils.isEmpty(valor)) {
-                input.setError(getString(errorRes));
-                return;
-            }
-            onTextoConfirmado.onConfirm(valor);
-            dialog.dismiss();
-        });
-    }
-
-    private interface OnTextoConfirmado {
-        void onConfirm(String valor);
-    }
-
-    private boolean existeEtiqueta(String etiqueta) {
-        for (int i = 0; i < binding.chipGroupEtiquetasIng.getChildCount(); i++) {
-            View child = binding.chipGroupEtiquetasIng.getChildAt(i);
-            if (child instanceof Chip) {
-                Chip chip = (Chip) child;
-                if (etiqueta.equalsIgnoreCase(chip.getText().toString())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private void sincronizarEtiquetasOcultas() {
-        Set<String> etiquetas = new LinkedHashSet<>();
-        for (int i = 0; i < binding.chipGroupEtiquetasIng.getChildCount(); i++) {
-            View child = binding.chipGroupEtiquetasIng.getChildAt(i);
-            if (child instanceof Chip) {
-                etiquetas.add(((Chip) child).getText().toString());
-            }
-        }
-        binding.etEtiquetasIng.setText(TextUtils.join(",", etiquetas));
-    }
-
-    private String normalizarEtiqueta(String valor) {
-        if (valor == null) {
-            return "";
-        }
-        String limpia = valor.trim().replace(" ", "");
-        limpia = limpia.replaceAll("[^\\p{L}\\p{N}_-]", "");
-        if (limpia.isEmpty()) {
-            return "";
-        }
-        return limpia.startsWith("#") ? limpia : "#" + limpia;
-    }
-
-    private void selectChipForCategory(String category) {
-        if (TextUtils.isEmpty(category)) return;
-        for (Map.Entry<Integer, String> entry : chipCategoryMap.entrySet()) {
-            if (entry.getValue().equalsIgnoreCase(category)) {
-                Chip chip = binding.getRoot().findViewById(entry.getKey());
-                if (chip != null) {
-                    chip.setChecked(true);
-                }
-                return;
-            }
-        }
-        // If category doesn't match any chip, select "Otro" and put text in hidden field
-        Chip otroChip = binding.getRoot().findViewById(R.id.chipOtroIng);
-        if (otroChip != null) {
-            otroChip.setChecked(true);
-        }
-        binding.etPeriodoIng.setText(category);
+                .show();
     }
 
     private void mostrarAyuda() {
@@ -337,9 +187,11 @@ public class ingresosFragment extends Fragment {
                     return;
                 }
                 Toast.makeText(requireContext(), R.string.mensaje_ingreso_guardado, Toast.LENGTH_SHORT).show();
-                UsuarioAnimationNavigator.playOnly(binding.getRoot(), resolverAnimacionRaw("ingreso"));
-                limpiarCampos();
-                setIngresoButtonsEnabled(true);
+                UsuarioAnimationNavigator.playOnly(binding.getRoot(), R.raw.ingreso, 1000f, 2500f, () -> {
+                    if (!isAdded()) return;
+                    limpiarCampos();
+                    setIngresoButtonsEnabled(true);
+                });
             }
 
             @Override
@@ -376,8 +228,7 @@ public class ingresosFragment extends Fragment {
         binding.rbRecurrenteIng.setChecked(false);
         binding.rbRecurrenteIng.setEnabled(true);
         binding.chipGroupCategoriaIng.clearCheck();
-        binding.chipGroupEtiquetasIng.removeAllViews();
-        binding.etEtiquetasIng.setText("");
+        binding.chipGroupEtiquetasIng.clearCheck();
         enModoPlantilla = false;
         establecerModoEdicion(false, null, false);
     }
@@ -398,14 +249,15 @@ public class ingresosFragment extends Fragment {
         binding.etDescripcionIng.setText(monto);
         binding.etFechaIng.setText(fecha);
         binding.etPeriodoIng.setText(periodo);
-        selectChipForCategory(periodo);
         if (esPlantilla) {
             enModoPlantilla = true;
             binding.rbRecurrenteIng.setChecked(false);
             binding.rbRecurrenteIng.setEnabled(false);
             establecerModoEdicion(false, null, false);
         } else {
-            enModoPlantilla = false;
+            binding.chipGroupCategoriaIng.clearCheck();
+        binding.chipGroupEtiquetasIng.clearCheck();
+        enModoPlantilla = false;
             binding.rbRecurrenteIng.setChecked(recurrente);
             int id = args.getInt(ARG_INGRESO_ID, -1);
             if (id > 0) {
@@ -419,8 +271,6 @@ public class ingresosFragment extends Fragment {
         enModoEdicion = habilitar;
         ingresoEnEdicionId = habilitar ? ingresoId : null;
         ingresoEnEdicionRecurrente = habilitar && recurrente;
-        binding.btnGuardarIng.setText(habilitar ? getString(R.string.label_actualizar) : getString(R.string.label_guardar));
-        binding.btnEliminarIng.setText(getString(R.string.label_eliminar));
         binding.rbRecurrenteIng.setEnabled(!habilitar);
     }
 
@@ -536,7 +386,13 @@ public class ingresosFragment extends Fragment {
     }
 
     private void setupDatePicker(TextInputEditText editText) {
+        editText.setShowSoftInputOnFocus(false);
         editText.setOnClickListener(v -> showDatePicker(editText));
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                showDatePicker(editText);
+            }
+        });
     }
 
     private void showDatePicker(TextInputEditText editText) {
@@ -566,13 +422,6 @@ public class ingresosFragment extends Fragment {
 
         editText.clearFocus();
         datePickerDialog.show();
-    }
-
-    @RawRes
-    private int resolverAnimacionRaw(@NonNull String nombre) {
-        int id = requireContext().getResources().getIdentifier(
-                nombre.toLowerCase(Locale.ROOT), "raw", requireContext().getPackageName());
-        return id != 0 ? id : R.raw.usuario;
     }
 
     @Override

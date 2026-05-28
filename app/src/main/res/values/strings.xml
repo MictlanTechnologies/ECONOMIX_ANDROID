@@ -72,7 +72,7 @@
     <string name="titulo_ayuda_gastos_info">Resumen de gastos</string>
     <string name="mensaje_ayuda_gastos_info">Visualiza gastos normales y recurrentes en listas separadas. Filtra con la lupa por concepto y ajusta el periodo con el calendario.</string>
     <string name="mensaje_lista_vacia">Sin registros para mostrar.</string>
-    <string name="accion_cerrar_sesion">Salir de la sesión</string>
+    <string name="accion_cerrar_sesion">CERRAR SESION</string>
     <string name="titulo_ayuda_menu">¿Cómo navegar en el menú?</string>
     <string name="mensaje_ayuda_menu">Usa los accesos rápidos para registrar gastos o ingresos, gestionar tus ahorros y abrir las gráficas comparativas.</string>
     <string name="titulo_ayuda_ahorro">Panel de ahorro</string>
@@ -101,6 +101,7 @@
     <string name="error_perfil_obligatorio">Ingresa tu usuario o perfil.</string>
     <string name="error_perfil_registrado">Este usuario ya está registrado.</string>
     <string name="error_contrasena_obligatoria">Ingresa una contraseña.</string>
+    <string name="error_contrasena_segura">La contraseña debe tener al menos 8 caracteres y un carácter especial.</string>
     <string name="error_confirmar_contrasena">Confirma tu contraseña.</string>
     <string name="error_contrasenas_no_coinciden">Las contraseñas no coinciden.</string>
     <string name="mensaje_registro_exitoso">Cuenta creada correctamente. Ahora puedes iniciar sesión.</string>
@@ -136,6 +137,7 @@
     <string name="label_guardar">Guardar</string>
     <string name="label_actualizar">Actualizar</string>
     <string name="label_eliminar">Eliminar</string>
+    <string name="label_limpiar">Limpiar</string>
     <string name="label_progreso_ahorro">Avance: $%1$s de $%2$s (%3$d%%)</string>
     <string name="label_disponible_valor">Disponible: $%1$s</string>
     <string name="mensaje_ingreso_actualizado">Ingreso actualizado correctamente.</string>
@@ -255,4 +257,21 @@
 Fecha: %2$s</string>
     <string name="label_recent_gasto_format">Monto: %1$s
 Fecha: %2$s</string>
+    <string name="mensaje_presupuesto_actualizado">Presupuesto actualizado correctamente.</string>
+    <string name="mensaje_presupuesto_eliminado">Presupuesto eliminado correctamente.</string>
+    <string name="error_presupuesto_duplicado">Ya existe un presupuesto para esa categoría, mes y año.</string>
+    <string name="label_presupuestos_registrados">Presupuestos registrados</string>
+    <string name="label_monto_maximo_presupuesto">Límite: $%1$s</string>
+    <string name="label_monto_gastado_presupuesto">Gastado: $%1$s</string>
+    <string name="label_monto_restante_presupuesto">Restante: $%1$s</string>
+    <string name="label_porcentaje_presupuesto">Uso: %1$s%%</string>
+    <string name="label_estado_presupuesto">Estado: %1$s</string>
+    <string name="label_sin_presupuestos">No hay presupuestos registrados para este periodo.</string>
+    <string name="titulo_alerta_presupuesto">Alerta de presupuesto</string>
+    <string name="titulo_presupuesto_excedido">Presupuesto excedido</string>
+    <string name="mensaje_alerta_presupuesto">Ya usaste el %1$s%% del presupuesto de %2$s.</string>
+    <string name="mensaje_presupuesto_excedido">Ya superaste el presupuesto de %1$s. Límite: $%2$s. Gastado: $%3$s.</string>
+    <string name="mensaje_bloqueo_presupuesto_excedido">No puedes registrar este gasto porque excede tu presupuesto disponible. Modifica tu presupuesto para continuar.</string>
+    <string name="title_chatbot">Chatbot IA</string>
+    <string name="desc_acceso_chatbot">Acceso a chatbot financiero</string>
 </resources>

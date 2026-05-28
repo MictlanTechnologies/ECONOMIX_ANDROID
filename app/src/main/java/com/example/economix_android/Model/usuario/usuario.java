@@ -80,9 +80,7 @@ public class usuario extends Fragment {
         binding.navAhorro.setOnClickListener(bottomNavListener);
         binding.navGraficas.setOnClickListener(bottomNavListener);
         binding.navMenuMini.setOnClickListener(bottomNavListener);
-
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -151,7 +149,6 @@ public class usuario extends Fragment {
         startActivity(intent);
         requireActivity().finish();
     }
-
 
     @Override
     public void onDestroyView() {
