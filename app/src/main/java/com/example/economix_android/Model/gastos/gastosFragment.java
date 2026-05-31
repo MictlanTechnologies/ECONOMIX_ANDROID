@@ -549,7 +549,7 @@ public class gastosFragment extends Fragment {
                     return;
                 }
                 ingresosDisponibles.clear();
-                ingresosDisponibles.addAll(result);
+                ingresosDisponibles.addAll(DataRepository.getIngresosDisponibles());
                 actualizarIngresoAdapter();
             }
 

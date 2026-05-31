@@ -44,8 +44,12 @@ public final class DataRepository {
     private static final List<Gasto> gastos = new ArrayList<>();
     private static final List<Gasto> gastosRecurrentes = new ArrayList<>();
     private static final Map<Integer, BigDecimal> ingresosOriginales = new HashMap<>();
+    private static final Map<Integer, BigDecimal> ingresosSaldosDisponibles = new HashMap<>();
     private static final Map<Integer, Integer> conceptoIngresoLinks = new HashMap<>();
     private static final Map<Integer, Integer> conceptoGastoLinks = new HashMap<>();
+    private static final String PREFS_SALDOS_INGRESOS = "ingresos_saldos_prefs";
+    private static final String KEY_SALDOS_DISPONIBLES = "saldos_disponibles";
+    private static final String BALANCE_DELIMITER = "||";
 
     private static final IngresoRepository ingresoRepository = new IngresoRepository();
     private static final GastoRepository gastoRepository = new GastoRepository();
@@ -61,6 +65,21 @@ public final class DataRepository {
 
     public static List<Ingreso> getIngresos() {
         return Collections.unmodifiableList(ingresos);
+    }
+
+    public static List<Ingreso> getIngresosDisponibles() {
+        return Collections.unmodifiableList(ingresos);
+    }
+
+    public static List<Ingreso> getIngresosResumen() {
+        List<Ingreso> resultado = new ArrayList<>();
+        for (Ingreso ingreso : ingresos) {
+            Ingreso resumen = createIngresoHistorial(ingreso);
+            if (resumen != null) {
+                resultado.add(resumen);
+            }
+        }
+        return Collections.unmodifiableList(resultado);
     }
 
     public static Ingreso getIngresoById(Integer id) {
@@ -206,6 +225,8 @@ public final class DataRepository {
                             }
                             Ingreso ingreso = fromDto(dto);
                             if (ingreso != null) {
+                                registrarIngresoOriginal(ingreso);
+                                ingreso = aplicarSaldoDisponibleGuardado(context, ingreso);
                                 if (isIngresoAgotado(ingreso)) {
                                     Ingreso historial = createIngresoHistorial(ingreso);
                                     if (historial != null) {
@@ -521,8 +542,9 @@ public final class DataRepository {
                 if (response.isSuccessful() && response.body() != null) {
                     Ingreso actualizado = fromDto(response.body());
                     if (actualizado != null) {
+                        limpiarSaldoDisponibleGuardado(context, actualizado.getId());
                         reemplazarIngreso(actualizado);
-                        registrarIngresoOriginal(actualizado);
+                        registrarIngresoOriginalExacto(actualizado);
                     }
                     notifySuccess(callback, actualizado);
                 } else {
@@ -698,14 +720,25 @@ public final class DataRepository {
             @Override
             public void onResponse(Call<IngresoDto> call, Response<IngresoDto> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    guardarSaldoDisponible(context, ingreso.getId(), nuevoMonto);
+                    reemplazarIngreso(actualizado);
+                    if (isIngresoAgotado(actualizado)) {
+                        moverIngresoAHistorial(actualizado);
+                    }
                     Ingreso actualizadoRemoto = fromDto(response.body());
-                    if (actualizadoRemoto != null) {
-                        reemplazarIngreso(actualizadoRemoto);
-                        if (isIngresoAgotado(actualizadoRemoto)) {
-                            moverIngresoAHistorial(actualizadoRemoto);
+                    if (actualizadoRemoto != null && !Objects.equals(actualizadoRemoto.getId(), actualizado.getId())) {
+                        Ingreso actualizadoConIdRemoto = new Ingreso(actualizadoRemoto.getId(),
+                                actualizado.getArticulo(),
+                                actualizado.getDescripcion(),
+                                actualizado.getFecha(),
+                                actualizado.getPeriodo(),
+                                actualizado.isRecurrente());
+                        reemplazarIngreso(actualizadoConIdRemoto);
+                        if (isIngresoAgotado(actualizadoConIdRemoto)) {
+                            moverIngresoAHistorial(actualizadoConIdRemoto);
                         }
                     }
-                    notifySuccess(callback, actualizadoRemoto);
+                    notifySuccess(callback, actualizado);
                 } else {
                     notifyError(callback, "No se pudo actualizar el ingreso. Código: " + response.code());
                 }
@@ -757,6 +790,7 @@ public final class DataRepository {
     private static void eliminarIngresoPorId(Integer id) {
         ingresos.removeIf(ingreso -> Objects.equals(ingreso.getId(), id));
         ingresosOriginales.remove(id);
+        ingresosSaldosDisponibles.remove(id);
         ingresosHistorial.removeIf(ingreso -> Objects.equals(ingreso.getId(), id));
     }
 
@@ -950,6 +984,87 @@ public final class DataRepository {
         }
     }
 
+    private static void registrarIngresoOriginalExacto(Ingreso ingreso) {
+        if (ingreso == null || ingreso.getId() == null) {
+            return;
+        }
+        ingresosOriginales.put(ingreso.getId(), parseMonto(ingreso.getDescripcion()));
+    }
+
+    private static Ingreso aplicarSaldoDisponibleGuardado(Context context, Ingreso ingreso) {
+        if (ingreso == null || ingreso.getId() == null) {
+            return ingreso;
+        }
+        cargarSaldosDisponibles(context);
+        BigDecimal saldo = ingresosSaldosDisponibles.get(ingreso.getId());
+        if (saldo == null) {
+            return ingreso;
+        }
+        return new Ingreso(ingreso.getId(),
+                ingreso.getArticulo(),
+                saldo.stripTrailingZeros().toPlainString(),
+                ingreso.getFecha(),
+                ingreso.getPeriodo(),
+                ingreso.isRecurrente());
+    }
+
+    private static void guardarSaldoDisponible(Context context, Integer idIngreso, BigDecimal saldo) {
+        if (context == null || idIngreso == null || saldo == null) {
+            return;
+        }
+        cargarSaldosDisponibles(context);
+        ingresosSaldosDisponibles.put(idIngreso, saldo);
+        guardarSaldosDisponibles(context);
+    }
+
+    private static void limpiarSaldoDisponibleGuardado(Context context, Integer idIngreso) {
+        if (context == null || idIngreso == null) {
+            return;
+        }
+        cargarSaldosDisponibles(context);
+        if (ingresosSaldosDisponibles.remove(idIngreso) != null) {
+            guardarSaldosDisponibles(context);
+        }
+    }
+
+    private static void cargarSaldosDisponibles(Context context) {
+        if (context == null || !ingresosSaldosDisponibles.isEmpty()) {
+            return;
+        }
+        Set<String> registros = context.getSharedPreferences(PREFS_SALDOS_INGRESOS, Context.MODE_PRIVATE)
+                .getStringSet(KEY_SALDOS_DISPONIBLES, new HashSet<>());
+        if (registros == null) {
+            return;
+        }
+        for (String registro : registros) {
+            if (registro == null || registro.trim().isEmpty()) {
+                continue;
+            }
+            String[] partes = registro.split("\\Q" + BALANCE_DELIMITER + "\\E");
+            if (partes.length < 2) {
+                continue;
+            }
+            try {
+                Integer id = Integer.valueOf(partes[0]);
+                BigDecimal saldo = new BigDecimal(partes[1]);
+                ingresosSaldosDisponibles.put(id, saldo);
+            } catch (NumberFormatException ignored) {
+            }
+        }
+    }
+
+    private static void guardarSaldosDisponibles(Context context) {
+        Set<String> registros = new HashSet<>();
+        for (Map.Entry<Integer, BigDecimal> entry : ingresosSaldosDisponibles.entrySet()) {
+            registros.add(entry.getKey() + BALANCE_DELIMITER
+                    + entry.getValue().stripTrailingZeros().toPlainString());
+        }
+        context.getSharedPreferences(PREFS_SALDOS_INGRESOS, Context.MODE_PRIVATE)
+                .edit()
+                .putStringSet(KEY_SALDOS_DISPONIBLES, registros)
+                .apply();
+    }
+
     private static void pruneIngresosOriginales(List<Ingreso> nuevos, List<Ingreso> historial) {
         Set<Integer> ids = new HashSet<>();
         for (Ingreso ingreso : nuevos) {
@@ -963,6 +1078,7 @@ public final class DataRepository {
             }
         }
         ingresosOriginales.keySet().retainAll(ids);
+        ingresosSaldosDisponibles.keySet().retainAll(ids);
     }
 
     private static void agregarIngresosHistorial(List<Ingreso> ingresos,

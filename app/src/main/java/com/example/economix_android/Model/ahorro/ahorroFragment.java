@@ -173,7 +173,7 @@ public class ahorroFragment extends Fragment {
                     return;
                 }
                 ingresosDisponibles.clear();
-                ingresosDisponibles.addAll(result);
+                ingresosDisponibles.addAll(DataRepository.getIngresosDisponibles());
                 actualizarIngresoAdapter();
             }
 
@@ -751,16 +751,7 @@ public class ahorroFragment extends Fragment {
     }
 
     private List<AhorroItem> filtrarHistorial(List<AhorroItem> items) {
-        if (metasCompletadas.isEmpty()) {
-            return new ArrayList<>();
-        }
-        List<AhorroItem> historial = new ArrayList<>();
-        for (AhorroItem item : items) {
-            if (estaMetaCompletada(item.getPeriodo())) {
-                historial.add(item);
-            }
-        }
-        return historial;
+        return items == null ? new ArrayList<>() : new ArrayList<>(items);
     }
 
     private boolean metaActualExcedeObjetivo(String meta, BigDecimal objetivo, BigDecimal aporte) {
@@ -814,7 +805,7 @@ public class ahorroFragment extends Fragment {
         for (Map.Entry<String, BigDecimal> entry : totales.entrySet()) {
             String periodo = entry.getKey();
             BigDecimal total = entry.getValue();
-            BigDecimal objetivo = objetivos.containsKey(periodo) ? objetivos.get(periodo) : BigDecimal.ZERO;
+            BigDecimal objetivo = obtenerObjetivoParaProgreso(periodo, objetivos);
             int porcentaje = 0;
             if (objetivo.compareTo(BigDecimal.ZERO) > 0) {
                 porcentaje = total.multiply(BigDecimal.valueOf(100))
@@ -828,6 +819,28 @@ public class ahorroFragment extends Fragment {
             progreso.put(periodo, new AhorroAdapter.ProgresoMeta(texto, porcentaje));
         }
         return progreso;
+    }
+
+    private BigDecimal obtenerObjetivoParaProgreso(String meta, Map<String, BigDecimal> objetivos) {
+        if (TextUtils.isEmpty(meta)) {
+            return BigDecimal.ZERO;
+        }
+        if (objetivos != null) {
+            for (Map.Entry<String, BigDecimal> entry : objetivos.entrySet()) {
+                if (meta.equalsIgnoreCase(entry.getKey().trim())) {
+                    return entry.getValue();
+                }
+            }
+        }
+        String metaActual = obtenerMetaActual();
+        if (!TextUtils.isEmpty(metaActual) && meta.equalsIgnoreCase(metaActual.trim())) {
+            BigDecimal objetivoActual = metaPrecio;
+            if (objetivoActual.compareTo(BigDecimal.ZERO) <= 0) {
+                objetivoActual = parseMontoSeguro(obtenerTexto(binding.etPrecioMeta));
+            }
+            return objetivoActual;
+        }
+        return BigDecimal.ZERO;
     }
 
     private void navigateSafely(View view, int destinationId) {
@@ -889,8 +902,9 @@ public class ahorroFragment extends Fragment {
         if (TextUtils.isEmpty(meta) || precio.compareTo(BigDecimal.ZERO) <= 0) {
             return;
         }
+        String metaNormalizada = meta.trim();
         Map<String, BigDecimal> objetivos = cargarObjetivos();
-        objetivos.put(meta, precio);
+        objetivos.put(metaNormalizada, precio);
         SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_AHORRO, Context.MODE_PRIVATE);
         java.util.Set<String> registros = new java.util.HashSet<>();
         for (Map.Entry<String, BigDecimal> entry : objetivos.entrySet()) {

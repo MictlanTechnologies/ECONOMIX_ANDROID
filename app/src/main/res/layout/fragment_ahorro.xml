@@ -52,11 +52,14 @@
 
     <TextView
         android:id="@+id/tvAhorroSubtitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
         android:layout_marginTop="4dp"
+        android:gravity="center"
         android:text="Define tu meta, da seguimiento y celebra tus avances"
         android:textColor="@color/economix_text_secondary"
+        android:textAlignment="center"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

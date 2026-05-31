@@ -97,6 +97,8 @@ public class ahorroInfo extends Fragment {
                 navigateSafely(v, R.id.navigation_ahorro);
             } else if (viewId == R.id.navGraficas) {
                 navigateSafely(v, R.id.navigation_graficas);
+            } else if (viewId == R.id.navMenuMini) {
+                navigateSafely(v, R.id.menu);
             }
         };
 
@@ -104,6 +106,7 @@ public class ahorroInfo extends Fragment {
         binding.navIngresos.setOnClickListener(bottomNavListener);
         binding.navAhorro.setOnClickListener(bottomNavListener);
         binding.navGraficas.setOnClickListener(bottomNavListener);
+        binding.navMenuMini.setOnClickListener(bottomNavListener);
 
         configurarLista();
     }
@@ -474,7 +477,7 @@ public class ahorroInfo extends Fragment {
         for (Map.Entry<String, BigDecimal> entry : totales.entrySet()) {
             String periodo = entry.getKey();
             BigDecimal total = entry.getValue();
-            BigDecimal objetivo = objetivos.containsKey(periodo) ? objetivos.get(periodo) : BigDecimal.ZERO;
+            BigDecimal objetivo = obtenerObjetivoParaProgreso(periodo, objetivos);
             if (objetivo.compareTo(BigDecimal.ZERO) <= 0) {
                 continue;
             }
@@ -488,6 +491,18 @@ public class ahorroInfo extends Fragment {
             progreso.put(periodo, new AhorroInfoAdapter.ProgresoMeta(texto, porcentaje));
         }
         return progreso;
+    }
+
+    private BigDecimal obtenerObjetivoParaProgreso(String meta, Map<String, BigDecimal> objetivos) {
+        if (TextUtils.isEmpty(meta) || objetivos == null) {
+            return BigDecimal.ZERO;
+        }
+        for (Map.Entry<String, BigDecimal> entry : objetivos.entrySet()) {
+            if (meta.equalsIgnoreCase(entry.getKey().trim())) {
+                return entry.getValue();
+            }
+        }
+        return BigDecimal.ZERO;
     }
 
     private String obtenerTexto(TextInputEditText editText) {

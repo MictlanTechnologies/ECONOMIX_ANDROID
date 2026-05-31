@@ -88,7 +88,9 @@
             android:hint="Escribe tu consulta"
             android:maxLength="280"
             android:paddingHorizontal="12dp"
-            android:paddingVertical="10dp"/>
+            android:paddingVertical="10dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="@color/tealDark" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEnviar"
             android:layout_width="wrap_content"
