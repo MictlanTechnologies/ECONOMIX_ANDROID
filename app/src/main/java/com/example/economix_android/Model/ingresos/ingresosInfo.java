@@ -162,7 +162,7 @@ public class ingresosInfo extends Fragment {
 
     private void actualizarListasLocales() {
         ingresosBase.clear();
-        ingresosBase.addAll(DataRepository.getIngresos());
+        ingresosBase.addAll(DataRepository.getIngresosDisponibles());
         recurrentesBase.clear();
         recurrentesBase.addAll(DataRepository.getIngresosRecurrentes());
         historialBase.clear();
@@ -329,7 +329,7 @@ public class ingresosInfo extends Fragment {
             mostrarMensaje(getString(R.string.error_ingreso_id));
             return;
         }
-        DataRepository.removeIngresoById(ingreso.getId(), new DataRepository.RepositoryCallback<Boolean>() {
+        DataRepository.RepositoryCallback<Boolean> callback = new DataRepository.RepositoryCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean result) {
                 if (!isAdded()) return;
@@ -342,7 +342,13 @@ public class ingresosInfo extends Fragment {
                 if (!isAdded()) return;
                 mostrarMensaje(message);
             }
-        });
+        };
+
+        if (ingreso.isRecurrente()) {
+            DataRepository.removeIngresoRecurrenteById(ingreso.getId(), callback);
+        } else {
+            DataRepository.removeIngresoById(ingreso.getId(), callback);
+        }
     }
 
     private void mostrarAyuda() {

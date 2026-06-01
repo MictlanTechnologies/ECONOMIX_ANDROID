@@ -29,6 +29,7 @@ import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.Model.data.RegistroFinanciero;
 import com.example.economix_android.databinding.FragmentAhorroBinding;
+import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.network.dto.AhorroDto;
 import com.example.economix_android.network.repository.AhorroRepository;
 import com.example.economix_android.util.ProfileImageUtils;
@@ -135,7 +136,6 @@ public class ahorroFragment extends Fragment {
         cargarMetaCompletada();
         cargarAhorroSeleccionado();
         cargarIngresos();
-        cargarAhorros();
     }
 
     private void configurarLista() {
@@ -173,8 +173,9 @@ public class ahorroFragment extends Fragment {
                     return;
                 }
                 ingresosDisponibles.clear();
-                ingresosDisponibles.addAll(result);
+                ingresosDisponibles.addAll(DataRepository.getIngresosDisponibles());
                 actualizarIngresoAdapter();
+                cargarAhorros();
             }
 
             @Override
@@ -183,6 +184,7 @@ public class ahorroFragment extends Fragment {
                     return;
                 }
                 mostrarMensajeError(message);
+                cargarAhorros();
             }
         });
     }
@@ -246,15 +248,9 @@ public class ahorroFragment extends Fragment {
                     List<AhorroDto> body = response.body();
                     List<AhorroItem> items = new ArrayList<>();
                     if (body != null) {
-                        List<Ingreso> ingresosUsuario = DataRepository.getIngresos();
-                        java.util.Set<Integer> idsIngresos = new java.util.HashSet<>();
-                        for (Ingreso ingreso : ingresosUsuario) {
-                            if (ingreso.getId() != null) {
-                                idsIngresos.add(ingreso.getId());
-                            }
-                        }
+                        Integer userId = SessionManager.getUserId(requireContext());
                         for (AhorroDto dto : body) {
-                            if (dto.getIdIngresos() == null || !idsIngresos.contains(dto.getIdIngresos())) {
+                            if (!perteneceAlUsuario(dto, userId)) {
                                 continue;
                             }
                             AhorroItem item = convertir(dto);
@@ -395,9 +391,14 @@ public class ahorroFragment extends Fragment {
                              Ingreso ingresoActualizado, BigDecimal montoOriginal,
                              BigDecimal totalActualMeta, BigDecimal objetivo) {
         AhorroDto dto = AhorroDto.builder()
+                .idUsuario(SessionManager.getUserId(requireContext()))
+                .nombreObjetivo(meta)
+                .meta(objetivo)
+                .montoAhorrado(aporte)
+                .fechaLimite(fechaAhorro)
+                .idIngresos(ingresoActualizado != null ? ingresoActualizado.getId() : null)
                 .montoAhorro(aporte)
                 .periodoTAhorro(meta)
-                .idIngresos(ingresoActualizado != null ? ingresoActualizado.getId() : null)
                 .fechaAhorro(fechaAhorro)
                 .build();
 
@@ -667,10 +668,35 @@ public class ahorroFragment extends Fragment {
         if (dto == null) {
             return null;
         }
-        String monto = dto.getMontoAhorro() != null ? dto.getMontoAhorro().stripTrailingZeros().toPlainString() : "0";
-        String periodo = dto.getPeriodoTAhorro() != null ? dto.getPeriodoTAhorro() : getString(R.string.label_periodo_sin_definir);
-        String fecha = formatearFecha(dto.getFechaAhorro());
+        BigDecimal montoDto = dto.getMontoAhorrado() != null ? dto.getMontoAhorrado() : dto.getMontoAhorro();
+        String monto = montoDto != null ? montoDto.stripTrailingZeros().toPlainString() : "0";
+        String periodo = !TextUtils.isEmpty(dto.getNombreObjetivo())
+                ? dto.getNombreObjetivo()
+                : dto.getPeriodoTAhorro();
+        if (TextUtils.isEmpty(periodo)) {
+            periodo = getString(R.string.label_periodo_sin_definir);
+        }
+        LocalDate fechaDto = dto.getFechaLimite() != null ? dto.getFechaLimite() : dto.getFechaAhorro();
+        String fecha = formatearFecha(fechaDto);
         return new AhorroItem(dto.getIdAhorro(), monto, periodo, fecha, dto.getIdIngresos());
+    }
+
+    private boolean perteneceAlUsuario(AhorroDto dto, Integer userId) {
+        if (dto == null) {
+            return false;
+        }
+        if (dto.getIdUsuario() != null) {
+            return userId != null && dto.getIdUsuario().equals(userId);
+        }
+        if (dto.getIdIngresos() == null) {
+            return userId == null;
+        }
+        for (Ingreso ingreso : DataRepository.getIngresosHistorial()) {
+            if (dto.getIdIngresos().equals(ingreso.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private LocalDate parseFechaGuardada(String fecha) {
@@ -751,16 +777,7 @@ public class ahorroFragment extends Fragment {
     }
 
     private List<AhorroItem> filtrarHistorial(List<AhorroItem> items) {
-        if (metasCompletadas.isEmpty()) {
-            return new ArrayList<>();
-        }
-        List<AhorroItem> historial = new ArrayList<>();
-        for (AhorroItem item : items) {
-            if (estaMetaCompletada(item.getPeriodo())) {
-                historial.add(item);
-            }
-        }
-        return historial;
+        return items == null ? new ArrayList<>() : new ArrayList<>(items);
     }
 
     private boolean metaActualExcedeObjetivo(String meta, BigDecimal objetivo, BigDecimal aporte) {
@@ -814,7 +831,7 @@ public class ahorroFragment extends Fragment {
         for (Map.Entry<String, BigDecimal> entry : totales.entrySet()) {
             String periodo = entry.getKey();
             BigDecimal total = entry.getValue();
-            BigDecimal objetivo = objetivos.containsKey(periodo) ? objetivos.get(periodo) : BigDecimal.ZERO;
+            BigDecimal objetivo = obtenerObjetivoParaProgreso(periodo, objetivos);
             int porcentaje = 0;
             if (objetivo.compareTo(BigDecimal.ZERO) > 0) {
                 porcentaje = total.multiply(BigDecimal.valueOf(100))
@@ -828,6 +845,28 @@ public class ahorroFragment extends Fragment {
             progreso.put(periodo, new AhorroAdapter.ProgresoMeta(texto, porcentaje));
         }
         return progreso;
+    }
+
+    private BigDecimal obtenerObjetivoParaProgreso(String meta, Map<String, BigDecimal> objetivos) {
+        if (TextUtils.isEmpty(meta)) {
+            return BigDecimal.ZERO;
+        }
+        if (objetivos != null) {
+            for (Map.Entry<String, BigDecimal> entry : objetivos.entrySet()) {
+                if (meta.equalsIgnoreCase(entry.getKey().trim())) {
+                    return entry.getValue();
+                }
+            }
+        }
+        String metaActual = obtenerMetaActual();
+        if (!TextUtils.isEmpty(metaActual) && meta.equalsIgnoreCase(metaActual.trim())) {
+            BigDecimal objetivoActual = metaPrecio;
+            if (objetivoActual.compareTo(BigDecimal.ZERO) <= 0) {
+                objetivoActual = parseMontoSeguro(obtenerTexto(binding.etPrecioMeta));
+            }
+            return objetivoActual;
+        }
+        return BigDecimal.ZERO;
     }
 
     private void navigateSafely(View view, int destinationId) {
@@ -889,8 +928,9 @@ public class ahorroFragment extends Fragment {
         if (TextUtils.isEmpty(meta) || precio.compareTo(BigDecimal.ZERO) <= 0) {
             return;
         }
+        String metaNormalizada = meta.trim();
         Map<String, BigDecimal> objetivos = cargarObjetivos();
-        objetivos.put(meta, precio);
+        objetivos.put(metaNormalizada, precio);
         SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_AHORRO, Context.MODE_PRIVATE);
         java.util.Set<String> registros = new java.util.HashSet<>();
         for (Map.Entry<String, BigDecimal> entry : objetivos.entrySet()) {

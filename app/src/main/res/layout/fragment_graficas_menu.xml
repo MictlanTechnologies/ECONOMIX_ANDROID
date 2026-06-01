@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_app_gradient">
+    android:background="@drawable/bg_menu_gradient">
 
     <ImageButton
         android:id="@+id/btnAyuda"
@@ -52,11 +52,14 @@
 
     <TextView
         android:id="@+id/tvSubtitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
         android:layout_marginTop="6dp"
+        android:gravity="center"
         android:text="Explora tu información financiera de diferentes maneras"
         android:textColor="@color/economix_text_secondary"
+        android:textAlignment="center"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -82,15 +85,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:minHeight="120dp"
-            app:strokeColor="@color/economix_accent"
-            app:strokeWidth="2dp"
             android:padding="24dp"
             android:text="Gastos por categoría"
             android:textAllCaps="false"
-            android:textColor="@color/economix_text_primary"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:backgroundTint="@android:color/transparent"
+            app:backgroundTint="@color/module_gastos"
             app:cornerRadius="28dp" />
 
         <com.google.android.material.button.MaterialButton
@@ -101,14 +102,12 @@
             android:layout_marginTop="20dp"
             android:minHeight="120dp"
             android:padding="24dp"
-            app:strokeColor="@color/economix_accent"
-            app:strokeWidth="2dp"
             android:text="Ingresos vs Gastos"
             android:textAllCaps="false"
-            android:textColor="@color/economix_text_primary"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:backgroundTint="@android:color/transparent"
+            app:backgroundTint="@color/module_ingresos"
             app:cornerRadius="28dp" />
     </LinearLayout>
 

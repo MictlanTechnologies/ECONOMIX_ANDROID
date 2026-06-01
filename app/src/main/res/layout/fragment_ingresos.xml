@@ -433,14 +433,15 @@
             android:layout_marginStart="4dp"
             android:layout_weight="1"
             android:text=""
-            android:contentDescription="Limpiar"
-            app:icon="@drawable/ic_broom_24"
-            app:iconTint="@color/white"
+            android:contentDescription="@string/label_limpiar"
+            app:icon="@drawable/ic_clear_form_24"
+            app:iconPadding="0dp"
+            app:iconTint="@color/economix_background"
             app:iconGravity="textStart"
             android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:textColor="@color/economix_background"
             android:textSize="13sp"
-            app:backgroundTint="@color/tealPrimary"
+            app:backgroundTint="@color/goldAccent"
             app:cornerRadius="14dp" />
     </LinearLayout>
 
