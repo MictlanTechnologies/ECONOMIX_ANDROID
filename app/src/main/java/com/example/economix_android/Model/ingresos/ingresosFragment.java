@@ -20,6 +20,7 @@ import com.example.economix_android.databinding.FragmentIngresosBinding;
 import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.util.ProfileImageUtils;
+import com.example.economix_android.util.UserCategoryStore;
 import com.example.economix_android.util.UsuarioAnimationNavigator;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -30,6 +31,7 @@ import com.google.android.material.chip.ChipGroup;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class ingresosFragment extends Fragment {
@@ -111,10 +113,18 @@ public class ingresosFragment extends Fragment {
                 }
             }
         }
+        cargarCategoriasPersonalizadas();
 
         binding.btnAgregarCategoriaIng.setOnClickListener(v -> mostrarDialogoNuevaCategoria(
                 binding.chipGroupEtiquetasIng, binding.etArticuloIng
         ));
+    }
+
+    private void cargarCategoriasPersonalizadas() {
+        List<String> categorias = UserCategoryStore.getCategories(requireContext(), UserCategoryStore.TYPE_INGRESO);
+        for (String categoria : categorias) {
+            agregarChipCategoria(binding.chipGroupEtiquetasIng, binding.etArticuloIng, categoria, false);
+        }
     }
 
     private void mostrarDialogoNuevaCategoria(ChipGroup chipGroup, TextInputEditText destinoArticulo) {
@@ -131,20 +141,44 @@ public class ingresosFragment extends Fragment {
                         Toast.makeText(requireContext(), R.string.error_campos_obligatorios_ingreso, Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    Chip nuevo = new Chip(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice);
-                    nuevo.setText(texto);
-                    nuevo.setCheckable(true);
-                    nuevo.setOnClickListener(v -> {
-                        destinoArticulo.setText(texto);
-                        binding.etPeriodoIng.setText(texto);
-                    });
-                    chipGroup.addView(nuevo);
-                    nuevo.setChecked(true);
+                    boolean categoriaExistente = existeChipConTexto(binding.chipGroupCategoriaIng, texto)
+                            || existeChipConTexto(chipGroup, texto);
+                    if (!categoriaExistente
+                            && UserCategoryStore.saveCategory(requireContext(), UserCategoryStore.TYPE_INGRESO, texto)) {
+                        agregarChipCategoria(chipGroup, destinoArticulo, texto, true);
+                    }
                     destinoArticulo.setText(texto);
                     binding.etPeriodoIng.setText(texto);
                 })
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
+    }
+
+    private void agregarChipCategoria(ChipGroup chipGroup, TextInputEditText destinoArticulo,
+                                      String texto, boolean checked) {
+        if (existeChipConTexto(chipGroup, texto)) {
+            return;
+        }
+        Chip nuevo = new Chip(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice);
+        nuevo.setText(texto);
+        nuevo.setCheckable(true);
+        nuevo.setOnClickListener(v -> {
+            destinoArticulo.setText(texto);
+            binding.etPeriodoIng.setText(texto);
+        });
+        chipGroup.addView(nuevo);
+        nuevo.setChecked(checked);
+    }
+
+    private boolean existeChipConTexto(ChipGroup chipGroup, String texto) {
+        for (int i = 0; i < chipGroup.getChildCount(); i++) {
+            View child = chipGroup.getChildAt(i);
+            if (child instanceof Chip
+                    && ((Chip) child).getText().toString().equalsIgnoreCase(texto)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void mostrarAyuda() {

@@ -26,6 +26,7 @@ import com.example.economix_android.R;
 import com.example.economix_android.Model.data.DataRepository;
 import com.example.economix_android.Model.data.Ingreso;
 import com.example.economix_android.Model.data.RegistroFinanciero;
+import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.databinding.FragmentAhorroInfoBinding;
 import com.example.economix_android.network.dto.AhorroDto;
 import com.example.economix_android.network.repository.AhorroRepository;
@@ -115,7 +116,6 @@ public class ahorroInfo extends Fragment {
     public void onResume() {
         super.onResume();
         cargarIngresos();
-        cargarAhorros();
     }
 
     private void configurarLista() {
@@ -152,15 +152,9 @@ public class ahorroInfo extends Fragment {
                     if (body != null) {
                         SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_AHORRO, Context.MODE_PRIVATE);
                         java.util.Set<String> metasCompletadas = obtenerMetasCompletadas(prefs);
-                        List<Ingreso> ingresosUsuario = DataRepository.getIngresos();
-                        java.util.Set<Integer> idsIngresos = new java.util.HashSet<>();
-                        for (Ingreso ingreso : ingresosUsuario) {
-                            if (ingreso.getId() != null) {
-                                idsIngresos.add(ingreso.getId());
-                            }
-                        }
+                        Integer userId = SessionManager.getUserId(requireContext());
                         for (AhorroDto dto : body) {
-                            if (dto.getIdIngresos() == null || !idsIngresos.contains(dto.getIdIngresos())) {
+                            if (!perteneceAlUsuario(dto, userId)) {
                                 continue;
                             }
                             AhorroItem item = convertir(dto);
@@ -306,6 +300,11 @@ public class ahorroInfo extends Fragment {
     private void actualizarAhorro(AhorroItem item, String titulo, BigDecimal monto, Integer ingresoId) {
         AhorroDto dto = AhorroDto.builder()
                 .idAhorro(item.getIdAhorro())
+                .idUsuario(SessionManager.getUserId(requireContext()))
+                .nombreObjetivo(titulo)
+                .meta(obtenerObjetivoMeta(titulo))
+                .montoAhorrado(monto)
+                .fechaLimite(parseFecha(item.getFecha()))
                 .idIngresos(ingresoId != null ? ingresoId : item.getIngresoId())
                 .periodoTAhorro(titulo)
                 .montoAhorro(monto)
@@ -340,10 +339,35 @@ public class ahorroInfo extends Fragment {
         if (dto == null) {
             return null;
         }
-        String monto = dto.getMontoAhorro() != null ? dto.getMontoAhorro().stripTrailingZeros().toPlainString() : "0";
-        String periodo = dto.getPeriodoTAhorro() != null ? dto.getPeriodoTAhorro() : getString(R.string.label_periodo_sin_definir);
-        String fecha = formatearFecha(dto.getFechaAhorro());
+        BigDecimal montoDto = dto.getMontoAhorrado() != null ? dto.getMontoAhorrado() : dto.getMontoAhorro();
+        String monto = montoDto != null ? montoDto.stripTrailingZeros().toPlainString() : "0";
+        String periodo = !TextUtils.isEmpty(dto.getNombreObjetivo())
+                ? dto.getNombreObjetivo()
+                : dto.getPeriodoTAhorro();
+        if (TextUtils.isEmpty(periodo)) {
+            periodo = getString(R.string.label_periodo_sin_definir);
+        }
+        LocalDate fechaDto = dto.getFechaLimite() != null ? dto.getFechaLimite() : dto.getFechaAhorro();
+        String fecha = formatearFecha(fechaDto);
         return new AhorroItem(dto.getIdAhorro(), monto, periodo, fecha, dto.getIdIngresos());
+    }
+
+    private boolean perteneceAlUsuario(AhorroDto dto, Integer userId) {
+        if (dto == null) {
+            return false;
+        }
+        if (dto.getIdUsuario() != null) {
+            return userId != null && dto.getIdUsuario().equals(userId);
+        }
+        if (dto.getIdIngresos() == null) {
+            return userId == null;
+        }
+        for (Ingreso ingreso : DataRepository.getIngresosHistorial()) {
+            if (dto.getIdIngresos().equals(ingreso.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String formatearFecha(LocalDate fecha) {
@@ -519,6 +543,7 @@ public class ahorroInfo extends Fragment {
                 ingresosDisponibles.clear();
                 ingresosDisponibles.addAll(result);
                 actualizarIngresoAdapter();
+                cargarAhorros();
             }
 
             @Override
@@ -527,6 +552,7 @@ public class ahorroInfo extends Fragment {
                     return;
                 }
                 mostrarMensajeError(message);
+                cargarAhorros();
             }
         });
     }

@@ -26,6 +26,7 @@ import com.example.economix_android.util.ProfileImageUtils;
 import com.example.economix_android.auth.SessionManager;
 import com.example.economix_android.network.dto.PresupuestoDto;
 import com.example.economix_android.network.repository.PresupuestoRepository;
+import com.example.economix_android.util.UserCategoryStore;
 import com.example.economix_android.util.UsuarioAnimationNavigator;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -128,10 +129,18 @@ public class gastosFragment extends Fragment {
                 }
             }
         }
+        cargarCategoriasPersonalizadas();
 
         binding.btnAgregarCategoriaGas.setOnClickListener(v -> mostrarDialogoNuevaCategoria(
                 binding.chipGroupEtiquetasGas, binding.etArticuloGas
         ));
+    }
+
+    private void cargarCategoriasPersonalizadas() {
+        List<String> categorias = UserCategoryStore.getCategories(requireContext(), UserCategoryStore.TYPE_GASTO);
+        for (String categoria : categorias) {
+            agregarChipCategoria(binding.chipGroupEtiquetasGas, binding.etArticuloGas, categoria, false);
+        }
     }
 
     private void mostrarDialogoNuevaCategoria(ChipGroup chipGroup, TextInputEditText destinoArticulo) {
@@ -148,20 +157,44 @@ public class gastosFragment extends Fragment {
                         Toast.makeText(requireContext(), R.string.error_campos_obligatorios_gasto, Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    Chip nuevo = new Chip(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice);
-                    nuevo.setText(texto);
-                    nuevo.setCheckable(true);
-                    nuevo.setOnClickListener(v -> {
-                        destinoArticulo.setText(texto);
-                        binding.etPeriodoGas.setText(texto);
-                    });
-                    chipGroup.addView(nuevo);
-                    nuevo.setChecked(true);
+                    boolean categoriaExistente = existeChipConTexto(binding.chipGroupCategoriaGas, texto)
+                            || existeChipConTexto(chipGroup, texto);
+                    if (!categoriaExistente
+                            && UserCategoryStore.saveCategory(requireContext(), UserCategoryStore.TYPE_GASTO, texto)) {
+                        agregarChipCategoria(chipGroup, destinoArticulo, texto, true);
+                    }
                     destinoArticulo.setText(texto);
                     binding.etPeriodoGas.setText(texto);
                 })
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
+    }
+
+    private void agregarChipCategoria(ChipGroup chipGroup, TextInputEditText destinoArticulo,
+                                      String texto, boolean checked) {
+        if (existeChipConTexto(chipGroup, texto)) {
+            return;
+        }
+        Chip nuevo = new Chip(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice);
+        nuevo.setText(texto);
+        nuevo.setCheckable(true);
+        nuevo.setOnClickListener(v -> {
+            destinoArticulo.setText(texto);
+            binding.etPeriodoGas.setText(texto);
+        });
+        chipGroup.addView(nuevo);
+        nuevo.setChecked(checked);
+    }
+
+    private boolean existeChipConTexto(ChipGroup chipGroup, String texto) {
+        for (int i = 0; i < chipGroup.getChildCount(); i++) {
+            View child = chipGroup.getChildAt(i);
+            if (child instanceof Chip
+                    && ((Chip) child).getText().toString().equalsIgnoreCase(texto)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

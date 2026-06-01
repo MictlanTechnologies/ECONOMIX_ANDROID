@@ -16,10 +16,19 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class AhorroDto {
     private Integer idAhorro;
+    private Integer idUsuario;
+    private String nombreObjetivo;
+    private String descripcionObjetivo;
+    private BigDecimal meta;
+    private BigDecimal montoAhorrado;
+    private LocalDate fechaLimite;
+
+    @SerializedName("idIngresos")
     private Integer idIngresos;
+    @SerializedName("montoAhorro")
     private BigDecimal montoAhorro;
+    @SerializedName("periodoTAhorro")
     private String periodoTAhorro;
+    @SerializedName("fechaAhorro")
     private LocalDate fechaAhorro;
-    @SerializedName(value = "fechaActualizacionA", alternate = {"fechaActualizaciónA"})
-    private LocalDate fechaActualizacionA;
 }
