@@ -163,7 +163,6 @@ public class gastosFragment extends Fragment {
                             && UserCategoryStore.saveCategory(requireContext(), UserCategoryStore.TYPE_GASTO, texto)) {
                         agregarChipCategoria(chipGroup, destinoArticulo, texto, true);
                     }
-                    destinoArticulo.setText(texto);
                     binding.etPeriodoGas.setText(texto);
                 })
                 .setNegativeButton(android.R.string.cancel, null)
@@ -178,10 +177,7 @@ public class gastosFragment extends Fragment {
         Chip nuevo = new Chip(requireContext(), null, com.google.android.material.R.style.Widget_MaterialComponents_Chip_Choice);
         nuevo.setText(texto);
         nuevo.setCheckable(true);
-        nuevo.setOnClickListener(v -> {
-            destinoArticulo.setText(texto);
-            binding.etPeriodoGas.setText(texto);
-        });
+        nuevo.setOnClickListener(v -> binding.etPeriodoGas.setText(texto));
         chipGroup.addView(nuevo);
         nuevo.setChecked(checked);
     }
